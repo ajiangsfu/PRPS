@@ -1,0 +1,421 @@
+---
+title: "Package PRPS"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+vignette: |
+  %\VignetteEngine{knitr::rmarkdown} %\VignetteIndexEntry{Package PRPS} %\VignetteEncoding{UTF-8} \usepackage[utf8]{inputenc} \VignetteEngine{knitr::knitr}
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+library(dplyr)
+library(ggplot2)
+set.seed(1014)
+```
+
+Type: Package
+
+Title: Calculate classification scores and classify samples into 2 to 3 groups
+
+Version: 0.1.0
+
+Author: Aixiang Jiang, ..., David Scott, Ryan Morin
+
+Maintainer: Aixiang Jiang <aijiang@bccrc.ca>
+
+Depends: R (>= 3.3.1), lattice, caret, limma, e1071
+
+Suggests: knitr
+
+VignetteBuilder: knir
+
+&nbsp;
+&nbsp;
+
+# I. Introduction
+
+This package calculates classification prediction score with three method choices: 
+
+##   1. LPS (Linear Prediction Score); 
+   In the classification step, if LPS is chosen, Empirical Bayes' probabilities are calcualted 
+   and classification is based on cutoff on probabilities;
+
+#### References:
+
+Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
+to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
+A. 2003 Aug 19;100(17):9991-6.
+
+   
+##  2. PRPS (Probability ratio based classification predication score);
+ if PRPS is chosen, two types of outputs
+   are given: one is based on cutoff on Empirical Bayes' probabilities, the other one is based on 
+   natural cutoff 0 on PRPS scores;
+  
+####  References:
+
+Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell
+Lymphoma. J Clin Oncol. 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
+   
+##  3. PS (Prediction Strength).
+   
+ when PS is selected, by default, classification is based on 
+   natural cutoff 0 on PS scores, however, a separate function can alos issues classification based
+   on cutoff on Empirical Bayes' probabilities when necessary.
+  
+####  References:
+TR Golub, DK Slonim, P Tamayo, C Huard, M Gaasenbeek, JP Mesirov, H Coller, ML Loh, JR Downing, MA Caligiuri, et al. Molecular classification of cancer: class discovery and class prediction by gene expression monitoring
+Science, 286 (1999), pp. 531-537
+
+&nbsp;
+&nbsp;
+
+# II. Typical path: training + testing 
+
+## 1. Typical workflow when training and testing data sets are comparable
+
+When training and testing data sets are comparable, the typical workflow is:
+
+1). select the algorithm you would like to use, there are three choices: LPS, PRPS, and PS
+
+2). have your training data set ready, and make your decisions on the parameters
+
+3). run LPStraining, or PRPStraining or PStraining
+
+4). run LPStesting, or PRPStesting or PStesting
+
+
+## 2. Example data
+
+In the data folder, there are four data files.
+
+### 1). rosenwald.cli
+
+This data frame contains subset clinic information about rosenwald dataset, wihch is downloaded from LPS R package: https://cran.r-project.org/web/packages/LPS/LPS.pdf. The original rosenwald data set contains 240 Diffuse Large B-Cell Lymphomas samples (https://llmpp.nih.gov/DLBCL/), in this subset, however, 40 samples were randomly selected from the training set that are not in Type III sub-types, and 20 samples ere randomly selected from the validation set that are not in Type III sub-types, together there are 60 Diffuse Large B-Cell Lymphomas samples in rosenwald.cli. The column "set" indicates if a sample was in training or validation data set in the Rosenwald paper, column group is for COO (cell of origin) classification, which could be GCB (germinal center), ABC (activated B cell) , and UNC (un-classified) in the paper, however, in this subset data, we only have GCB and ABC types. 
+
+
+```{r}
+library(PRPS)
+data("rosenwald.cli")
+str(rosenwald.cli)
+```
+
+#### References:
+Rosenwald A, Wright G, Chan WC, et al. The use of molecular profiling to predict survival after chemotherapy for diffuse large-B-cell lymphoma. N Engl J Med 2002;346(25):1937-1947
+
+
+### 2). rosenwald.expr
+
+This data matrix contains Lymphochip microarrays expression data for the 60 Diffuse Large B-Cell Lymphomas samples as described in rosenwald.cli. 
+
+```{r}
+data("rosenwald.expr")
+str(rosenwald.expr)
+```
+
+#### References:
+
+Rosenwald A, Wright G, Chan WC, et al. The use of molecular profiling to predict survival after chemotherapy for diffuse large-B-cell lymphoma. N Engl J Med 2002;346(25):1937-1947
+
+### 3). WrightCOO
+
+This data frame contains 158 COO (cell of origin) related genes with both Ensembl annotation ID (row names) and gene symbols (column "Gene"). These genes are used to classfy DLBCL samples into GCB, ABC, or UNC.
+
+```{r}
+data("WrightCOO")
+str(WrightCOO)
+head(WrightCOO)
+```
+
+#### References:
+Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
+to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
+A. 2003 Aug 19;100(17):9991-6.
+
+### 4). DHITsig
+
+This is the double-hit signature (DHITsig) signature gene list with their importance scores (weights) that publised on JCO. Double-hit originally refers to presence of concurrent MYC and BCL2 translocations identified with Fluorescence in situ hybridization (FISH), however, DHITsig here is based on RNAseq data although the the DHIT information was involved in DHITsig development. 
+
+```{r}
+data("DHITsig")
+str(DHITsig)
+head(DHITsig)
+```
+
+
+#### References:
+Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell
+Lymphoma. J Clin Oncol. 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
+
+
+## 3. Example code
+
+In this section, we are providing example code to get classification score when training and testing data are comparable
+
+### 1) LPS
+
+#### LPStraining
+
+Get the data ready:
+```{r}
+group = rosenwald.cli$group
+dat = rosenwald.expr
+```
+Use GCB as a reference group as in LPS package, then LPStraining result can be got as following
+```{r}
+nin = 100 
+trainLPS = LPStraining (trainDat = dat, groupInfo = group, refGroup = "GCB", topN = nin,
+                      weightMethod = "ttest")
+str(trainLPS)
+
+```
+
+The last item in the output of LPStraining provides information on how our LPS prediction model is doing
+```{r}
+trainLPS$classTable
+```
+
+This means with given COO info, and with top 100 significant genes based on t test, LPS classification can put all GCB samples back to GCB samples, for ABC samples, however, one of them is put into UNCLASS, all other samples are put back into ABC. 
+
+More detail information about LPStraining function can be found with the two choices:
+
+```{r}
+?(LPStraining)
+help(LPStraining)
+```
+
+#### LPStesting
+
+Now, we need to have a testing data set that is comparable to the training data set. As an example, we get a bootstrap sample set with a given N to build our psuedo testing data set.
+
+```{r}
+set.seed(1027562)
+N = 200  ### sample size for testing
+testdat = sample(1:dim(dat)[2], size = N, replace = TRUE)
+testdat = dat[, testdat]
+str(testdat)
+
+```
+
+Now, we can use the output from LPStraining and the testdat for LPStesting
+
+```{r}
+testLPS = LPStesting(LPStrainObj = trainLPS, newdat = testdat)
+str(testLPS)
+table(testLPS$LPS_class)
+```
+
+We can also combine training and testing data sets together for testing
+
+```{r}
+fullLPS = LPStesting(LPStrainObj = trainLPS, newdat = cbind(testdat, dat))
+str(fullLPS)
+table(fullLPS$LPS_class)
+```
+
+Now, we are wondering if the testLPS and fulltest give us consistent results.
+
+```{r}
+table(testLPS$LPS_class, fullLPS$LPS_class[1:N])
+```
+
+More detail about LPStesting can be found with:
+```{r}
+?(LPStesting)
+help(LPStesting)
+```
+
+### 2) PRPS
+#### PRPStraining
+
+Use the same training data set: *dat* as above, and use GCB as a reference group as in LPS package, then PRPStraining result can be got as following. Notice that now we are calling PRPStraining but all setting is the same as for LPStraining
+
+```{r}
+nin = 100 
+trainPRPS = PRPStraining (trainDat = dat, groupInfo = group, refGroup = "GCB", topN = nin,
+                      weightMethod = "ttest")
+str(trainPRPS)
+
+```
+
+The last item in the output of PRPStraining provides information on how our PRPS prediction model is doing
+```{r}
+trainPRPS$classTable
+```
+
+This means with given COO info, and with top 100 significant genes based on t test, PRPS classification is 100% matching to given COO.
+
+More detail information about LPStraining function can be found with the two choices:
+
+```{r}
+?(PRPStraining)
+help(PRPStraining)
+```
+
+#### PRPStesting
+
+With the exact same testing data set: *testdat*, use the output from PRPStraining, we can apply PRPStesting as following:
+
+```{r}
+testPRPS = PRPStesting(PRPStrainObj = trainPRPS, newdat = testdat)
+str(testPRPS)
+table(testPRPS$PRPS_class)
+```
+
+We can also combine training and testing data sets together for testing
+
+```{r}
+fullPRPS = PRPStesting(PRPStrainObj = trainPRPS, newdat = cbind(testdat, dat))
+str(fullPRPS)
+table(fullPRPS$PRPS_class)
+```
+
+Now, we are wondering if the testLPS and fulltest give us consistent results.
+
+```{r}
+table(testPRPS$PRPS_class, fullPRPS$PRPS_class[1:N])
+```
+
+If we compare PRPS results with LPS results, we can find that there is 1 UNCLASS in LPStraining output and there are 2 UNCLASS in LPStesting output, however, there is no UNCLASS in either PRPStraining or PRPStesting output. Remember that our *dat* contains no UNCLASS samples, and our *testdat* are bootstrapped from *dat*, therefore, there should be no UNCLASS either in *testdat*. Together, we think that PRPS might be a slightly better approach than LPS. 
+
+### 3) PS
+#### PStraining
+
+Use the same training data set: *dat* as above, and use GCB as a reference group as in LPS package, then PStraining result can be got as following. Notice that now we are calling PStraining but all setting is the same as for LPStraining
+
+```{r}
+nin = 100 
+trainPS = PStraining (trainDat = dat, groupInfo = group, refGroup = "GCB", topN = nin,
+                         weightMethod = "ttest")
+str(trainPS)
+
+```
+
+The last item in the output of PStraining provides information on how our PS prediction model is doing
+```{r}
+trainPS$classTable
+```
+
+This means with given COO info, and with top 100 significant genes based on t test, PS classification is 100% matching to given COO.
+
+More detail information about LPStraining function can be found with the two choices:
+  
+```{r}
+?(PStraining)
+help(PStraining)
+```
+
+#### PStesting
+
+With the exact same testing data set: *testdat*, use the output from PStraining, we can apply PStesting as following:
+  
+```{r}
+testPS = PStesting(PStrainObj = trainPS, newdat = testdat)
+str(testPS)
+table(testPS$PS_class)
+```
+
+We can also combine training and testing data sets together for testing
+
+```{r}
+fullPS = PStesting(PStrainObj = trainPS, newdat = cbind(testdat, dat))
+str(fullPS)
+table(fullPS$PS_class)
+```
+
+Now, we are wondering if the testLPS and fulltest give us consistent results.
+
+```{r}
+table(testPS$PS_class, fullPS$PS_class[1:N])
+```
+
+PS performs exactly the same as PRPS for the above training and testing data sets (*dat* and *testdat*), and both of them might be better approaches than LPS
+
+
+# III. Special path: classification score calculation without training 
+
+If we already have selected features/traits and their parameters needed for classification score calculation, 
+we might also calculate classification scores for a given data set without training data sets.
+
+## 1. Weights for selected features/traits + testing are available
+
+If we only know selected features/traits, but we do not know any further information. In this case, if we would like to calculate classification score for a given tesing data set, what can we do?
+
+Without any further information and without any assumption, the only method we can use to calculate classification score is to apply LPS approach. In this case, we can call LPSClassWithPriors for classification with selected features and their weights and more info.
+
+Assuming that we have features and their weights from some where, for example, we can get this information from trainLPS:
+
+```{r}
+lpswts = trainLPS$LPS_pars$weights
+str(lpswts)
+```
+
+Here, the tValue is the weight for the top 100 genes selected with LPStraining. 
+
+```{r}
+genes = rownames(lpswts)
+lpswts = lpswts[,1]
+names(lpswts) = genes
+head(lpswts)
+
+```
+
+While LPS score calculation only requires weights, in order to get classification, we need more information to help us. LPS classification is based on Empirical Bayes probabilities, which requires LPS score mean and sd for two groups (for the example data, GCB or ABC). In order to get these information, we might have two ways to achieve:
+
+### 1) Previous LPS score distribution parameters are available
+
+In this case, if the current testing is comparable to previous training data that already have LPS score distribution parameters, we can directly use for our testing data classification.
+
+As an illustration example, assume that the parameters in trainLPS are what we got prevously, since *dat* and *testdat* are comparable, we can directly use these parameters to get final classification.
+
+```{r}
+lpspars = trainLPS$LPS_pars
+lps_means_sds = lpspars$meansds
+lps_means_sds
+```
+
+Notice that refGroup = "GCB" in the previous training, and testGroup = "ABC", so, with the default probability cutoff = 0.8, we can have:
+```{r}
+lpsouts = LPSClassWithPriors(testdat, weights = lpswts, testGroup = "ABC", refGroup = "GCB", LPSMeanSds = lps_means_sds)
+str(lpsouts)
+table(lpsouts$LPS_class)
+```
+
+On the other hand, if the current testing is **not** comparable to previous training data that already have LPS score distribution parameters, then calibration will be needed before calling function *LPSClassWithPriors* in this package.
+
+
+
+
+start from here on Feb 4, write some example code to do calibration or standardization (in this case, maybe change the wording in the above as well)
+
+
+
+
+### 2) Priors for two groups' perecentages are reasonable
+
+In this case, assuming that there are p1 ratio cases can be clustered into one group, and p2 ratio cases can be clustered into the other group, and p1+p2 < 1, then, we can calculate LPS score means and sds for the two group, and then calcualte Empirical Bayes probabilities, in the end, with given probability cutoff (default value is 0.8 in this package) to get final classification. If you are not comforatable for the percentage priors, multiple sets of priors might be a good idea to try, in the end, a user could clasify the overlapping two groups across different priors, and leave other uncertainty samples into UNCLASS.
+
+
+## 2. Weights are not available
+
+### 1) use equal weights
+
+without weights, which means that these all features will be treated equally just like in heatmap/clustering, and the weight for all genes are 1.
+
+### 2) use priors to calculate weights
+
+
+
+
+
+
+
+
+
+
+
+
+
