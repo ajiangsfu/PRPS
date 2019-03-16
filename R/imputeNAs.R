@@ -18,7 +18,7 @@
 
 imputeNAs = function(dataIn, byrow = TRUE, imputeValue = c("median","mean")){ ### I usually put feature in the row, and sample in the column
   imputeValue = imputeValue[1]
-  if(byrow == T | byrow == TRUE){
+  if(byrow){
     dataIn = t(apply(dataIn, 1, function(xx){
       if(imputeValue == "mean"){
         mxx = mean(xx, na.rm = T)

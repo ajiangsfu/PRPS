@@ -61,7 +61,7 @@ LPSClassWithPriors = function(newdat, weights, testGroup, refGroup, LPSMeanSds =
                       standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
-  if(imputeNA == TRUE | imputeNA == T){
+  if(imputeNA){
     newdat = imputeNAs(dataIn = newdat, byrow = byrow, imputeValue = imputeValue)
   }
   
