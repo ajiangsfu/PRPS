@@ -52,14 +52,15 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 
-LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue = "median"){
+LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue =c("median","mean")){
+  imputeValue = imputeValue[1]
   
   if(is.null(LPStrainObj)){print("Please input your LPS training object")}
   LPS_pars = LPStrainObj$LPS_pars
   weights = LPS_pars$weights
   
   ## imputee NA if imputeNA is true
-  if(imputeNA == TRUE | imputeNA == T){
+  if(imputeNA){
     newdat = imputeNAs(dataIn = newdat, byrow = byrow, imputeValue = imputeValue)
   }
   

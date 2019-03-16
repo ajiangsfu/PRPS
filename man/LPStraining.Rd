@@ -6,8 +6,9 @@
 \usage{
 LPStraining(trainDat, standardization = FALSE, selectedTraits = NULL,
   groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
-  weightMethod = "limma", classProbCut = 0.8, imputeNA = FALSE,
-  byrow = TRUE, imputeValue = "median")
+  weightMethod = c("ttest", "limma", "PearsonR", "SpearmanR",
+  "MannWhitneyU"), classProbCut = 0.8, imputeNA = FALSE,
+  byrow = TRUE, imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{trainDat}{training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows}
@@ -45,7 +46,7 @@ the median value of the chose direction with "byrow" data to be used}
 \value{
 A list with four items is returned: LPS parameters for selected features, LPS scores and classifications for training samples, and confusion matrix to compare classification based on LPS scores and original classification.
 \item{LPS_pars}{a list of 2 items, the 1st item is a data frame with weights and group testing results of each selected features for LPS calculation, and the 2nd item is a numeric vector containing LPS mean and sd for two groups}
-\item{LPS_train}{a data frame of LPS score, Empirical Bayesian probabilites for both groups, and its classification for all training samples, notice that the classification is based on probabilities instead of LPS scores, and there is UNCLASS group besdies the given two groups}
+\item{LPS_train}{a data frame of LPS score, true classification, Empirical Bayesian probabilites for both groups, and its classification for all training samples, notice that the classification is based on probabilities instead of LPS scores, and there is UNCLASS group besdies the given two groups}
 \item{classCompare}{a confusion matrix list object that compare LPS classification based on selected features and weights compared to input group classification for training data set, notice that the samples with UNCLASS are excluded since confusion matrix can not compare 3 groups to 2 groups}
 \item{classTable}{a table to display comparison of LPS classification based on selected features and weights compared to input group classification for training data set. Since UNCLASS is excluded from confusion matrix, add this table for full comparison}
 }

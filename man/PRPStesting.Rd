@@ -6,7 +6,7 @@
 \usage{
 PRPStesting(PRPStrainObj, newdat, standardization = FALSE,
   classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = "median", isCompToTrain = TRUE,
+  imputeValue = c("median", "mean"), isCompToTrain = TRUE,
   group1ratioPrior = 1/2)
 }
 \arguments{

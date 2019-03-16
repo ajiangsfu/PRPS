@@ -37,7 +37,7 @@
 #' @keywords PS training limma weight
 #' @return A list with three items is returned: PS parameters for selected features, PS scores and classifications for training samples, and confusion matrix to compare classification based on PS scores and original classification.
 #' \item{PS_pars}{a data frame with all parameters needed for PS calculation for each selected features}
-#' \item{PS_train}{a data frame of PS score and its classification for all training samples}
+#' \item{PS_train}{a data frame of PS score, true classification and its classification based on scores for all training samples}
 #' \item{classCompare}{a confusion matrix list object that compare PS classification based on selected features and weights compared to input group classification for training data set}
 #' \item{classTable}{a table to display comparison of PS classification based on selected features and weights compared to input group classification for training data set}
 #' @references 
@@ -46,7 +46,7 @@
 #' Science, 286 (1999), pp. 531-537
 #' @export
 PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
-                      weightMethod = "limma", imputeNA = FALSE, byrow = TRUE, imputeValue = "median"){
+                      weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   ### STEPs
   ### => before anything, do we need imput NAs?
   ### a) standardize
@@ -60,8 +60,12 @@ PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = 0, 
   ### c) PS scores and classification
   ### d) confusion matrix to compare known groupInfo and the PS classification
   
+  weightMethod = weightMethod[1]
+  
+  imputeValue = imputeValue[1]
+  
   ## impute NA if imputeNA is true
-  if(imputeNA == TRUE | imputeNA == T){
+  if(imputeNA){
     trainDat = imputeNAs(dataIn = trainDat, byrow = byrow, imputeValue = imputeValue)
   }
   
@@ -89,7 +93,8 @@ PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = 0, 
   PS_class = ifelse(PS_score >= 0, testGroup, refGroup)
   
   PS_score = data.frame(PS_score)
-  PS_train = cbind(PS_score, PS_class, stringsAsFactors =F)
+  true_class = groupInfo
+  PS_train = cbind(PS_score, true_class, PS_class, stringsAsFactors =F)
   
   groupInfo = factor(groupInfo, levels = c(refGroup, testGroup))
   PS_class = factor(PS_class, levels = c(refGroup, testGroup))

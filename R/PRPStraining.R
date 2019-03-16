@@ -51,7 +51,7 @@
 #' @keywords PRPS training limma weight
 #' @return A list with three items is returned: PRPS parameters for selected features, PRPS scores and classifications for training samples, and confusion matrix to compare classification based on PRPS scores and original classification.
 #' \item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights and group testing results of each selected features for PRPS calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，and the 3rd item is a data frame contains mean and sd for each group and for each selected feature}
-#' \item{PRPS_train}{a data frame of PRPS score, Empirical Bayesian probabilites for both groups, and its classification for all training samples, notice that there are two ways for classifications, one is based on probabilities, and there is UNCLASS group besdies the given two groups, alternatively, the other one is based on PRPS scores directly and 0 treated as a natural cutoff}
+#' \item{PRPS_train}{a data frame of PRPS score, true classification, Empirical Bayesian probabilites for both groups, and its classification for all training samples, notice that there are two ways for classifications, one is based on probabilities, and there is UNCLASS group besdies the given two groups, alternatively, the other one is based on PRPS scores directly and 0 treated as a natural cutoff}
 #' \item{classCompare}{a confusion matrix list object that compare PRPS classification based on selected features and weights compared to input group classification for training data set, notice that the samples with UNCLASS are excluded since confusion matrix can not compare 3 groups to 2 groups}
 #' \item{classTable}{a table to display comparison of PRPS classification based on selected features and weights compared to input group classification for training data set. Since UNCLASS is excluded from confusion matrix, add this table for full comparison}
 #' @references Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 
@@ -61,7 +61,9 @@
 #'  2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
 #' @export
 PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
-                        weightMethod = "limma", classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE, imputeValue = "median"){
+                        weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+  weightMethod = weightMethod[1]
+  
   ### STEPs
   ### before that, need to consider impute NA or not
   ### a) if standardization = TRUE, do the standardization
@@ -78,7 +80,9 @@ PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL
   ### d) confusion matrix to compare known groupInfo and the PRPS classification
   
   ## impute NA if imputeNA is true
-  if(imputeNA == TRUE | imputeNA == T){
+  imputeValue = imputeValue[1]
+  
+  if(imputeNA){
     trainDat = imputeNAs(dataIn = trainDat, byrow = byrow, imputeValue = imputeValue)
   }
   
@@ -133,7 +137,8 @@ PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL
   PRPS_class0 = ifelse(PRPS_score>0, testGroup, refGroup)
   
   PRPS_score = data.frame(PRPS_score)
-  PRPS_train = cbind(PRPS_score, PRPS_class, PRPS_prob_test, PRPS_prob_ref,PRPS_class0 ,stringsAsFactors =F)
+  true_class = groupInfo
+  PRPS_train = cbind(PRPS_score, true_class, PRPS_class, PRPS_prob_test, PRPS_prob_ref,PRPS_class0 ,stringsAsFactors =F)
   
   groupInfo = factor(groupInfo, levels = c(refGroup, testGroup))
   ## in order to get comparison, change UNCLASS to NA, therefore only two groups are considered in PRPS_class

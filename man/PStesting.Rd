@@ -5,7 +5,7 @@
 \title{PS score calculation for a testing new data set}
 \usage{
 PStesting(PStrainObj, newdat, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = "median")
+  imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{newdat}{a new data matrix or data frame, which is comparable to training data set, 

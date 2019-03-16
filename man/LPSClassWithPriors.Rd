@@ -8,7 +8,7 @@ LPSClassWithPriors(newdat, weights, testGroup, refGroup,
   LPSMeanSds = NULL, ratioPriors = c(0.5, 0.5),
   isTestGroupHighLPS = TRUE, standardization = FALSE,
   classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = "median")
+  imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{newdat}{a new data matrix or data frame, which is comparable to training data set, 

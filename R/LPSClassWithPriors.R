@@ -58,8 +58,8 @@
 #' @export
 
 LPSClassWithPriors = function(newdat, weights, testGroup, refGroup, LPSMeanSds = NULL, ratioPriors = c(0.5, 0.5), isTestGroupHighLPS = TRUE,
-                      standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue = "median"){
-  
+                      standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+  imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA == TRUE | imputeNA == T){
     newdat = imputeNAs(dataIn = newdat, byrow = byrow, imputeValue = imputeValue)

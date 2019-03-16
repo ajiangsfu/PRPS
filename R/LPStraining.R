@@ -48,7 +48,7 @@
 #' @keywords LPS training limma weight
 #' @return A list with four items is returned: LPS parameters for selected features, LPS scores and classifications for training samples, and confusion matrix to compare classification based on LPS scores and original classification.
 #' \item{LPS_pars}{a list of 2 items, the 1st item is a data frame with weights and group testing results of each selected features for LPS calculation, and the 2nd item is a numeric vector containing LPS mean and sd for two groups}
-#' \item{LPS_train}{a data frame of LPS score, Empirical Bayesian probabilites for both groups, and its classification for all training samples, notice that the classification is based on probabilities instead of LPS scores, and there is UNCLASS group besdies the given two groups}
+#' \item{LPS_train}{a data frame of LPS score, true classification, Empirical Bayesian probabilites for both groups, and its classification for all training samples, notice that the classification is based on probabilities instead of LPS scores, and there is UNCLASS group besdies the given two groups}
 #' \item{classCompare}{a confusion matrix list object that compare LPS classification based on selected features and weights compared to input group classification for training data set, notice that the samples with UNCLASS are excluded since confusion matrix can not compare 3 groups to 2 groups}
 #' \item{classTable}{a table to display comparison of LPS classification based on selected features and weights compared to input group classification for training data set. Since UNCLASS is excluded from confusion matrix, add this table for full comparison}
 #' @author Aixiang Jiang
@@ -58,7 +58,7 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 LPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
-                       weightMethod = "limma", classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE, imputeValue = "median"){
+  weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean")){
   ### STEPs
   ### before that, need to consider impute NA or not
   ### a) if standardization = TRUE, do the standardization
@@ -74,8 +74,11 @@ LPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL,
   ### b) LPS scores and classification
   ### d) confusion matrix to compare known groupInfo and the LPS classification
   
+  weightMethod = weightMethod[1]
+  imputeValue = imputeValue[1]
+  
   ## impute NA if imputeNA is true
-  if(imputeNA == TRUE | imputeNA == T){
+  if(imputeNA){
     trainDat = imputeNAs(dataIn = trainDat, byrow = byrow, imputeValue = imputeValue)
   }
   
@@ -111,7 +114,8 @@ LPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL,
   LPS_class[which(LPS_prob_ref >= classProbCut)] = refGroup
   
   LPS_score = data.frame(LPS_score)
-  LPS_train = cbind(LPS_score, LPS_class, LPS_prob_test, LPS_prob_ref, stringsAsFactors =F)
+  true_class = groupInfo
+  LPS_train = cbind(LPS_score, true_class, LPS_class, LPS_prob_test, LPS_prob_ref, stringsAsFactors =F)
   
   groupInfo = factor(groupInfo, levels = c(refGroup, testGroup))
   ## in order to get comparison, change UNCLASS to NA, therefore only two groups are considered in LPS_class

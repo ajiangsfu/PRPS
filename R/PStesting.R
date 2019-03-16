@@ -41,13 +41,15 @@
 #' Science, 286 (1999), pp. 531-537
 #' @export
 
-PStesting = function(PStrainObj, newdat, imputeNA = FALSE, byrow = TRUE, imputeValue = "median"){
+PStesting = function(PStrainObj, newdat, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   
   if(is.null(PStrainObj)){print("Please input your PS training object")}
   PS_pars = PStrainObj$PS_pars
   
+  imputeValue = imputeValue[1]
+  
   ## impute NA if imputeNA is true
-  if(imputeNA == TRUE | imputeNA == T){
+  if(imputeNA){
     newdat = imputeNAs(dataIn = newdat, byrow = byrow, imputeValue = imputeValue)
   }
   

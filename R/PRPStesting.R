@@ -61,14 +61,15 @@
 #' @export
 
 PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCut = 0.8,
-                       imputeNA = FALSE, byrow = TRUE, imputeValue = "median", isCompToTrain = TRUE , group1ratioPrior = 1/2){
+                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean"), isCompToTrain = TRUE , group1ratioPrior = 1/2){
+  imputeValue = imputeValue[1]
   
   if(is.null(PRPStrainObj)){print("Please input your PRPS training object")}
   PRPS_pars = PRPStrainObj$PRPS_pars
   weights = PRPS_pars$weights
   
   ## impute NA if imputeNA is true
-  if(imputeNA == TRUE | imputeNA == T){
+  if(imputeNA){
     newdat = imputeNAs(dataIn = newdat, byrow = byrow, imputeValue = imputeValue)
   }
   

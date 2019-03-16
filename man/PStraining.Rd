@@ -5,8 +5,9 @@
 \title{Feature selection, parameter estimation, and PS calculation for training data set}
 \usage{
 PStraining(trainDat, selectedTraits = NULL, groupInfo, refGroup = 0,
-  topN = NULL, FDRcut = 0.1, weightMethod = "limma",
-  imputeNA = FALSE, byrow = TRUE, imputeValue = "median")
+  topN = NULL, FDRcut = 0.1, weightMethod = c("ttest", "limma",
+  "PearsonR", "SpearmanR", "MannWhitneyU"), imputeNA = FALSE,
+  byrow = TRUE, imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{trainDat}{training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows}
@@ -40,7 +41,7 @@ the median value of the chose direction with "byrow" data to be used}
 \value{
 A list with three items is returned: PS parameters for selected features, PS scores and classifications for training samples, and confusion matrix to compare classification based on PS scores and original classification.
 \item{PS_pars}{a data frame with all parameters needed for PS calculation for each selected features}
-\item{PS_train}{a data frame of PS score and its classification for all training samples}
+\item{PS_train}{a data frame of PS score, true classification and its classification based on scores for all training samples}
 \item{classCompare}{a confusion matrix list object that compare PS classification based on selected features and weights compared to input group classification for training data set}
 \item{classTable}{a table to display comparison of PS classification based on selected features and weights compared to input group classification for training data set}
 }
