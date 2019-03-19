@@ -4,7 +4,8 @@
 \alias{plotROC}
 \title{ROC curve with AUC, Youden best and natural cutoff of 0}
 \usage{
-plotROC(contdat, contname, catdat, catname, xshift, yshift)
+plotROC(contdat, contname, catdat, catname, xshift = -0.05,
+  yshift = 0.02)
 }
 \arguments{
 \item{contdat}{a vector of a continuous variable}

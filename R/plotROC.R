@@ -12,7 +12,7 @@
 #' @keywords ROC
 #' @author Aixiang Jiang
 #' @export
-plotROC = function(contdat, contname, catdat, catname, xshift, yshift){
+plotROC = function(contdat, contname, catdat, catname, xshift = -0.05, yshift = 0.02){
   require(pROC)
   roc1 = roc(as.factor(catdat), contdat, direction="<", auc=TRUE, ci=TRUE)
   
@@ -24,6 +24,6 @@ plotROC = function(contdat, contname, catdat, catname, xshift, yshift){
   cut0 = contdat[cut0]
   p0 = coords(roc1,cut0)
   points(p0[2], p0[3], col="red", pch=19, cex=0.8)
-  text(p0[2]+xshift, p0[3]+yshift, labels =paste("0 (",format(p0[2], digits = 3),",", format(p0[3],digits = 3), sep=""), col="red")
+  text(p0[2]+xshift, p0[3]+yshift, labels =paste("0 (",format(p0[2], digits = 3),",", format(p0[3],digits = 3), ")",sep=""), col="red")
   
 }

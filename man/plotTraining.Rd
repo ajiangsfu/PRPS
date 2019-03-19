@@ -4,7 +4,7 @@
 \alias{plotTraining}
 \title{Plot function for training objects}
 \usage{
-plotTraining(trainObj, plotNanme, xshift, yshift)
+plotTraining(trainObj, plotName, xshift = -0.05, yshift = 0.02)
 }
 \arguments{
 \item{trainObj}{a training object from LPStrain, or PRPStrain, or PStrain}
@@ -14,6 +14,8 @@ default value is}
 
 \item{yshift}{a numeric variable to indicate how much value shift along y-axis to move the label position for the natural 0 cutoff point,
 default value is}
+
+\item{plotNanme}{a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)}
 }
 \description{
 This is to plot ROC, hist, and scatter plot for a given training object
