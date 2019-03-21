@@ -17,10 +17,10 @@ plotROC(contdat, contname, catdat, catname, xshift = -0.05,
 \item{catname}{a string to show name of a  dichotomous variable}
 
 \item{xshift}{a numeric variable to indicate how much value shift along x-axis to move the label position for the natural 0 cutoff point,
-default value is}
+default value is -0.05}
 
 \item{yshift}{a numeric variable to indicate how much value shift along y-axis to move the label position for the natural 0 cutoff point,
-default value is}
+default value is 0.02}
 }
 \description{
 This is an internal function to plot ROC (Receiver operating characteristic) curve showing AUC, Youden best and natural cutoff of 0 points.

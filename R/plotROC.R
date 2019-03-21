@@ -6,9 +6,9 @@
 #' @param catdat a vector of a dichotomous variable
 #' @param catname a string to show name of a  dichotomous variable
 #' @param xshift a numeric variable to indicate how much value shift along x-axis to move the label position for the natural 0 cutoff point,
-#'  default value is 
+#'  default value is -0.05
 #' @param yshift a numeric variable to indicate how much value shift along y-axis to move the label position for the natural 0 cutoff point,
-#'  default value is 
+#'  default value is 0.02
 #' @keywords ROC
 #' @author Aixiang Jiang
 #' @export
