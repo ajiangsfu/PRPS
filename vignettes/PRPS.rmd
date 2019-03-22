@@ -335,6 +335,9 @@ table(testPS$PS_class, fullPS$PS_class[1:N])
 
 PS performs exactly the same as PRPS for the above training and testing data sets (*dat* and *testdat*), and both of them might be better approaches than LPS
 
+&nbsp;
+&nbsp;
+
 
 # III. Special path: classification score calculation without training 
 
@@ -343,7 +346,36 @@ we might also calculate classification scores for a given data set without train
 
 ## 1. when weights for selected features/traits + testing are available
 
-If we only know selected features/traits, but we do not know any further information. In this case, if we would like to calculate classification score for a given tesing data set, what can we do?
+If we only know selected features/traits with their weights but no comparable training data set,  and we would like to calculate classification score for a given tesing data set, what can we do?
+
+### 1) A similar data set with classificaiton info is available
+
+If there is no comparable training data available, but there is a similar to testing data with classification info available, we might apply calibration or normalization or standardization to make it as our pseudo training data set. In this case, we can do the following:
+
+i) If we believe that there is only some score shifting between training and testing data sets, calibrate classification scores between testing and traning data sets, and then use the calibrated mean and sd of two groups in the traning data set to calculate Empirical Bayes probabilities for the testing data set, and furthermore get classification calls.
+
+ii) If the assumption in i) does not hold, which means that there are more difference between training and testing data sets, and calibration on classification scores cannot overcome the difference, but if we have house keeping genes, we can use house keeping genes to normalize both training and testing data sets, and use the normalized training and testing data sets and follow instruction in II Typical path: training + testing 
+
+iii) If both i) and ii) are not applicable, which means that the calibration on classification scores does not work and we cannot use house keeping genes for normalization, then, we can apply feature-wise standardization for both pseudo training and testing data sets. In this case,  when we follow instruction in II Typical path: training + testing, we just need to make sure standardization = TRUE 
+
+
+### 2) No similar data set with classificaiton info is available
+
+use prior idea?
+
+
+
+
+### stop here on 20190321
+
+
+
+
+
+
+
+the following is needed to be changed, maybe do not use any method as title at all
+### 1) LPS
 
 Without any further information and without any assumption, the only method we can use to calculate classification score is to apply LPS approach. In this case, we can call getClassScores and set method as LPS.
 
@@ -373,7 +405,6 @@ head(lpsscores)
 
 While LPS score calculation only requires weights, in order to get classification, we need more information to help us. LPS classification is based on Empirical Bayes probabilities, which requires LPS score mean and sd for two groups (for the example data, GCB or ABC). In order to get these information, we might have two ways to achieve:
 
-### 1) 
 
 
 
@@ -381,8 +412,40 @@ While LPS score calculation only requires weights, in order to get classificatio
 
 
 
+&nbsp;
+&nbsp;
+
+# IV Plots
+
+For the training and testing objects, we can alos plot them out.
+
+## 1. Plot training objects
+
+For all LPS and PRPS training objects, we can plot ROC curve, histogram, and Empirical Bayesian probabilites vs classification score scatter plot. For PS training objects, only ROC curve and histogram plots are produced because PS method does not involve Empirical Bayesian probability calculation.
+
+```{r}
+plotNames = c("lpsPlots","prpsPlots","psPlots")
+trainNames = paste("train",plotNames, sep="_")
+plotTraining(trainObj = trainLPS, plotName = trainNames[1])
+plotTraining(trainObj = trainPRPS, plotName = trainNames[2])
+plotTraining(trainObj = trainPS, plotName = trainNames[3])
+```
+
+The plot files are saved with given file names.
 
 
+## 2. Plot testing objects
+
+For all LPS and PRPS training objects, we can plot histogram and Empirical Bayesian probabilites vs classification score scatter plot. For PS training objects, only histogram plots are produced because PS method does not involve Empirical Bayesian probability calculation.
+
+```{r}
+testNames = paste("test",plotNames, sep="_")
+plotTesting(testObj = testLPS, plotName = testNames[1])
+plotTesting(testObj = testPRPS, plotName = testNames[2])
+plotTesting(testObj = testPS, plotName = testNames[3])
+```
+
+The plot files are saved with given file names.
 
 
 
