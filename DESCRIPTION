@@ -6,7 +6,7 @@ Author: Aixiang Jiang
 Maintainer: Aixiang Jiang <aijiang@bccrc.ca>
 Depends: R (>= 3.3.1), lattice, caret, limma, e1071
 Suggests: knitr
-VignetteBuilder: knir
+VignetteBuilder: knitr
 Description: This package calculates classification prediction score with three method choices: 
    a) LPS (defult, Linear Prediction Score); 
    b) PRPS (Probability ratio based classification predication score);

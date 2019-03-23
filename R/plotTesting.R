@@ -30,7 +30,7 @@ plotTesting = function(testObj, plotName, breaks = 30){
     testObj = testObj[order(testObj[,1]),]
     
     plot(testObj[,1], testObj[,tmp[1]],xlab = colnames(testObj)[1], ylab = "Empirical Bayesian probabilites",
-         main = paste("Scatter Plot of Prob vs. ",colnames(datin)[1], sep=""))
+         main = paste("Scatter Plot of Prob vs. ",colnames(testObj)[1], sep=""))
     points(testObj[,1], testObj[,tmp[2]])
     
     lines(testObj[,1], testObj[,tmp[1]], col="red")

@@ -339,16 +339,11 @@ PS performs exactly the same as PRPS for the above training and testing data set
 &nbsp;
 
 
-# III. Special path: classification score calculation without training 
+# III. Special path: classification score calculation without comparable training 
 
-If we already have selected features/traits and their parameters needed for classification score calculation, 
-we might also calculate classification scores for a given data set without training data sets.
+In many situations, we might not have comparable training and testing data sets, in this case, we might still calculate classification scores and make classification calls.
 
-## 1. when weights for selected features/traits + testing are available
-
-If we only know selected features/traits with their weights but no comparable training data set,  and we would like to calculate classification score for a given tesing data set, what can we do?
-
-### 1) A similar data set with classificaiton info is available
+## 1. A similar data set with classificaiton info is available
 
 If there is no comparable training data available, but there is a similar to testing data with classification info available, we might apply calibration or normalization or standardization to make it as our pseudo training data set. In this case, we can do the following:
 
@@ -358,24 +353,25 @@ ii) If the assumption in i) does not hold, which means that there are more diffe
 
 iii) If both i) and ii) are not applicable, which means that the calibration on classification scores does not work and we cannot use house keeping genes for normalization, then, we can apply feature-wise standardization for both pseudo training and testing data sets. In this case,  when we follow instruction in II Typical path: training + testing, we just need to make sure standardization = TRUE 
 
+```{r}
+lpstrain = LPStraining (trainDat = dat,standardization=TRUE, groupInfo = group, refGroup = "GCB", topN = nin,weightMethod = "ttest")
+str(trainLPS)
 
-### 2) No similar data set with classificaiton info is available
-
-use prior idea?
-
-
-
-
-### stop here on 20190321
+lpstest = LPStesting(lpstrain, newdat = testdat, standardization = TRUE)
+str(lpstest)
+```
 
 
+## 2. No similar data set with classificaiton info is available
+
+Not only we do not have comparable training and testing data sets, but also we do not have similar training and testing data sets. This means that we do not have any kinds of training data sets at all. In this situation, we should at least have gene features/traits that we would like to distiguish samples. Otherwise no classification score can be calculated.
 
 
+### 1). Weights for selected features/traits are available
 
+If we know selected features/traits with their weights but no any kind of training data set,  and we would like to calculate classification score for a given tesing data set, what can we do?
 
-
-the following is needed to be changed, maybe do not use any method as title at all
-### 1) LPS
+#### LPS 
 
 Without any further information and without any assumption, the only method we can use to calculate classification score is to apply LPS approach. In this case, we can call getClassScores and set method as LPS.
 
@@ -403,13 +399,32 @@ lpsscores = getClassScores(testdat, classMethod = "LPS", weights = lpswts)
 head(lpsscores)
 ```
 
-While LPS score calculation only requires weights, in order to get classification, we need more information to help us. LPS classification is based on Empirical Bayes probabilities, which requires LPS score mean and sd for two groups (for the example data, GCB or ABC). In order to get these information, we might have two ways to achieve:
+While LPS score calculation only requires weights, in order to get classification, we need more information to help us. LPS classification is based on Empirical Bayes probabilities, which requires LPS score mean and sd for two groups (for the example data, GCB or ABC). In order to get these information, we might use the following methods to make classifcation calls:
+
+i) Assume a prior that indicate what percentage of scores can be used to calculate group mean and sd for both groups, obviously but by median is the most conservative way to do so, you migt try 1/3 for one group and 2/3 for the other group, or 1/3 in both ends.
+
+ii) Visualize the score distribution with histogram or any other tools, and get the initial classification, then calculate score mean and sd for both groups. 
+
+Once we have LPS scores with i) or ii), and LPS score mean and sd for the two groups, we can calcualte Empirical Bayes probabilities, and make classification calls as usual.
 
 
+#### PRPS and PS
+
+When PRPS and PS methods are chosen, we need to use initial group information to calculate PRPS and PS classification scores. Again, both prior and visualization methods can be used as for LPS appraoch. The differene is that we need this info to calculate mean and sd for the two groups for each gene level in order to get PRPS and PS scores. Again, we need to call getClassScores function:
+
+getClassScores(testdat, classMethod = c("LPS", "PRPS", "PS"), weights,
+  classMeans, classSds)
 
 
+When we have these classification scores, and if we do not want to use natual cutoff of 0 to claim classification, but want to calculate Empirical Bayes probabilities, then, at the this point, we need to use initial group information again, and then make classification calls.
 
+### 2). Weights for selected features/traits are  NOT available
 
+If we only know selected features/traits, but we do not know these features' weights, and we do not have any kinds of training data sets. In this case, we might do the following
+
+i) Standardize data along each feature/trait, make all feature's distribution comparable to N(0,1)
+ii) use equal weight of 1 for all selected features/traits
+iii) follow all steps in 1). Weights for selected features/traits are available
 
 
 &nbsp;
