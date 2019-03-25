@@ -1,0 +1,189 @@
+* using log directory ‘/mnt/thanos_lv/ajiang/AJ2019/PRPS.Rcheck’
+* using R version 3.5.3 (2019-03-11)
+* using platform: x86_64-pc-linux-gnu (64-bit)
+* using session charset: UTF-8
+* checking for file ‘PRPS/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘PRPS’ version ‘0.1.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... NOTE
+Found the following hidden files and directories:
+  data/.rda
+These were most likely included in error. See section ‘Package
+structure’ in the ‘Writing R Extensions’ manual.
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘PRPS’ can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking ‘build’ directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking dependencies in R code ... NOTE
+Namespaces in Imports field not imported from:
+  ‘e1071’ ‘lattice’
+  All declared Imports should be used.
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+LPSClassWithPriors: no visible global function definition for
+  ‘quantile’
+LPSClassWithPriors: no visible global function definition for ‘sd’
+LPStraining: no visible global function definition for ‘sd’
+PRPStesting: no visible global function definition for
+  ‘getMeanSdNewAllTraits’
+PRPStraining: no visible binding for global variable ‘sd’
+PRPStraining: no visible global function definition for ‘sd’
+getMeanSdPerTrait: no visible global function definition for ‘quantile’
+getMeanSdPerTrait: no visible global function definition for ‘sd’
+getProb: no visible global function definition for ‘dnorm’
+getTrainingParas: no visible binding for global variable ‘sd’
+getTrainingParas : <anonymous>: no visible global function definition
+  for ‘wilcox.test’
+getTrainingParas : <anonymous>: no visible global function definition
+  for ‘cor.test’
+getTrainingParas : <anonymous>: no visible global function definition
+  for ‘t.test’
+getTrainingParas: no visible global function definition for ‘p.adjust’
+getTrainingParas: no visible global function definition for ‘head’
+getTrainingWeights: no visible binding for global variable ‘sd’
+getTrainingWeights : <anonymous>: no visible global function definition
+  for ‘wilcox.test’
+getTrainingWeights : <anonymous>: no visible global function definition
+  for ‘cor.test’
+getTrainingWeights : <anonymous>: no visible global function definition
+  for ‘t.test’
+getTrainingWeights: no visible global function definition for
+  ‘p.adjust’
+getTrainingWeights: no visible global function definition for ‘head’
+imputeNAs : <anonymous>: no visible global function definition for
+  ‘median’
+imputeNAs : <anonymous>: no visible binding for global variable
+  ‘imputValue’
+plotROC: no visible global function definition for ‘plot’
+plotROC: no visible global function definition for ‘points’
+plotROC: no visible global function definition for ‘text’
+plotTesting: no visible global function definition for ‘pdf’
+plotTesting: no visible global function definition for ‘hist’
+plotTesting: no visible global function definition for ‘plot’
+plotTesting: no visible global function definition for ‘points’
+plotTesting: no visible global function definition for ‘lines’
+plotTesting: no visible global function definition for ‘legend’
+plotTesting: no visible global function definition for ‘dev.off’
+plotTraining: no visible global function definition for ‘pdf’
+plotTraining: no visible global function definition for ‘hist’
+plotTraining: no visible global function definition for ‘plot’
+plotTraining: no visible global function definition for ‘points’
+plotTraining: no visible global function definition for ‘lines’
+plotTraining: no visible global function definition for ‘legend’
+plotTraining: no visible global function definition for ‘dev.off’
+standardize : <anonymous>: no visible global function definition for
+  ‘sd’
+weightedLogProbClass : <anonymous>: no visible global function
+  definition for ‘pt’
+Undefined global functions or variables:
+  cor.test dev.off dnorm getMeanSdNewAllTraits head hist imputValue
+  legend lines median p.adjust pdf plot points pt quantile sd t.test
+  text wilcox.test
+Consider adding
+  importFrom("grDevices", "dev.off", "pdf")
+  importFrom("graphics", "hist", "legend", "lines", "plot", "points",
+             "text")
+  importFrom("stats", "cor.test", "dnorm", "median", "p.adjust", "pt",
+             "quantile", "sd", "t.test", "wilcox.test")
+  importFrom("utils", "head")
+to your NAMESPACE file.
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... WARNING
+Undocumented code objects:
+  ‘DHITsig’ ‘WrightCOO’ ‘rosenwald.cli’ ‘rosenwald.expr’
+Undocumented data sets:
+  ‘DHITsig’ ‘WrightCOO’ ‘rosenwald.cli’ ‘rosenwald.expr’
+All user-level objects in a package should have documentation entries.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in documentation object 'LPStesting'
+  ‘LPStrainObj’
+Documented arguments not in \usage in documentation object 'LPStesting':
+  ‘PStraingObj’
+
+Undocumented arguments in documentation object 'LPStraining'
+  ‘standardization’
+
+Undocumented arguments in documentation object 'PRPStesting'
+  ‘PRPStrainObj’
+Documented arguments not in \usage in documentation object 'PRPStesting':
+  ‘PStraingObj’
+
+Undocumented arguments in documentation object 'PRPStraining'
+  ‘standardization’
+
+Undocumented arguments in documentation object 'PStesting'
+  ‘PStrainObj’
+Documented arguments not in \usage in documentation object 'PStesting':
+  ‘PStraingObj’ ‘standardization’ ‘classProbCut’
+
+Undocumented arguments in documentation object 'getMeanSdAllTraits'
+  ‘selectedTraitWeights’
+Documented arguments not in \usage in documentation object 'getMeanSdAllTraits':
+  ‘selectedtraitWeights’
+
+Undocumented arguments in documentation object 'plotTesting'
+  ‘plotName’
+Documented arguments not in \usage in documentation object 'plotTesting':
+  ‘plotNanme’
+
+Undocumented arguments in documentation object 'plotTraining'
+  ‘plotName’
+Documented arguments not in \usage in documentation object 'plotTraining':
+  ‘plotNanme’
+
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of ‘data’ directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking data for ASCII and uncompressed saves ... WARNING
+  
+  Note: significantly better compression could be obtained
+        by using R CMD build --resave-data
+                     old_size new_size compress
+  rosenwald.expr.rda    962Kb    659Kb    bzip2
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
+* checking examples ... NONE
+* checking for unstated dependencies in vignettes ... NOTE
+'library' or 'require' calls not declared from:
+  ‘dplyr’ ‘ggplot2’
+* checking package vignettes in ‘inst/doc’ ... OK
+* checking running R code from vignettes ... NONE
+* checking re-building of vignette outputs ... OK
+* checking PDF version of manual ... WARNING
+LaTeX errors when creating PDF version.
+This typically indicates Rd problems.
+* checking PDF version of manual without hyperrefs or index ...

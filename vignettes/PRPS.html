@@ -196,20 +196,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S A. 2003 Aug 19;100(17):9991-6.</p>
 </div>
 </div>
-<div id="dhitsiggenes" class="section level3">
-<h3>4). DHITsigGenes</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;DHITsigGenes&quot;</span>)
-<span class="kw">str</span>(DHITsigGenes)
-<span class="co">#&gt; 'data.frame':    104 obs. of  1 variable:</span>
-<span class="co">#&gt;  $ Genes: chr  &quot;OR13A1&quot; &quot;FAM216A&quot; &quot;MYC&quot; &quot;SLC25A27&quot; ...</span>
-<span class="kw">head</span>(DHITsigGenes)
-<span class="co">#&gt;      Genes</span>
-<span class="co">#&gt; 1   OR13A1</span>
-<span class="co">#&gt; 2  FAM216A</span>
-<span class="co">#&gt; 3      MYC</span>
-<span class="co">#&gt; 4 SLC25A27</span>
-<span class="co">#&gt; 5    ALOX5</span>
-<span class="co">#&gt; 6    UQCRH</span></code></pre></div>
+<div id="dhitsig" class="section level3">
+<h3>4). DHITsig</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;DHITsig&quot;</span>)
+<span class="kw">str</span>(DHITsig)
+<span class="co">#&gt;  Named num [1:104] 0.674 0.666 0.618 0.597 0.582 ...</span>
+<span class="co">#&gt;  - attr(*, &quot;names&quot;)= chr [1:104] &quot;OR13A1&quot; &quot;FAM216A&quot; &quot;MYC&quot; &quot;SLC25A27&quot; ...</span>
+<span class="kw">head</span>(DHITsig)
+<span class="co">#&gt;    OR13A1   FAM216A       MYC  SLC25A27     ALOX5     UQCRH </span>
+<span class="co">#&gt; 0.6742184 0.6662736 0.6180968 0.5973289 0.5822841 0.5545504</span></code></pre></div>
 <div id="references-6" class="section level4">
 <h4>References:</h4>
 <p>Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.</p>
@@ -617,13 +612,6 @@ lpswts =<span class="st"> </span>lpswts[,<span class="dv">1</span>]
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plotNames =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;lpsPlots&quot;</span>,<span class="st">&quot;prpsPlots&quot;</span>,<span class="st">&quot;psPlots&quot;</span>)
 trainNames =<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;train&quot;</span>,plotNames, <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
 <span class="kw">plotTraining</span>(<span class="dt">trainObj =</span> trainLPS, <span class="dt">plotName =</span> trainNames[<span class="dv">1</span>])
-<span class="co">#&gt; Loading required package: pROC</span>
-<span class="co">#&gt; Type 'citation(&quot;pROC&quot;)' for a citation.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'pROC'</span>
-<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     cov, smooth, var</span>
 <span class="co">#&gt; Warning in ci.auc.roc(roc, ...): ci.auc() of a ROC curve with AUC == 1 is</span>
 <span class="co">#&gt; always 1-1 and can be misleading.</span>
 <span class="co">#&gt; png </span>
