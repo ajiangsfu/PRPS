@@ -1,11 +1,10 @@
-
 #' LPS score calculation and binary classification for a testing data set without LPStraining output object, but with selected feature weights
 #' @description This is the function to calculate LPS (Linear Prediction Score) scores for a testing data set 
 #' without LPS training object. However, we do need selected feature list with their weights. Once we have LPS scores, 
 #' we then apply EM (Expectation-Maximization) to get LPS score mean and sd for the two groups assuming that LPS score
 #' is a mixture of two normal distributions, followed by Empirical Bayes' probability calculation and final binary classification calls.
-#' @details  This is the function to calculate LPS scores and make classification and 
-#' Empirical Bayesian probabilities for a testing new data set. 
+#' @details  This is the function to calculate LPS scores and make classification based on Empirical Bayesian probabilities
+#'  for a testing new data set. 
 #' LPS calculation is based on Wright 2003. The fomula is straightforward for a given testing data and selected feature weights:
 #'   \eqn{LPS(X) = \sum a_j x_ij}
 #' Here a_j represents the jth selected feature weight, and x_ij is the corresponding feature value for the ith sample.
@@ -47,10 +46,9 @@
 #' Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecular Fingerprints
 #' in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 #' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
-
 #' @export
 
-LPSClassWithWeight = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, LPShighGroup = "LPShigh", 
+LPSClassWithWeights = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, LPShighGroup = "LPShigh", 
                     LPSlowGroup = "LPSlow", breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
