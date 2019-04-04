@@ -4,12 +4,14 @@
 \alias{getTraitParsWithEM}
 \title{Calculate two group means, sds, and mean of group means for each of features, which are used in PRPS and PS}
 \usage{
-getTraitParsWithEM(datin, weights)
+getTraitParsWithEM(datin, weights, EMmaxRuns = 50)
 }
 \arguments{
 \item{datin}{a new data matrix or data frame, columns for samples and rows for features}
 
 \item{weights}{a numeric vector with selected features (as names of the vector) and their weights}
+
+\item{EMmaxRuns}{number of Iterations for EM searching; default=50}
 }
 \value{
 A data frame with group means, sds and mean of group means

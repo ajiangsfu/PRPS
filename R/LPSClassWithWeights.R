@@ -30,6 +30,7 @@
 #' @param LPShighGroup a string to indicate group name with high LPS score
 #' @param LPSlowGroup a string to indicate group name with low LPS score
 #' @param breaks a integer to indicate number of bins in histogram, default is 50
+#' @param EMmaxRuns number of Iterations for EM searching; default=50
 #' @param imputeNA a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 #'  processed before any other steps, the default is FALSE
 #' @param byrow a logic variable to indicate direction for imputation, default is TRUE, 
@@ -49,7 +50,7 @@
 #' @export
 
 LPSClassWithWeights = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, LPShighGroup = "LPShigh", 
-                    LPSlowGroup = "LPSlow", breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+                    LPSlowGroup = "LPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){
@@ -68,7 +69,7 @@ LPSClassWithWeights = function(newdat, weights, standardization=FALSE, classProb
   
   ### now, use EM to define 1st draft of group, and then use it to calculate group mean and sd
   
-  emcut = AdaptGauss::EMGauss(LPS_score, K = 2)
+  emcut = AdaptGauss::EMGauss(LPS_score, K = 2, fast=TRUE, MaxNumberofIterations = EMmaxRuns)
   
   # > emcut
   # $Means

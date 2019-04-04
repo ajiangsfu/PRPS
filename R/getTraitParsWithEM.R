@@ -6,6 +6,7 @@
 #' feature, we do need weight for each selected feature.
 #' @param datin a new data matrix or data frame, columns for samples and rows for features
 #' @param weights a numeric vector with selected features (as names of the vector) and their weights
+#' @param EMmaxRuns number of Iterations for EM searching; default=50
 #' @return A data frame with group means, sds and mean of group means
 #' @keywords EM mean sd
 #' @author Aixiang Jiang
@@ -14,7 +15,7 @@
 #' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
 #' 
 #' @export
-getTraitParsWithEM = function(datin, weights){
+getTraitParsWithEM = function(datin, weights, EMmaxRuns = 50){
   ### first of all, make sure all of the names in weights are also in datin, and make sure that theya are in the same order
   ### I did this step in the current functions that I call this function, however, to avoid any potential problem when is used elsewhere,
   ### do it again
@@ -26,7 +27,28 @@ getTraitParsWithEM = function(datin, weights){
   res = t(apply(cbind(weights,datin), 1, function(xx){
     x1 = xx[1]
     xx=xx[-1]
-    xx = AdaptGauss::EMGauss(xx, K = 2)
+ 
+    ###### note on 201904903 ########################
+    # xx = AdaptGauss::EMGauss(xx, K = 2)
+    # xm = xx$Means
+    # ## without knowing further info, all I can do is to make the mean of the 1st group has the consistent direction with weights
+    # if(sign(xm[1]-xm[2])*sign(x1)>0){
+    #   ms = xx$Means
+    #   sds = xx$SDs
+    # }else{
+    #   ms = rev(xx$Means)
+    #   sds = rev(xx$Means)
+    # }
+    # mm = mean(ms)
+    ### seems that there is a problem with AdaptGauss::EMGauss
+    ### change to original EM clustering function
+    
+    #y1= mclust::Mclust(data = xx, G=1:5, modelNames = "V")  
+    ### seems a problem, when there is only one reasonable distribution, and in this case, has to include 1 in the G
+    ### on the other hand, I can still stick on AdaptGauss::EMGauss, however, set fast = TRUE
+    ###    -> and if one group prop=0, use median as cutoff to calculate mean and sd
+    ###       -> however, so far, no problem!!! happy face -:)
+    xx = AdaptGauss::EMGauss(xx, K = 2, fast=TRUE, MaxNumberofIterations = EMmaxRuns)
     xm = xx$Means
     ## without knowing further info, all I can do is to make the mean of the 1st group has the consistent direction with weights
     if(sign(xm[1]-xm[2])*sign(x1)>0){
@@ -37,6 +59,7 @@ getTraitParsWithEM = function(datin, weights){
       sds = rev(xx$Means)
     }
     mm = mean(ms)
+    
     return(c(ms,sds,mm))
   }))
   

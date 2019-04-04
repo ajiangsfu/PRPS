@@ -2,13 +2,14 @@
 #' PRPS score calculation and binary classification for a testing data set without PRPStraining output object, but with selected feature weights
 #' @description This is the function to calculate PRPS (Probability ratio based classification predication score) scores for a testing data set 
 #' without PRPS training object. However, we do need selected feature list with their weights and mean and sd for two groups for each
-#' selected feature, which we need to apply EM (Expectation-Maximization) to achieve. Once we have PRPS scores, we also need 
-#' to apply EM to calcualate mean and sd for the two groups assuming that PRPS score is a mixture of two normal distributions, 
-#' followed by Empirical Bayes' probability calculation and final binary classification calls.
+#' selected feature, which we need to apply EM (Expectation-Maximization) to achieve. Once we have PRPS scores, we could use the 
+#' theoretic natual cutoff 0 to make classification calls. Alternatively, we can also apply EM to calcualate mean and sd for the
+#' two groups assuming that PRPS score is a mixture of two normal distributions, followed by Empirical Bayes' probability 
+#' calculation and final binary classification calls.
 #' @details  This is the function to calculate PRPS scores and make classification based on
 #' Empirical Bayesian probabilities for a testing new data set. 
 #' PRPS calculation is based on Ennishi 2018, its formula is:
-#' \eqn{LPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
+#' \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
 #' Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
 #'  for the ith sample, 
 #' P1 and P0 are the probabilities that the ith sample belongs to two different group.
@@ -35,6 +36,7 @@
 #' @param PRPShighGroup a string to indicate group name with high PRPS score
 #' @param PRPSlowGroup a string to indicate group name with low PRPS score
 #' @param breaks a integer to indicate number of bins in histogram, default is 50
+#' @param EMmaxRuns number of Iterations for EM searching; default=50
 #' @param imputeNA a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 #'  processed before any other steps, the default is FALSE
 #' @param byrow a logic variable to indicate direction for imputation, default is TRUE, 
@@ -54,8 +56,8 @@
 
 #' @export
 
-PRPSClassWithWeight = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
-                    PRPSlowGroup = "PRPSlow", breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+PRPSClassWithWeights = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
+                    PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){
@@ -89,13 +91,13 @@ PRPSClassWithWeight = function(newdat, weights, standardization=FALSE, classProb
   ### this is: need: 2 means, 2 sds, mean of 2 means, return should be a data frame, and call by colnames in the following part like here
   ### PRPSpars = apply(data.matrix(newdat[names(weights),]), 1, function(xx){
   ### }, coefs = weights)
-  PRPSpars = getTraitParsWithEM(datin = newdat, weights = weights)
+  PRPSpars = getTraitParsWithEM(datin = newdat, weights = weights, EMmaxRuns = EMmaxRuns)
   PRPS_score = weightedLogProbClass(newdat=newdat, topTraits=names(weights), weights=weights, 
                                        classMeans=PRPSpars[,1:2], classSds=PRPSpars[,3:4])
   ### after I have PRPS score, do the following
   ### now, use EM to define 1st draft of group, and then use it to calculate group mean and sd
   
-  emcut = AdaptGauss::EMGauss(PRPS_score, K = 2)
+  emcut = AdaptGauss::EMGauss(PRPS_score, K = 2,fast=TRUE, MaxNumberofIterations = EMmaxRuns)
   
   # > emcut
   # $Means
