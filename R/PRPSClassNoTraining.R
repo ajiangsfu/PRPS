@@ -74,6 +74,7 @@
 
 PRPSClassNoTraining = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
                     PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+  require(mclust)
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){
