@@ -1,18 +1,24 @@
 
 #' PRPS score calculation and binary classification for a testing data set without PRPStraining output object, but with selected feature weights,
-#' this function is a newer version of PRPSClassWithWeights that use weights + EM + Bayes. The current function uses weights + priors + EM + Bayes
-#' @description This is the function to calculate PRPS (Probability ratio based classification predication score) scores for a testing data set 
-#' without PRPS training object. However, we do need selected feature list with their weights and mean and sd for two groups for each
-#' selected feature, which we need to apply ratio prior to achieve. Once we have PRPS scores, we could use the 
-#' theoretic natual cutoff 0 to make classification calls. Alternatively, we can also apply EM to calcualate mean and sd for the
+#' The current function uses weights + priors + EM + Bayes but no need to input a group ratio prior.
+#' @description This function is to calculate PRPS (Probability ratio based classification predication score) scores for a testing data set 
+#' without PRPS training object. However, we do need selected feature list with their weights, and we can estimate mean and sd for two groups for each
+#' selected feature in order to calculate PRPS scores. Our original idea in JCO 2018 does requrire a group ratio prior to do so, which is 
+#' written as PRPSClassWithWeightsPrior function in this package. We also have another function: PRPSClassWithWeightsEM, which uses EM to 
+#' estimate group mean and sd for each selected feature. In this fucnction, however, we combine the ideas in both of the above two functions.
+#' 
+#' @details This function is trying to get reasonable PRPS based classification without training object and given group mean and sd for each selected feature,
+#' but with selected features and their weights. It combined ideas from PRPSClassWithWeightsPrior and PRPSClassWithWeightsEM. 
+#' The actual steps are as following:
+#' 1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05), this will give us 19 ratio priors
+#' 2) for each prior in 1), call PRPSClassWithWeightsPrior, and we will get PRPS score and classification with natural cutoff 0
+#' 3) apply EM on PRPS scores from 2) with Mclust
+#' 4) use the samples that are always in the same group to get group means and sds for each feature
+#' 5) calculate PRPS scores
+#' 6) Once we have PRPS scores, we could use the theoretic natual cutoff 0 to make classification calls. 
+#' Alternatively, we can also apply EM to calcualate mean and sd for the
 #' two groups assuming that PRPS score is a mixture of two normal distributions, followed by Empirical Bayes' probability 
 #' calculation and final binary classification calls.
-#' In this version, however, we do not set ratio prior as a parameter, instead, we will try several of them, and 
-#' use EM on the scores, and compare how each prior does for EM by comparing EM BIC, and in the end, output the optimal EM result.
-#' For original 0 cutoff, we will compare the results across different prior ratios as well. 
-#' 
-#' @details  This is the function to calculate PRPS scores and make classification based on
-#' Empirical Bayesian probabilities for a testing new data set. 
 #' PRPS calculation is based on Ennishi 2018, its formula is:
 #' \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
 #' Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
@@ -21,7 +27,6 @@
 #' However, in order to calculate P1 and P0, we need to have two group mean and sd for each selected feature. Although there are multiple way
 #' to obtain these values, in this function, we design to use EM algorithm to achieve group mean and sd assuming that each selected feature
 #' is a mixture of two normal distributions. 
-#' 
 #' After we have PRPS scores, we need to calculate a Empirical Bayes' probability to make classification calls. To do that, 
 #' we also need to apply EM to get PRPS score mean and sd for two groups. 
 #' After that, we can calcualte probability that a sample belongs to either group,
@@ -51,13 +56,19 @@
 #' @return A data frame with PRPS score, Empirical Bayesian probabilites for two groups and classification
 #' @keywords PRPS EM 
 #' @author Aixiang Jiang
-#' @references Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A gene expression-based method
-#' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
-#' A. 2003 Aug 19;100(17):9991-6.
+#' @references Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 
+#'  Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, 
+#'  Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Gene Expression Signature Defines
+#'  a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 
+#'  2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
 #' 
 #' Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecular Fingerprints
 #' in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 #' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
+#' 
+#' #' Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
+#' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
+#' A. 2003 Aug 19;100(17):9991-6.
 
 #' @export
 
@@ -76,45 +87,50 @@ PRPSClassNoTraining = function(newdat, weights, standardization=FALSE, classProb
   tmp = intersect(names(weights), rownames(newdat))
   weights = weights[tmp]
   newdat = newdat[tmp,]
-
-  #### in order to get mean and sd for each feature
-  #### which I could 
-  #### a) re-write the original code to be a new function -> this seems most reasonable solution
-  #### b) re-write code and post here directly
-  #### c) or change the original function
   
-  # if NA is not imputed, remove it from PRPS score calculation in the following getPRPSscore function
-  #PRPS_score = apply(data.matrix(newdat[names(weights),]), 2, getPRPSscore, coefs = weights)
-   ############## 
+  rps = seq(0.05, 0.95, by = 0.05)
   
-  ### think again, on 20190329
-  ### I can still call: weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds)
-  ### however, before that, I need to use EM to get classMeans, classSds
+  rpsres = sapply(rps, FUN = function(xx){
+    tmp = PRPSClassWithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
+    mcls = mclust::Mclust(tmp$PRPS_score, G=2)
+    return(mcls$classification)
+  })
   
-  ### this is to get mean and sd for each selected feature based on EM, write an independent function and then call here
-  ### in order to be used in both PRPS and PS, give mean of group means as well
-  ### this is: need: 2 means, 2 sds, mean of 2 means, return should be a data frame, and call by colnames in the following part like here
-  ### PRPSpars = apply(data.matrix(newdat[names(weights),]), 1, function(xx){
-  ### }, coefs = weights)
-  PRPSpars = getTraitParsWithEM(datin = newdat, weights = weights, EMmaxRuns = EMmaxRuns)
-  PRPS_score = weightedLogProbClass(newdat=newdat, topTraits=names(weights), weights=weights, 
-                                       classMeans=PRPSpars[,1:2], classSds=PRPSpars[,3:4])
-  ### after I have PRPS score, do the following
-  ### now, use EM to define 1st draft of group, and then use it to calculate group mean and sd
+  rownames(rpsres) = colnames(newdat)
+  ### the classification is coded with 1 and 2
+  ### in order to find samples that are always 1 and always 2, what should I do?
+  ### for always 1, if I extract 1 for each cell, then row sum for the sample should be 0
+  ### for always 2, if I extract 2 for each cell, then row sum for the sample should be 0
+  
+  res1 = rpsres - 1
+  res2 = rpsres - 2
+  
+  grp1 = rownames(res1[which(rowSums(res1) == 0),])
+  grp2 = rownames(res1[which(rowSums(res2) == 0),])
+  
+  ### now, I need to work on group mean and sd for each feature
+  datgrp1 = newdat[,grp1]
+  datgrp2 = newdat[,grp2]
+  
+  means1 = rowMeans(datgrp1) 
+  means2 = rowMeans(datgrp2)
+  
+  sds1 = apply(datgrp1,1,sd)
+  sds2 = apply(datgrp2,1,sd)
+  
+  if(length(grp1) >= length(grp2)){
+    allmeans = cbind(means2, means1)
+    allsds = cbind(sds2, sds1)
+  }else{
+    allmeans = cbind(means1, means2)
+    allsds = cbind(sds1, sds2)
+  }
+  
+  PRPS_score = weightedLogProbClass(newdat = newdat, topTraits=names(weights), weights=weights,
+                                    classMeans = allmeans, classSds = allsds)
   
   emcut = AdaptGauss::EMGauss(PRPS_score, K = 2,fast=TRUE, MaxNumberofIterations = EMmaxRuns)
-  
-  # > emcut
-  # $Means
-  # [1] -106.36599  -39.04443
-  # 
-  # $SDs
-  # [1] 23.62815 11.70491
-  # 
-  # $Weights
-  # [1] 0.1139536 0.8860464
-  #### this is exact what I need!
-  
+ 
   ### add a plot, hist with two distribution lines, do not need to save, just plot it
   hist(PRPS_score, prob = TRUE, breaks = breaks)
   curve(emcut$Weights[1]*dnorm(x, mean=emcut$Means[1], sd=emcut$SDs[1]), 

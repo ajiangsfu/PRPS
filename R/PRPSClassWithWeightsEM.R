@@ -55,6 +55,10 @@
 #' Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecular Fingerprints
 #' in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 #' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
+#' 
+#' #' Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
+#' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
+#' A. 2003 Aug 19;100(17):9991-6.
 
 #' @export
 

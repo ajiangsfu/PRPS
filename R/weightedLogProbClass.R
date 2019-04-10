@@ -14,10 +14,10 @@
 #' @param newdat a new data matrix or data frame, with columns for samples and rows for features
 #' @param topTraits selected features used for PRPS calculation
 #' @param weights feature weights
-#' @param classMeans a numeric vector of two group means, the 1st item is for testing group, 
-#'  while the 2nd item is for reference group
-#' @param classSds a numeric vector of two group standard deviations (sds), the 1st item is for testing group, 
-#'  while the 2nd item is for reference group
+#' @param classMeans a data frame or data matrix of two group means for each selected features, the 1st column is for testing group, 
+#'  while the 2nd column is for reference group
+#' @param classSds  a data frame or data matrix of two group standard deviations (sds) for each selected features, 
+#' the 1st column is for testing group, while the 2nd column is for reference group
 #' @return A numeric vector of PRPS 
 #' @keywords PRPS
 #' @author Aixiang Jiang

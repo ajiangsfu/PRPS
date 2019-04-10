@@ -13,11 +13,11 @@ weightedLogProbClass(newdat, topTraits, weights, classMeans, classSds)
 
 \item{weights}{feature weights}
 
-\item{classMeans}{a numeric vector of two group means, the 1st item is for testing group, 
-while the 2nd item is for reference group}
+\item{classMeans}{a data frame or data matrix of two group means for each selected features, the 1st column is for testing group, 
+while the 2nd column is for reference group}
 
-\item{classSds}{a numeric vector of two group standard deviations (sds), the 1st item is for testing group, 
-while the 2nd item is for reference group}
+\item{classSds}{a data frame or data matrix of two group standard deviations (sds) for each selected features, 
+the 1st column is for testing group, while the 2nd column is for reference group}
 }
 \value{
 A numeric vector of PRPS

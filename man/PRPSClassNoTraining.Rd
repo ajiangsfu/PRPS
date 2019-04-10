@@ -3,7 +3,7 @@
 \name{PRPSClassNoTraining}
 \alias{PRPSClassNoTraining}
 \title{PRPS score calculation and binary classification for a testing data set without PRPStraining output object, but with selected feature weights,
-this function is a newer version of PRPSClassWithWeights that use weights + EM + Bayes. The current function uses weights + priors + EM + Bayes}
+The current function uses weights + priors + EM + Bayes but no need to input a group ratio prior.}
 \usage{
 PRPSClassNoTraining(newdat, weights, standardization = FALSE,
   classProbCut = 0.8, PRPShighGroup = "PRPShigh",
@@ -43,19 +43,25 @@ the median value of the chose direction with "byrow" data to be used}
 A data frame with PRPS score, Empirical Bayesian probabilites for two groups and classification
 }
 \description{
-This is the function to calculate PRPS (Probability ratio based classification predication score) scores for a testing data set 
-without PRPS training object. However, we do need selected feature list with their weights and mean and sd for two groups for each
-selected feature, which we need to apply ratio prior to achieve. Once we have PRPS scores, we could use the 
-theoretic natual cutoff 0 to make classification calls. Alternatively, we can also apply EM to calcualate mean and sd for the
-two groups assuming that PRPS score is a mixture of two normal distributions, followed by Empirical Bayes' probability 
-calculation and final binary classification calls.
-In this version, however, we do not set ratio prior as a parameter, instead, we will try several of them, and 
-use EM on the scores, and compare how each prior does for EM by comparing EM BIC, and in the end, output the optimal EM result.
-For original 0 cutoff, we will compare the results across different prior ratios as well.
+This function is to calculate PRPS (Probability ratio based classification predication score) scores for a testing data set 
+without PRPS training object. However, we do need selected feature list with their weights, and we can estimate mean and sd for two groups for each
+selected feature in order to calculate PRPS scores. Our original idea in JCO 2018 does requrire a group ratio prior to do so, which is 
+written as PRPSClassWithWeightsPrior function in this package. We also have another function: PRPSClassWithWeightsEM, which uses EM to 
+estimate group mean and sd for each selected feature. In this fucnction, however, we combine the ideas in both of the above two functions.
 }
 \details{
-This is the function to calculate PRPS scores and make classification based on
-Empirical Bayesian probabilities for a testing new data set. 
+This function is trying to get reasonable PRPS based classification without training object and given group mean and sd for each selected feature,
+but with selected features and their weights. It combined ideas from PRPSClassWithWeightsPrior and PRPSClassWithWeightsEM. 
+The actual steps are as following:
+1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05), this will give us 19 ratio priors
+2) for each prior in 1), call PRPSClassWithWeightsPrior, and we will get PRPS score and classification with natural cutoff 0
+3) apply EM on PRPS scores from 2) with Mclust
+4) use the samples that are always in the same group to get group means and sds for each feature
+5) calculate PRPS scores
+6) Once we have PRPS scores, we could use the theoretic natual cutoff 0 to make classification calls. 
+Alternatively, we can also apply EM to calcualate mean and sd for the
+two groups assuming that PRPS score is a mixture of two normal distributions, followed by Empirical Bayes' probability 
+calculation and final binary classification calls.
 PRPS calculation is based on Ennishi 2018, its formula is:
 \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
 Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
@@ -64,7 +70,6 @@ P1 and P0 are the probabilities that the ith sample belongs to two different gro
 However, in order to calculate P1 and P0, we need to have two group mean and sd for each selected feature. Although there are multiple way
 to obtain these values, in this function, we design to use EM algorithm to achieve group mean and sd assuming that each selected feature
 is a mixture of two normal distributions. 
-
 After we have PRPS scores, we need to calculate a Empirical Bayes' probability to make classification calls. To do that, 
 we also need to apply EM to get PRPS score mean and sd for two groups. 
 After that, we can calcualte probability that a sample belongs to either group,
@@ -76,13 +81,19 @@ Notice that the test and reference group is just the relative grouping, in fact,
  to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
 }
 \references{
-Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A gene expression-based method
-to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
-A. 2003 Aug 19;100(17):9991-6.
+Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 
+ Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, 
+ Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Gene Expression Signature Defines
+ a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 
+ 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
 
 Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecular Fingerprints
 in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
+
+#' Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
+to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
+A. 2003 Aug 19;100(17):9991-6.
 }
 \author{
 Aixiang Jiang
