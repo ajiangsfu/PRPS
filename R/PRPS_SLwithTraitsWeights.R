@@ -1,15 +1,15 @@
 
-#' PRPS score calculation and binary classification for a testing data set without PRPStraining output object
+#' Self learning binary classification with selected features and their weights
 #' @description This function is to calculate PRPS (Probability ratio based classification predication score) scores for
-#' a testing data set without PRPS training object. This function involves weights + priors + EM + Bayes but no need to input a group
-#' ratio prior. However, we do need selected feature list with their weights, and we can estimate mean and sd for two groups for each
-#' selected feature in order to calculate PRPS scores. Our original idea in JCO 2018 does requrire a group ratio prior to do so,
+#' a testing data set without PRPS training object. This function involves a self learning process with weights + priors + EM + Bayes 
+#' but no need to input a group ratio prior. However, we do need selected feature list with their weights, and we use self learning method 
+#' to estimate mean and sd for two groups for each selected feature in order to calculate PRPS scores. Our original idea in JCO 2018 does requrire a group ratio prior to do so,
 #' which is written as PRPSClassWithWeightsPrior function in this package. We also have another function: PRPSClassWithWeightsEM, 
 #' which uses EM to estimate group mean and sd for each selected feature. In this fucnction, however, we combine the ideas in both
-#' of the above two functions.
-#' @details This function is trying to get reasonable PRPS based classification without training object and given group mean and sd
-#' for each selected feature, but with selected features and their weights. It combined ideas from PRPSClassWithWeightsPrior and
-#' PRPSClassWithWeightsEM. The actual steps are as following:
+#' of the above two functions to achieve our new version of self learning algorithm.
+#' @details This function is trying to get reasonable PRPS based classification without training data set, but with 
+#' selected features and their weights. It combines ideas from PRPSClassWithWeightsPrior and
+#' PRPSClassWithWeightsEM, which we call it asself learning algorithm, the actual steps are as following:
 #' 1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05), this will give us 19 ratio priors
 #' 2) for each prior in 1), call PRPSClassWithWeightsPrior to achieve PRPS scores
 #' 3) apply EM on PRPS scores from 2) with Mclust, which includes 2 group classification
@@ -76,7 +76,7 @@
 
 #' @export
 
-PRPSClassNoTraining = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
+PRPS_SLwithTraitsWeights = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
                     PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   require(mclust)
   imputeValue = imputeValue[1]

@@ -59,7 +59,7 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
   #### make changes on Jan 23, to make sure that I only get common genes
   if(!is.null(selectedTraits)){
     selectedTraits = intersect(selectedTraits, rownames(trainDat))
-    if(length(selectedTraits) < 1 | is.na(selectedTraits) | is.null(selectedTraits)){
+    if(length(selectedTraits) < 1 |length(which(is.na(selectedTraits))) > 0 |is.null(selectedTraits)){
       print("Please make sure that your selectedTraits has the same format as your gene names in your data")
     }
     trainDat = trainDat[selectedTraits,]

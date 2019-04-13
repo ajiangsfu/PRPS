@@ -25,12 +25,13 @@ str(DHITsig)
 head(DHITsig)
 
 ## ------------------------------------------------------------------------
-group = rosenwald.cli$group
 dat = rosenwald.expr
+trainset = subset(rosenwald.cli, rosenwald.cli$set == "Training")
+testset = subset(rosenwald.cli, rosenwald.cli$set == "Validation")
 
 ## ------------------------------------------------------------------------
 nin = 100 
-trainLPS = LPStraining (trainDat = dat, groupInfo = group, refGroup = "GCB", topN = nin,
+trainLPS = LPStraining (trainDat = dat[,rownames(trainset)], groupInfo = trainset$group, refGroup = "GCB", topN = nin,
                       weightMethod = "ttest")
 str(trainLPS)
 
@@ -43,25 +44,19 @@ trainLPS$classTable
 help(LPStraining)
 
 ## ------------------------------------------------------------------------
-set.seed(1027562)
-N = 200  ### sample size for testing
-testdat = sample(1:dim(dat)[2], size = N, replace = TRUE)
-testdat = dat[, testdat]
-str(testdat)
-
-
-## ------------------------------------------------------------------------
-testLPS = LPStesting(LPStrainObj = trainLPS, newdat = testdat)
+testLPS = LPStesting(LPStrainObj = trainLPS, newdat = dat[,rownames(testset)])
 str(testLPS)
 table(testLPS$LPS_class)
+table(testLPS$LPS_class, testset$group)
 
 ## ------------------------------------------------------------------------
-fullLPS = LPStesting(LPStrainObj = trainLPS, newdat = cbind(testdat, dat))
+fullLPS = LPStesting(LPStrainObj = trainLPS, newdat = dat)
 str(fullLPS)
 table(fullLPS$LPS_class)
 
 ## ------------------------------------------------------------------------
-table(testLPS$LPS_class, fullLPS$LPS_class[1:N])
+table(testLPS$LPS_class, fullLPS[rownames(testset), "LPS_class"])
+
 
 ## ------------------------------------------------------------------------
 ?(LPStesting)
@@ -69,7 +64,7 @@ help(LPStesting)
 
 ## ------------------------------------------------------------------------
 nin = 100 
-trainPRPS = PRPStraining (trainDat = dat, groupInfo = group, refGroup = "GCB", topN = nin,
+trainPRPS = PRPStraining (trainDat = dat[,rownames(trainset)], groupInfo = trainset$group, refGroup = "GCB", topN = nin,
                       weightMethod = "ttest")
 str(trainPRPS)
 
@@ -82,21 +77,24 @@ trainPRPS$classTable
 help(PRPStraining)
 
 ## ------------------------------------------------------------------------
-testPRPS = PRPStesting(PRPStrainObj = trainPRPS, newdat = testdat)
+testPRPS = PRPStesting(PRPStrainObj = trainPRPS, newdat = dat[,rownames(testset)])
 str(testPRPS)
 table(testPRPS$PRPS_class)
+table(testPRPS$PRPS_class, testset$group)
+
+
 
 ## ------------------------------------------------------------------------
-fullPRPS = PRPStesting(PRPStrainObj = trainPRPS, newdat = cbind(testdat, dat))
+fullPRPS = PRPStesting(PRPStrainObj = trainPRPS, newdat = dat)
 str(fullPRPS)
 table(fullPRPS$PRPS_class)
 
 ## ------------------------------------------------------------------------
-table(testPRPS$PRPS_class, fullPRPS$PRPS_class[1:N])
+table(testPRPS$PRPS_class, fullPRPS[rownames(testset), "PRPS_class"])
 
 ## ------------------------------------------------------------------------
 nin = 100 
-trainPS = PStraining (trainDat = dat, groupInfo = group, refGroup = "GCB", topN = nin,
+trainPS = PStraining (trainDat = dat[,rownames(trainset)], groupInfo = trainset$group, refGroup = "GCB", topN = nin,
                          weightMethod = "ttest")
 str(trainPS)
 
@@ -109,23 +107,24 @@ trainPS$classTable
 help(PStraining)
 
 ## ------------------------------------------------------------------------
-testPS = PStesting(PStrainObj = trainPS, newdat = testdat)
+testPS = PStesting(PStrainObj = trainPS, newdat = dat[,rownames(testset)])
 str(testPS)
 table(testPS$PS_class)
+table(testPS$PS_class, testset$group)
 
 ## ------------------------------------------------------------------------
-fullPS = PStesting(PStrainObj = trainPS, newdat = cbind(testdat, dat))
+fullPS = PStesting(PStrainObj = trainPS, newdat = dat)
 str(fullPS)
 table(fullPS$PS_class)
 
 ## ------------------------------------------------------------------------
-table(testPS$PS_class, fullPS$PS_class[1:N])
+table(testPS$PS_class, fullPS[rownames(testset), "PS_class"])
 
 ## ------------------------------------------------------------------------
-lpstrain = LPStraining (trainDat = dat,standardization=TRUE, groupInfo = group, refGroup = "GCB", topN = nin,weightMethod = "ttest")
+lpstrain = LPStraining (trainDat = dat[,rownames(trainset)], standardization=TRUE, groupInfo = trainset$group, refGroup = "GCB", topN = nin,weightMethod = "ttest")
 str(trainLPS)
 
-lpstest = LPStesting(lpstrain, newdat = testdat, standardization = TRUE)
+lpstest = LPStesting(lpstrain, newdat = dat[,rownames(testset)], standardization = TRUE)
 str(lpstest)
 
 ## ------------------------------------------------------------------------
@@ -140,7 +139,7 @@ head(lpswts)
 
 
 ## ------------------------------------------------------------------------
-lpsscores = getClassScores(testdat, classMethod = "LPS", weights = lpswts)
+lpsscores = getClassScores(testdat = dat[,rownames(testset)], classMethod = "LPS", weights = lpswts)
 head(lpsscores)
 
 ## ------------------------------------------------------------------------
