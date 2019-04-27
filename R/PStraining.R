@@ -3,7 +3,7 @@
 #' Feature selection, parameter estimation, and PS calculation for training data set
 #' @description  This is the wrap up function to select top features, estimate parameters, 
 #'  and calculate PS (Prediction Strength) scores based on a given training data set. 
-#' @details PS calculation is based on Golub 1999. In this warp up function, we use four steps to calculate 
+#' @details PS calculation is based on Golub 1999. In this wrap up function, we use four steps to calculate 
 #'  PS scores and classification. The range of PS scores is [-1,1]. Before these four steps, we also give an option
 #'  for NA imputation. The four steps are:
 #' a) apply "standardize" to standardize input data matrix for each feature;

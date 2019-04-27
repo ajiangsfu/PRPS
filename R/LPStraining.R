@@ -125,8 +125,7 @@ LPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL,
   ## notice that confusion matrix does not work if the number of levels are not the same
   
   classCompare = caret::confusionMatrix(LPS_class2, reference = groupInfo, positive = testGroup)
-  c(testLPSmean, refLPSmean, testLPSsd, refLPSsd)
-  
+
   meansds = c(testLPSmean, refLPSmean, testLPSsd, refLPSsd)
   names(meansds) = c("testLPSmean","refLPSmean","testLPSsd","refLPSsd")
   

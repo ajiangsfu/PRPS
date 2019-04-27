@@ -94,8 +94,7 @@ table(testPRPS$PRPS_class, fullPRPS[rownames(testset), "PRPS_class"])
 
 ## ------------------------------------------------------------------------
 nin = 100 
-trainPS = PStraining (trainDat = dat[,rownames(trainset)], groupInfo = trainset$group, refGroup = "GCB", topN = nin,
-                         weightMethod = "ttest")
+trainPS = PStraining (trainDat = dat[,rownames(trainset)], groupInfo = trainset$group, refGroup = "GCB", topN = nin, weightMethod = "ttest")
 str(trainPS)
 
 

@@ -275,17 +275,17 @@ Now, we are wondering if the testLPS and fulltest give us consistent results.
 table(testPRPS$PRPS_class, fullPRPS[rownames(testset), "PRPS_class"])
 ```
 
-If we compare PRPS results with LPS results, we can find that the training data itself is 100% matched to the truth for LPS but there is one sample put into UNCLASS based on PRPS. However, both methods have 1 UNCLASS for the testing data set while there is no UNCLASS in the original info.
+If we compare PRPS results with LPS results, we can find that the training data itself is 100% matched to the truth for LPS but there is one sample put into UNCLASS based on PRPS. However, for the testing data set, there is one GCB sample was classified to ABC by LPS, while ihe same samppe is classified into UNCLASS by PRPS, which seems more reasonable. 
+
 
 ### 3) PS
 #### PStraining
 
-Use the same training data set: *dat* as above, and use GCB as a reference group as in LPS package, then PStraining result can be got as following. Notice that now we are calling PStraining but all setting is the same as for LPStraining
+Use the same training data set as above, and use GCB as a reference group as in LPS package, then PStraining result can be got as following. Notice that now we are calling PStraining but all setting is the same as for LPStraining
 
 ```{r}
 nin = 100 
-trainPS = PStraining (trainDat = dat[,rownames(trainset)], groupInfo = trainset$group, refGroup = "GCB", topN = nin,
-                         weightMethod = "ttest")
+trainPS = PStraining (trainDat = dat[,rownames(trainset)], groupInfo = trainset$group, refGroup = "GCB", topN = nin, weightMethod = "ttest")
 str(trainPS)
 
 ```
@@ -335,15 +335,6 @@ PS performs exactly the same as LPS for the above training and testing data sets
 &nbsp;
 
 
-
-
-#### stop here on 20190410
-#### by the end of Thursday, should: push PRPS, and save all R files in thanos in both GSC and GiyHub private folder
-
-
-
-
-
 # III. Special path: classification score calculation without comparable training 
 
 In many situations, we might not have comparable training and testing data sets, in this case, we might still calculate classification scores and make classification calls.
@@ -352,11 +343,13 @@ In many situations, we might not have comparable training and testing data sets,
 
 If there is no comparable training data available, but there is a similar to testing data with classification info available, we might apply calibration or normalization or standardization to make it as our pseudo training data set. In this case, we can do the following:
 
-i) If we believe that there is only some score shifting between training and testing data sets, calibrate classification scores between testing and traning data sets, and then use the calibrated mean and sd of two groups in the traning data set to calculate Empirical Bayes probabilities for the testing data set, and furthermore get classification calls.
+i) If we believe that there is only some score shifting between training and testing data sets, calibrate classification scores between testing and traning data sets, and then use the calibrated mean and sd of two groups in the traning data set to calculate Empirical Bayes probabilities for the testing data set, and furthermore get classification calls. Notice that this approach is easy for LPS method but not easy for PROS and PS. This is because PRPS and PS require feature level group info as well, which is more difficult to deal with.
 
-ii) If the assumption in i) does not hold, which means that there are more difference between training and testing data sets, and calibration on classification scores cannot overcome the difference, but if we have house keeping genes, we can use house keeping genes to normalize both training and testing data sets, and use the normalized training and testing data sets and follow instruction in II Typical path: training + testing 
+ii) If the assumption in i) does not hold, which means that there are more difference between training and testing data sets, and calibration on classification scores cannot overcome the difference, but if we have house keeping genes, we can use house keeping genes to normalize both training and testing data sets, and use the normalized training and testing data sets and follow instruction in II Typical path: training + testing. This normalization strategy can be applied for all three algorithm in this package: LPS, PRPS and PS. The assumption, however, is that these house keeping genes perform similar across training and testing data sets. When this assumption does not hold, this approach will not work.
 
-iii) If both i) and ii) are not applicable, which means that the calibration on classification scores does not work and we cannot use house keeping genes for normalization, then, we can apply feature-wise standardization for both pseudo training and testing data sets. In this case,  when we follow instruction in II Typical path: training + testing, we just need to make sure standardization = TRUE 
+iii) If both i) and ii) are not applicable, which means that the calibration on classification scores does not work and we cannot use house keeping genes for normalization, then, we can apply feature-wise standardization for both pseudo training and testing data sets. In this case,  when we follow instruction in II Typical path: training + testing, we just need to make sure standardization = TRUE. This approach can be worked for all three algorithms in this package: LPS, PRPS and PS. The assumption is, however, the ture distribution for each feature is similar between training and testing
+data sets. If not, this approach will not work. For example, if there is a significant higher proportion of one group in the testing data set
+than in the training data set, normalization method will not work. 
 
 ```{r}
 lpstrain = LPStraining (trainDat = dat[,rownames(trainset)], standardization=TRUE, groupInfo = trainset$group, refGroup = "GCB", topN = nin,weightMethod = "ttest")
@@ -366,6 +359,7 @@ lpstest = LPStesting(lpstrain, newdat = dat[,rownames(testset)], standardization
 str(lpstest)
 ```
 
+In general, this is not a big problem is there is linear shift in classification score level, or even in feature level. But we do have problem to deal with data if distribution is different between training and testing. 
 
 ## 2. No similar data set with classificaiton info is available
 
@@ -425,11 +419,16 @@ When we have these classification scores, and if we do not want to use natual cu
 
 ### 2). Weights for selected features/traits are  NOT available
 
-If we only know selected features/traits, but we do not know these features' weights, and we do not have any kinds of training data sets. In this case, we might do the following
 
-i) Standardize data along each feature/trait, make all feature's distribution comparable to N(0,1)
-ii) use equal weight of 1 for all selected features/traits
-iii) follow all steps in 1). Weights for selected features/traits are available
+
+
+#### the following section seesm not work, however, I might use approach for DLC GCB COO with self learning and extension to other cases 
+and more cohorts as example, here, we do not have training and testing, and we do not have COO weights, but we do have ..., I am confused, think more later
+<!-- If we only know selected features/traits, but we do not know these features' weights, and we do not have any kinds of training data sets. In this case, we might do the following -->
+
+<!-- i) Standardize data along each feature/trait, make all feature's distribution comparable to N(0,1) -->
+<!-- ii) use equal weight of 1 for all selected features/traits -->
+<!-- iii) follow all steps in 1). Weights for selected features/traits are available -->
 
 
 &nbsp;

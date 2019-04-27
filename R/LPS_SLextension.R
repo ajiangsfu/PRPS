@@ -1,26 +1,27 @@
 
-#' LPS score calculation for a testing new data set
+#' LPS score calculation and binary classification for a testing new data set based on a self learning object
 #' @description This is the function to calculate LPS (Linear Prediction Score) scores for a testing data set 
-#' with LPS training object. The selected feature list, these features' parameters 
-#' are from the given LPS training object.
+#' with LPS self learning object. The selected feature list, these features' parameters are from the given LPS self learning object
+#' that is an output from either LPS_SLwithWeightsEM or LPS_SLwithWeightsPrior.
 #' @details  This is the function to calculate LPS scores and make classification and 
 #' Empirical Bayesian probabilities for a testing new data set. However, this new data set should be 
-#' comparable to the training data set as much as possible. Within LPStraining and within this current 
-#' LPStesting functions, standardization step is included as an option to minimize the difference 
-#' between training and testing data sets, but this step is only done to make distributions of each selected
+#' comparable to the self learning data set as much as possible. Within LPS self learning and within this current 
+#' functions, standardization step is included as an option to minimize the difference 
+#' between self learning and testing data sets, but this step is only done to make distributions of each selected
 #' features comparable. Be aware that this feature-wise standardization cannot make the sample-wise distributions
-#' comparable. For example, the training data set must have two classification groups, however, 
+#' comparable. For example, the self learning data set must have two classification groups, however, 
 #' the proportion of one group sample might be much less than the other group in the testing data set 
-#' compared to the training data set, or even worse, the testing data set might only contain one classification 
+#' compared to the self learning data set, or even worse, the testing data set might only contain one classification 
 #' group only. This is the common problem for classification and feature-wise standardization cannot solve the problem. 
 #' In order to solve the problem, we should make data comparable as much as possbile before classification step. 
 #' For example, use the same pre-processing settings and make suitable batch effect correction. 
-#' For classification with LPS approach, we also suggest to combine traing and testing data together as "newdat" 
-#' for this LPStesting function, to avoid forcing two groups' classification while there is actual only one group
-#' in the testing group.
+#' 
 #' LPS calculation is based on Wright 2003. The fomula is straightforward:
 #'   \eqn{LPS(X) = \sum a_j x_ij}
 #' Here a_j represents the jth selected feature weights, and x_ij is the corresponding feature value for the ith sample.
+#' LPS mean and sd for two groups are needed for Empirical Bayes' probability calculation, which are from a LPS 
+#' self learning object that is an output from either LPS_SLwithWeightsEM or LPS_SLwithWeightsPrior.
+#' 
 #' When calculate a Empirical Bayes' probability, the 1st group in the input mean and sd vectors is treated as the 
 #' test group. When calculate the probabilities, we first calcualte probability that a sample belongs to either group,
 #' and then use the following formula to get Empirical Bayes' probability:
@@ -29,8 +30,9 @@
 #' belongs to the test group, p_ref(x) is the probability that a given sample belongs to the reference group.
 #' Notice that the test and reference group is just the relative grouping, in fact, for this step, we often need
 #'  to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
-#' @param LPStraingObj a LPS training object, which is the output from function LPStraining
-#' @param newdat a new data matrix or data frame, which is comparable to training data set, 
+#' 
+#' @param LPS_SLObj a LPS self learning object, which is the output from either LPS_SLwithWeightsEM or LPS_SLwithWeightsPrior
+#' @param newdat a new data matrix or data frame, which is comparable to self learning data set, 
 #'  with columns for samples and rows for features
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
@@ -51,11 +53,11 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 
-LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue =c("median","mean")){
+LPStesting = function(LPS_SLObj, newdat, standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue =c("median","mean")){
   imputeValue = imputeValue[1]
   
-  if(is.null(LPStrainObj)){print("Please input your LPS training object")}
-  LPS_pars = LPStrainObj$LPS_pars
+  if(is.null(LPS_SLObj)){print("Please input your LPS self learning object")}
+  LPS_pars = LPS_SLObj$LPS_pars
   weights = LPS_pars$weights
   
   ## imputee NA if imputeNA is true
@@ -73,12 +75,11 @@ LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut =
   # in order to get classification, need to get two groups' LPS mean and sd
   
   ### get group info
-  testGroup = LPStrainObj$classCompare$positive
+  testres = LPS_SLObj$LPS_test
+  testres = testres[order(testres[,1], decreasing = T),]
+  testGroup = testres[1,2]
   
-  ### since there are three groups for LPS output, the following does not work any more
-  #refGroup = setdiff(unique(LPStrainObj$LPS_train$LPS_class),testGroup)
-  
-  refGroup = setdiff(unique(LPStrainObj$LPS_train$LPS_class),c(testGroup, "UNCLASS"))
+  refGroup = setdiff(unique(LPS_SLObj$LPS_test$PRPS_class),c(testGroup, "UNCLASS"))
   
   # for LPS, 0 is a NOT natural cutoff for two group classification
   # in order to get classification, need to get two groups' LPS mean and sd
@@ -87,8 +88,7 @@ LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut =
   refLPSmean = LPS_pars$meansds[2]
   testLPSsd = LPS_pars$meansds[3]
   refLPSsd = LPS_pars$meansds[4]
-  
-  
+ 
   LPS_prob_test = getProb(LPS_score, groupMeans = c(testLPSmean, refLPSmean), groupSds = c(testLPSsd, refLPSsd))
   
   LPS_prob_ref = getProb(LPS_score, groupMeans = c(refLPSmean, testLPSmean), groupSds = c(refLPSsd, testLPSsd))

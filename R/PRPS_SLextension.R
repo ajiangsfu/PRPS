@@ -1,40 +1,40 @@
 
-#' PRPS score calculation for a testing new data set
+#' PRPS score calculation and binary classification for a testing new data set based on a self learning object
 #' @description This is the function to calculate PRPS (Probability ratio based classification predication score)
-#'  scores for a testing data set with PRPS training object. The selected feature list, 
-#'  these features' parameters are from the given PRPS training object.
-#' @details  This is the function to calculate PRPS scores and make classification and Empirical Bayesian 
-#'  probabilities for a testing new data set. However, this new data set should be comparable to 
-#'  the training data set as much as possible. Within PRPStraining and within this current PRPStesting functions, 
-#'  standardization step is included as an option to minimize the difference between training and testing data sets, 
-#'  but this step is only done to make distributions of each selected features comparable. 
+#'  scores and make binary classification calls for a testing data set with PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM self learning object. 
+#'  The selected feature list, these features' parameters are from the given PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM object.
+#' @details  This is the function to calculate PRPS scores, Empirical Bayesian probabilities and make classification 
+#' for a testing new data set. However, this new data set should be comparable to the self learning data set used for PRPS_SLwithWeights
+#' or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM as much as possible. Within PRPS_SLwithWeights/PRPS_SLwithWeightsPrior/PRPS_SLwithWeightsEM and within this current PRPS_SLextension functions, 
+#'  standardization step is included as an option to minimize the difference between self learning and testing data sets, 
+#'  but this step is only done to make distributions of each selected feature comparable. 
 #'  Be aware that this feature-wise standardization cannot make the sample-wise distributions comparable. 
-#'  For example, the training data set must have two classification groups, however, the proportion of one group sample
-#'  might be much less than the other group in the testing data set compared to the training data set, or even worse, 
+#'  For example, the self learning data set must have two classification groups, however, the proportion of one group sample
+#'  might be much less than the other group in the testing data set compared to the self learning data set, or even worse, 
 #'  the testing data set might only contain one classification group only. This is the common problem for classification 
 #'  and feature-wise standardization cannot solve the problem. 
 #'  In order to solve the problem, we should make data comparable as much as possbile before classification step. 
 #'  For example, use the same pre-processing settings and make suitable batch effect correction. 
-#'  For classification with PRPS approach, we also suggest to combine traing and testing data together as "newdat" 
-#'  for this PRPStesting function, to avoid forcing two groups' classification while there is actual only one group
-#'  in the testing group.
-#'  However, if we know that the testing and training data sets are not comparable, we should set isCompToTrain as
-#'  FALSE and choose an approoriate group1ratioPrior as a prior for PRPS score calculation. 
+#'  For classification with PRPS approach, we also suggest to combine self learning and testing data together as "newdat" 
+#'  for this PRPS_SLextension function, to avoid forcing two groups' classification while there is actual only one group
+#'  in the testing data set.
 #'  PRPS calculation is based on Ennishi 2018. The fomula is 
 #'  \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
 #'  Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value for the ith sample, 
 #'  P1 and P0 are the probabilities that the ith sample belongs to two different group.
 #'  The therotic cutoff is 0 to make classification calls based on PRPS score, alternatively, we can use Bayes approach to make calls.
-#'  When we calculate a Empirical Bayes' probability, the 1st group in the input mean and sd vectors is treated as
-#'  the test group. When calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
+#'  When we calculate a Empirical Bayes' probability, usually, the group with smaller proportion is treated as
+#'  the test group while the other group with higher proportion is treated as reference group. 
+#'  When calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
 #'  and then use the following formula to get Empirical Bayes' probability:
 #'  \eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
 #'  Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability that a given sample 
 #'  belongs to the test group, p_ref(x) is the probability that a given sample belongs to the reference group.
 #'  Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 #'  we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
-#' @param PRPStraingObj a PRPS training object, which is the output from function PRPStraining
-#' @param newdat a new data matrix or data frame, which is comparable to training data set, 
+#' @param PRPS_SLObj a PRPS self learning object that is the output from function
+#' PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM.
+#' @param newdat a new data matrix or data frame, which is comparable to self learning data set, 
 #'  with columns for samples and rows for features
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
@@ -47,10 +47,6 @@
 #'  which will use the row data for imputation
 #' @param imputeValue a character variable to indicate which value to be used to replace NA, default is "median", 
 #'  the median value of the chose direction with "byrow" data to be used
-#' @param isCompToTrain a logic variable to indicate if testing data set is comparable to the training data set, if so, 
-#'  group mean and sd values from PRPStraingObj are used for each selected feature
-#' @param group1ratioPrior a prior of two group ratio (test group over reference group) that is used to calculate
-#'  group mean and sd values for each selected feature when isCompToTrain is set as FALSE
 #' @return  A data frame with PRPS scores, Empirical Bayesian probabilites for two groups and classification, and classification based on 0 natural cutoff on PRPS scores. 
 #' @keywords PRPS
 #' @author Aixiang Jiang
@@ -61,17 +57,18 @@
 #'  Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell
 #'  Lymphoma. J Clin Oncol. 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
 #'  
-#'  Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
+#' Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
 #' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
 #' A. 2003 Aug 19;100(17):9991-6.
+#'  
 #' @export
 
-PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCut = 0.8,
-                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean"), isCompToTrain = TRUE , group1ratioPrior = 1/2){
+PRPS_SLextension = function(PRPS_SLObj, newdat, standardization=FALSE,  classProbCut = 0.8,
+                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   
-  if(is.null(PRPStrainObj)){print("Please input your PRPS training object")}
-  PRPS_pars = PRPStrainObj$PRPS_pars
+  if(is.null(PRPS_SLObj)){print("Please input your PRPS self learning object")}
+  PRPS_pars = PRPS_SLObj$PRPS_pars
   weights = PRPS_pars$weights
   
   ## impute NA if imputeNA is true
@@ -82,13 +79,7 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   # for PRPS approach, it does not require standardization, however, if standardization = TRUE, do the standardization
   if(standardization){newdat = standardize(newdat)}
   
-  ### if the testing data is not comparable to training data set, get group mean and sd for selected features
-  if(isCompToTrain != T | isCompToTrain != TRUE){
-    Traitsmeansds = getMeanSdNewAllTraits(testdat = newdat, selectedTraits = rownames(weights),
-                                        selectedTraitWeights = weights[,1], group1ratioPrior)
-  }else{
-    Traitsmeansds = PRPS_pars$traitsmeansds
-  }
+  Traitsmeansds = PRPS_pars$traitsmeansds
   
   # if NA is not imputed, remove it from PRPS score calculation
   PRPS_score = weightedLogProbClass(newdat, topTraits=rownames(weights), weights=weights[,1],
@@ -98,17 +89,15 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   # in order to get classification, need to get two groups' PRPS mean and sd
   
   ### get group info
-  testGroup = PRPStrainObj$classCompare$positive
+  testres = PRPS_SLObj$PRPS_test
+  testres = testres[order(testres[,1], decreasing = T),]
+  testGroup = testres[1,2]
   
-  ### since there are three groups for PRPS output, the following does not work any more
-  #refGroup = setdiff(unique(PRPStrainObj$PRPS_train$PRPS_class),testGroup)
-  
-  refGroup = setdiff(unique(PRPStrainObj$PRPS_train$PRPS_class),c(testGroup, "UNCLASS"))
+  refGroup = setdiff(unique(PRPS_SLObj$PRPS_test$PRPS_class),c(testGroup, "UNCLASS"))
   
   # for PRPS, 0 is a natural cutoff for two group classification
   # use 0 to get class0, refer the code in the training part
   PRPS_class0 = ifelse(PRPS_score>0, testGroup, refGroup)
-  
   
   # alternatively, we can get classification based on prob, and we need to get two groups' PRPS mean and sd first from training
   # if testing and trainng data sets (more accurately: if the score are comparable) are comparable
@@ -117,9 +106,6 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   refPRPSmean = PRPS_pars$meansds[2]
   testPRPSsd = PRPS_pars$meansds[3]
   refPRPSsd = PRPS_pars$meansds[4]
-  
-  # if not comparable, and if we want to use prob to get classification, what should I do?
-  
   
   PRPS_prob_test = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
   

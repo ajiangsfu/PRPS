@@ -1,6 +1,6 @@
 Package: PRPS
 Type: Package
-Title: Calculate classification scores and classify samples into 2 to 3 groups
+Title: Calculate classification scores and classify samples into 2 groups
 Version: 0.1.0
 Author: Aixiang Jiang
 Maintainer: Aixiang Jiang <aijiang@bccrc.ca>

@@ -411,17 +411,16 @@ trainPRPS =<span class="st"> </span><span class="kw">PRPStraining</span> (<span 
 <span class="co">#&gt;   ABC       6   0       0</span>
 <span class="co">#&gt;   GCB       0  13       0</span>
 <span class="co">#&gt;   UNCLASS   0   0       1</span></code></pre></div>
-<p>If we compare PRPS results with LPS results, we can find that the training data itself is 100% matched to the truth for LPS but there is one sample put into UNCLASS based on PRPS. However, both methods have 1 UNCLASS for the testing data set while there is no UNCLASS in the original info.</p>
+<p>If we compare PRPS results with LPS results, we can find that the training data itself is 100% matched to the truth for LPS but there is one sample put into UNCLASS based on PRPS. However, for the testing data set, there is one GCB sample was classified to ABC by LPS, while ihe same samppe is classified into UNCLASS by PRPS, which seems more reasonable.</p>
 </div>
 </div>
 <div id="ps" class="section level3">
 <h3>3) PS</h3>
 <div id="pstraining" class="section level4">
 <h4>PStraining</h4>
-<p>Use the same training data set: <em>dat</em> as above, and use GCB as a reference group as in LPS package, then PStraining result can be got as following. Notice that now we are calling PStraining but all setting is the same as for LPStraining</p>
+<p>Use the same training data set as above, and use GCB as a reference group as in LPS package, then PStraining result can be got as following. Notice that now we are calling PStraining but all setting is the same as for LPStraining</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nin =<span class="st"> </span><span class="dv">100</span> 
-trainPS =<span class="st"> </span><span class="kw">PStraining</span> (<span class="dt">trainDat =</span> dat[,<span class="kw">rownames</span>(trainset)], <span class="dt">groupInfo =</span> trainset$group, <span class="dt">refGroup =</span> <span class="st">&quot;GCB&quot;</span>, <span class="dt">topN =</span> nin,
-                         <span class="dt">weightMethod =</span> <span class="st">&quot;ttest&quot;</span>)
+trainPS =<span class="st"> </span><span class="kw">PStraining</span> (<span class="dt">trainDat =</span> dat[,<span class="kw">rownames</span>(trainset)], <span class="dt">groupInfo =</span> trainset$group, <span class="dt">refGroup =</span> <span class="st">&quot;GCB&quot;</span>, <span class="dt">topN =</span> nin, <span class="dt">weightMethod =</span> <span class="st">&quot;ttest&quot;</span>)
 <span class="kw">str</span>(trainPS)
 <span class="co">#&gt; List of 4</span>
 <span class="co">#&gt;  $ PS_pars     :'data.frame':    100 obs. of  6 variables:</span>
@@ -500,12 +499,6 @@ trainPS =<span class="st"> </span><span class="kw">PStraining</span> (<span clas
 <p>PS performs exactly the same as LPS for the above training and testing data sets.</p>
 <p>   </p>
 </div>
-<div id="stop-here-on-20190410" class="section level4">
-<h4>stop here on 20190410</h4>
-</div>
-<div id="by-the-end-of-thursday-should-push-prps-and-save-all-r-files-in-thanos-in-both-gsc-and-giyhub-private-folder" class="section level4">
-<h4>by the end of Thursday, should: push PRPS, and save all R files in thanos in both GSC and GiyHub private folder</h4>
-</div>
 </div>
 </div>
 </div>
@@ -516,9 +509,9 @@ trainPS =<span class="st"> </span><span class="kw">PStraining</span> (<span clas
 <h2>1. A similar data set with classificaiton info is available</h2>
 <p>If there is no comparable training data available, but there is a similar to testing data with classification info available, we might apply calibration or normalization or standardization to make it as our pseudo training data set. In this case, we can do the following:</p>
 <ol style="list-style-type: lower-roman">
-<li><p>If we believe that there is only some score shifting between training and testing data sets, calibrate classification scores between testing and traning data sets, and then use the calibrated mean and sd of two groups in the traning data set to calculate Empirical Bayes probabilities for the testing data set, and furthermore get classification calls.</p></li>
-<li><p>If the assumption in i) does not hold, which means that there are more difference between training and testing data sets, and calibration on classification scores cannot overcome the difference, but if we have house keeping genes, we can use house keeping genes to normalize both training and testing data sets, and use the normalized training and testing data sets and follow instruction in II Typical path: training + testing</p></li>
-<li><p>If both i) and ii) are not applicable, which means that the calibration on classification scores does not work and we cannot use house keeping genes for normalization, then, we can apply feature-wise standardization for both pseudo training and testing data sets. In this case, when we follow instruction in II Typical path: training + testing, we just need to make sure standardization = TRUE</p></li>
+<li><p>If we believe that there is only some score shifting between training and testing data sets, calibrate classification scores between testing and traning data sets, and then use the calibrated mean and sd of two groups in the traning data set to calculate Empirical Bayes probabilities for the testing data set, and furthermore get classification calls. Notice that this approach is easy for LPS method but not easy for PROS and PS. This is because PRPS and PS require feature level group info as well, which is more difficult to deal with.</p></li>
+<li><p>If the assumption in i) does not hold, which means that there are more difference between training and testing data sets, and calibration on classification scores cannot overcome the difference, but if we have house keeping genes, we can use house keeping genes to normalize both training and testing data sets, and use the normalized training and testing data sets and follow instruction in II Typical path: training + testing. This normalization strategy can be applied for all three algorithm in this package: LPS, PRPS and PS. The assumption, however, is that these house keeping genes perform similar across training and testing data sets. When this assumption does not hold, this approach will not work.</p></li>
+<li><p>If both i) and ii) are not applicable, which means that the calibration on classification scores does not work and we cannot use house keeping genes for normalization, then, we can apply feature-wise standardization for both pseudo training and testing data sets. In this case, when we follow instruction in II Typical path: training + testing, we just need to make sure standardization = TRUE. This approach can be worked for all three algorithms in this package: LPS, PRPS and PS. The assumption is, however, the ture distribution for each feature is similar between training and testing data sets. If not, this approach will not work. For example, if there is a significant higher proportion of one group in the testing data set than in the training data set, normalization method will not work.</p></li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lpstrain =<span class="st"> </span><span class="kw">LPStraining</span> (<span class="dt">trainDat =</span> dat[,<span class="kw">rownames</span>(trainset)], <span class="dt">standardization=</span><span class="ot">TRUE</span>, <span class="dt">groupInfo =</span> trainset$group, <span class="dt">refGroup =</span> <span class="st">&quot;GCB&quot;</span>, <span class="dt">topN =</span> nin,<span class="dt">weightMethod =</span> <span class="st">&quot;ttest&quot;</span>)
 <span class="kw">str</span>(trainLPS)
@@ -561,6 +554,7 @@ lpstest =<span class="st"> </span><span class="kw">LPStesting</span>(lpstrain, <
 <span class="co">#&gt;  $ LPS_class    : chr  &quot;GCB&quot; &quot;GCB&quot; &quot;GCB&quot; &quot;ABC&quot; ...</span>
 <span class="co">#&gt;  $ LPS_prob_test: num  9.22e-03 1.93e-04 3.02e-06 9.94e-01 1.00 ...</span>
 <span class="co">#&gt;  $ LPS_prob_ref : num  9.91e-01 1.00 1.00 6.27e-03 4.29e-05 ...</span></code></pre></div>
+<p>In general, this is not a big problem is there is linear shift in classification score level, or even in feature level. But we do have problem to deal with data if distribution is different between training and testing.</p>
 </div>
 <div id="no-similar-data-set-with-classificaiton-info-is-available" class="section level2">
 <h2>2. No similar data set with classificaiton info is available</h2>
@@ -606,13 +600,14 @@ lpswts =<span class="st"> </span>lpswts[,<span class="dv">1</span>]
 </div>
 <div id="weights-for-selected-featurestraits-are-not-available" class="section level3">
 <h3>2). Weights for selected features/traits are NOT available</h3>
-<p>If we only know selected features/traits, but we do not know these features’ weights, and we do not have any kinds of training data sets. In this case, we might do the following</p>
-<ol style="list-style-type: lower-roman">
-<li>Standardize data along each feature/trait, make all feature’s distribution comparable to N(0,1)</li>
-<li>use equal weight of 1 for all selected features/traits</li>
-<li>follow all steps in 1). Weights for selected features/traits are available</li>
-</ol>
+<div id="the-following-section-seesm-not-work-however-i-might-use-approach-for-dlc-gcb-coo-with-self-learning-and-extension-to-other-cases" class="section level4">
+<h4>the following section seesm not work, however, I might use approach for DLC GCB COO with self learning and extension to other cases</h4>
+<p>and more cohorts as example, here, we do not have training and testing, and we do not have COO weights, but we do have …, I am confused, think more later <!-- If we only know selected features/traits, but we do not know these features' weights, and we do not have any kinds of training data sets. In this case, we might do the following --></p>
+<!-- i) Standardize data along each feature/trait, make all feature's distribution comparable to N(0,1) -->
+<!-- ii) use equal weight of 1 for all selected features/traits -->
+<!-- iii) follow all steps in 1). Weights for selected features/traits are available -->
 <p>   </p>
+</div>
 </div>
 </div>
 </div>
