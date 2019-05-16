@@ -90,7 +90,7 @@ PRPS_stableSLwithWeights = function(indat, weights, standardization=FALSE, class
   }
   
   # for PRPS approach, it does not require standardization, however, if standardization = TRUE, do the standardization
-  if(standardization){indat = standardize(inat)}
+  if(standardization){indat = standardize(indat)}
   
   ### in case that some features in weight list are actually not in data, do the following
   tmp = intersect(names(weights), rownames(indat))
