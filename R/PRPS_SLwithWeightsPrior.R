@@ -59,12 +59,13 @@
 #' @param imputeValue a character variable to indicate which value to be used to replace NA, default is "median", 
 #'  the median value of the chose direction with "byrow" data to be used
 #' @return A list with two items is returned: PRPS parameters for selected features, PRPS scores and classifications for the given samples.
-#' \item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PRPS
-#'  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，and the 3rd item 
-#'  is a data frame contains mean and sd for each group and for each selected feature}
-#' \item{PRPS_test}{a data frame of PRPS score, Empirical Bayesian probabilites for both groups and classification based on EM
-#' grouping, classification based on 0 as natural cutoff,  Empirical Bayesian probabilites for both groups and classification based on
-#' ratio prior. Notice that the ratio prior is used for two ends with the same prior in this very last step}
+#' \item{PRPS_pars}{a list of 4 items, the 1st item is a data frame with weights of each selected features for PRPS
+#'  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups based on a given prior，the 3rd item 
+#'  is a data frame contains mean and sd for each group and for each selected feature based on a given prior, and the 4th
+#'  item is a numeric vector containing PRPS mean and sd for two groups based on EM}
+#' \item{PRPS_test}{a data frame of PRPS score, classification and two groups' Empirical Bayesian probabilites based on a given prior, 
+#' classification based on 0 as natural cutoff, classification and two groups' Empirical Bayesian probabilites based on EM 
+#' Notice that the ratio prior is used for two ends with the same prior for prior based calls}
 #' @keywords PRPS
 #' @author Aixiang Jiang
 #' @references Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 
@@ -72,6 +73,15 @@
 #' Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Gene Expression Signature Defines
 #' a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 
 #' 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
+#' 
+#' #' Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecular Fingerprints
+#' in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
+#' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
+#' 
+#' Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and 
+#' density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
+#' 
+#' 
 #' @export
 
 PRPS_SLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  classProbCut = 0.8, ratioPrior = 1/3, PRPShighGroup = "PRPShigh", 
@@ -99,21 +109,19 @@ PRPS_SLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  clas
 
   PRPS_class0 = ifelse(PRPS_score > 0,  PRPShighGroup,  PRPSlowGroup)  
   
-  #### 20190418: add classification calls based on Empirical Bayesian probabilities with EM (Expectation-Maximization)
-  emcut = AdaptGauss::EMGauss(PRPS_score, K = 2,fast=TRUE, MaxNumberofIterations = EMmaxRuns)
+  #### 20190503, call plotHistEM 
+  emsearch = plotHistEM(PRPS_score, G = 2:4, breaks = breaks, EMmaxRuns = EMmaxRuns, scoreName = "PRPS_score")
+  bestG = emsearch$bestG
+  emcut = emsearch$emcut
   
-  ### add a plot, hist with two distribution lines, do not need to save, just plot it
-  hist(PRPS_score, prob = TRUE, breaks = breaks)
-  curve(emcut$Weights[1]*dnorm(x, mean=emcut$Means[1], sd=emcut$SDs[1]), 
-        col="red", lwd=2, add=TRUE, yaxt="n")
-  curve(emcut$Weights[2]*dnorm(x, mean=emcut$Means[2], sd=emcut$SDs[2]), 
-        col="green", lwd=2, add=TRUE, yaxt="n")
-  abline(v=0, col = "red")
+  ### no matter how many bestG, only keep the 1st and last one for the following
+  gmeans = c(emcut$Means[1], emcut$Means[bestG])
+  gsds = c(emcut$SDs[1], emcut$SDs[bestG])
   
-  PRPS_prob1 = getProb(PRPS_score, groupMeans = emcut$Means, groupSds = emcut$SDs)
-  PRPS_prob2 = getProb(PRPS_score, groupMeans = rev(emcut$Means), groupSds = rev(emcut$SDs))
+  PRPS_prob1_EM = getProb(PRPS_score, groupMeans = gmeans, groupSds = gsds)
+  PRPS_prob2_EM = getProb(PRPS_score, groupMeans = rev(gmeans), groupSds = rev(gsds))
   
-  if(emcut$Means[1]> emcut$Means[2]){
+  if(gmeans[1]> gmeans[2]){
     name1 = PRPShighGroup
     name2 = PRPSlowGroup
   }else{
@@ -121,23 +129,11 @@ PRPS_SLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  clas
     name2 = PRPShighGroup
   }
   
-  PRPS_class = rep("UNCLASS",length(PRPS_score))
-  PRPS_class[which(PRPS_prob1 >= classProbCut)] = name1
-  PRPS_class[which(PRPS_prob2 >= classProbCut)] = name2
+  PRPS_class_EM = rep("UNCLASS",length(PRPS_score))
+  PRPS_class_EM[which(PRPS_prob1_EM >= classProbCut)] = name1
+  PRPS_class_EM[which(PRPS_prob2_EM >= classProbCut)] = name2
   
-  ##############################################################
-  
-  #### add prior based classification as well. Notice that one prior is used for both ends in this function
-  # #### while in previous step, we use all data for feature level
-  # ttmp = quantile(PRPS_score, probs = 1-ratioPrior)
-  # rtmp = quantile(PRPS_score, probs = ratioPrior)
-  # ttmp = PRPS_score[which(PRPS_score >= ttmp)]
-  # rtmp = PRPS_score[which(PRPS_score < rtmp)]
-  ### notice that both ttmp and rtmp are the two ends, meaning that length(rtmp + ttmp) < length(all scores), it will be equal if ratioRrior is 0.5
-  
-  ### make changes on 20190425 after comparisons on 20190424
-  ### the following 3 lines are actually consistent to the feature level setting for ratio prior usage
-  ###  more importantly, the following 3 lines are also consistent to JCO paper where the original PRPS was defined and used with ratio prior
+  #### work on a given prior based classification
   tmpcut = quantile(PRPS_score, probs = 1-ratioPrior)
   ttmp = PRPS_score[which(PRPS_score >= tmpcut)]
   rtmp = PRPS_score[which(PRPS_score < tmpcut)]
@@ -147,38 +143,28 @@ PRPS_SLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  clas
   testPRPSsd = sd(ttmp)
   refPRPSsd = sd(rtmp)
   
-  PRPS_prob_high = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
+  PRPS_prob1 = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
   
-  PRPS_prob_low = getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
+  PRPS_prob2= getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
   
-  PRPS_class_prior = rep("UNCLASS",length(PRPS_score))
-  PRPS_class_prior[which(PRPS_prob_high >= classProbCut)] = PRPShighGroup
-  PRPS_class_prior[which(PRPS_prob_low >= classProbCut)] = PRPSlowGroup
-  
-  ########### after I used all PRPS_score, then define it as data.frame, otherwise, many of code will get trouble
-  PRPS_score = data.frame(PRPS_score)
-  PRPS_test = cbind(PRPS_score, PRPS_class, PRPS_prob1, PRPS_prob2, PRPS_class0,stringsAsFactors =F)
-  
-  #### change on 20190418
-  #### return a list withn 3 items: , PRPS_par, PRPS_test, stable_samples (sample name with grouping info)
-  #### it is better to get consistent PRPS_par as in PRPStraining
-  #### therefore: think again, maybe I can combine this function with PRPStrain?, maybe not, since the output is not the same
-  ####     and, the stable classification is not the truth, but it is the optimal based on given data
-  #### more questions
-  #### 1) should I keep the result for 0 cutoff? ->  maybe not...
-  #### 2) should I use the group mean and sd PRPS scores of the stable samples for Bayes prob and classification
-  ####        as I did in PRPStraining, or should I keep the current method with EM + Bayes? -> I will keep current approach
+  PRPS_class = rep("UNCLASS",length(PRPS_score))
+  PRPS_class[which(PRPS_prob1 >= classProbCut)] = PRPShighGroup
+  PRPS_class[which(PRPS_prob2 >= classProbCut)] = PRPSlowGroup
   
   tmp = c(emcut$Means, emcut$SDs)
-  names(tmp) = c("testPRPSmean","refPRPSmean","testPRPSsd","refPRPSsd")
+  names(tmp) = c("testPRPSmean_EM","refPRPSmean_EM","testPRPSsd_EM","refPRPSsd_EM")
   
   #####################################################
-  PRPS_test = cbind(PRPS_test, PRPS_class_prior, PRPS_prob_high, PRPS_prob_low,  stringsAsFactors =F)
-  
+  ########### after I used all PRPS_score, then define it as data.frame, otherwise, many of code will get trouble
+  PRPS_score = data.frame(PRPS_score)
+  PRPS_test = cbind(PRPS_score, PRPS_class, PRPS_prob1, PRPS_prob2, PRPS_class0, PRPS_class_EM, PRPS_prob1_EM, PRPS_prob2_EM,
+                    stringsAsFactors =F)
+
   weights = data.frame(weights)
   
-  PRPS_pars =  list(weights, meansds = tmp, traitsmeansds = meansd)
-  names(PRPS_pars) = c("weights","meansds","traitsmeansds")
+  PRPS_pars =  list(weights, meansds = c(testPRPSmean, refPRPSmean, testPRPSsd, refPRPSsd), traitsmeansds = meansd,
+                   tmp)
+  names(PRPS_pars) = c("weights","meansds","traitsmeansds", "meansds_EM")
   
   outs = list(PRPS_pars, PRPS_test)
   names(outs) = c("PRPS_pars","PRPS_test")

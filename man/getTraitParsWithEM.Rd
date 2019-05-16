@@ -29,6 +29,9 @@ feature, we do need weight for each selected feature.
 Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecular Fingerprints
 in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
+
+#' Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and 
+density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
 }
 \author{
 Aixiang Jiang

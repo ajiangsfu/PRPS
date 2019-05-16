@@ -43,10 +43,8 @@ A list with two items is returned: PRPS parameters for selected features, PRPS s
 \item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PRPS
  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，and the 3rd item is a data frame contains mean and sd
   for each group and for each selected feature}
-\item{PRPS_test}{a data frame of PRPS score, true classification, Empirical Bayesian probabilites for both groups, and its classification 
-for all training samples, notice that there are two ways for classifications, one (PRPS_class) is based on probabilities, 
-and there is UNCLASS group besdies the given two groups, alternatively, the other one (PRPS_class0) is based on PRPS scores directly
-and 0 treated as a natural cutoff}
+\item{PRPS_test}{a data frame of PRPS score,  classification and two groups' Empirical Bayesian probabilites based on EM, and
+classification with natural 0 cutoff}
 }
 \description{
 This function is to calculate PRPS (Probability ratio based classification predication score) scores and 
@@ -101,9 +99,8 @@ Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecul
 in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
 
-Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
-to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
-A. 2003 Aug 19;100(17):9991-6.
+Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and 
+density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
 }
 \author{
 Aixiang Jiang

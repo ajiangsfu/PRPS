@@ -58,7 +58,7 @@
 #' \item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PRPS
 #'  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，and the 3rd item 
 #'  is a data frame contains mean and sd for each group and for each selected feature}
-#' \item{PRPS_test}{a data frame of PRPS score, Empirical Bayesian probabilites for both groups and classification based on EM
+#' \item{PRPS_test}{a data frame of PRPS score, classification and Empirical Bayesian probabilites for both groups based on EM
 #' grouping, classification based on 0 as natural cutoff}
 #' @keywords PRPS EM 
 #' @author Aixiang Jiang
@@ -72,10 +72,8 @@
 #' in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 #' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
 #' 
-#' #' Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
-#' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
-#' A. 2003 Aug 19;100(17):9991-6.
-
+#' Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and 
+#' density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
 #' @export
 
 PRPS_SLwithWeightsEM = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
@@ -116,60 +114,46 @@ PRPS_SLwithWeightsEM = function(newdat, weights, standardization=FALSE, classPro
   PRPSpars = getTraitParsWithEM(datin = newdat, weights = weights, EMmaxRuns = EMmaxRuns)
   PRPS_score = weightedLogProbClass(newdat=newdat, topTraits=names(weights), weights=weights, 
                                        classMeans=PRPSpars[,1:2], classSds=PRPSpars[,3:4])
-  ### after I have PRPS score, do the following
-  ### now, use EM to define 1st draft of group, and then use it to calculate group mean and sd
+  #### 20190503, call plotHistEM 
+  emsearch = plotHistEM(PRPS_score, G = 2:4, breaks = breaks, EMmaxRuns = EMmaxRuns, scoreName = "PRPS_score")
+  bestG = emsearch$bestG
+  emcut = emsearch$emcut
   
-  emcut = AdaptGauss::EMGauss(PRPS_score, K = 2,fast=TRUE, MaxNumberofIterations = EMmaxRuns)
+  ### no matter how many bestG, only keep the 1st and last one for the following
+  gmeans = c(emcut$Means[1], emcut$Means[bestG])
+  gsds = c(emcut$SDs[1], emcut$SDs[bestG])
   
-  # > emcut
-  # $Means
-  # [1] -106.36599  -39.04443
-  # 
-  # $SDs
-  # [1] 23.62815 11.70491
-  # 
-  # $Weights
-  # [1] 0.1139536 0.8860464
-  #### this is exact what I need!
+  PRPS_prob1 = getProb(PRPS_score, groupMeans = gmeans, groupSds = gsds)
+  PRPS_prob2 = getProb(PRPS_score, groupMeans = rev(gmeans), groupSds = rev(gsds))
   
-  ### add a plot, hist with two distribution lines, do not need to save, just plot it
-  hist(PRPS_score, prob = TRUE, breaks = breaks)
-  curve(emcut$Weights[1]*dnorm(x, mean=emcut$Means[1], sd=emcut$SDs[1]), 
-        col="red", lwd=2, add=TRUE, yaxt="n")
-  curve(emcut$Weights[2]*dnorm(x, mean=emcut$Means[2], sd=emcut$SDs[2]), 
-        col="green", lwd=2, add=TRUE, yaxt="n")
-  abline(v=0, col="red")
-  
-  PRPS_prob1 = getProb(PRPS_score, groupMeans = emcut$Means, groupSds = emcut$SDs)
-  PRPS_prob2 = getProb(PRPS_score, groupMeans = rev(emcut$Means), groupSds = rev(emcut$SDs))
-  
-  if(emcut$Means[1]> emcut$Means[2]){
+  if(gmeans[1]> gmeans[2]){
     name1 = PRPShighGroup
     name2 = PRPSlowGroup
+    scoreMeanSds = c(gmeans, gsds)
   }else{
     name1 = PRPSlowGroup
     name2 = PRPShighGroup
+    scoreMeanSds = c(rev(gmeans), rev(gsds))
   }
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob1 >= classProbCut)] = name1
   PRPS_class[which(PRPS_prob2 >= classProbCut)] = name2
   
-  ### add class0 with natural cutoff as well
-  PRPS_class0 = ifelse(PRPS_score > 0, PRPShighGroup, PRPSlowGroup)
+  names(scoreMeanSds) = c("testPRPSmean","refPRPSmean","testPRPSsd","refPRPSsd")
+  
+  PRPS_class0 = ifelse(PRPS_score > 0,  PRPShighGroup, PRPSlowGroup)
   
   PRPS_score = data.frame(PRPS_score)
-  PRPS_test = cbind(PRPS_score, PRPS_class, PRPS_prob1, PRPS_prob2, PRPS_class0, stringsAsFactors =F)
-
+  PRPS_test = cbind(PRPS_score, PRPS_class, PRPS_prob1, PRPS_prob2, PRPS_class0,stringsAsFactors =F)
+  
   weights = data.frame(weights)
   
-  PRPS_pars =  list(weights, meansds = tmp, traitsmeansds = cbind(allmeans, allsds))
+  PRPS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds))
   names(PRPS_pars) = c("weights","meansds","traitsmeansds")
   
   outs = list(PRPS_pars, PRPS_test)
   names(outs) = c("PRPS_pars","PRPS_test")
-  
   return(outs)
-  
   
 }

@@ -78,42 +78,25 @@ LPS_SLwithWeightsPrior = function(newdat, weights, ratioPrior = 1/3, testGroup, 
   # for LPS, 0 is a NOT natural cutoff for two group classification
   # in order to get classification, need to get two groups' LPS mean and sd
   
-  
-  
-  
-  ##########################################################
-  #### notice that I am using two ratio priors in this function
-  #### should I change it to use one prior only? or should I change all other functions to be two priors as well?
-  #### => think again, 1 ratio prior makes more sense, however, 
-  #### it seems that it is more reasonable to use the two ends of the data to calculate mean and sd for feature level of LPS score level
-  ####    => I should change all SL functions? but at least I should keep 1 cut instead of two cuts(to get two ends) to 
-  ####        consistent to JCO paper for one PRPS function?
-  
-  #### in addition, here I use test group, reference group, and if test group score is high?
-  ####  which is not consistent to PRPS SL functions as well, should I change all to setting as in here, or change all to be setting  as in PRPS SL?
-  #### => 
-  ###########################################################
-  
-  if(isTestGroupHighLPS == TRUE | isTestGroupHighLPS == T){
-    ttmp = quantile(LPS_score, probs = 1-ratioPrior)
-    rtmp = quantile(LPS_score, probs = ratioPrior)
-    ttmp = LPS_score[which(LPS_score >= ttmp)]
-    rtmp = LPS_score[which(LPS_score < rtmp)]
-  } else{
-    ttmp = quantile(LPS_score, probs = ratioPrior)
-    rtmp = quantile(LPS_score, probs = 1- ratioPrior)
-    ttmp = LPS_score[which(LPS_score <= ttmp)]
-    rtmp = LPS_score[which(LPS_score > rtmp)]
-  }
-  ### notice that both ttmp and rtmp are the two ends, meaning that length(rtmp + ttmp) < length(all scores), it will be equal if ratioRrior is 0.5
-  
+  # if(isTestGroupHighLPS == TRUE | isTestGroupHighLPS == T){
+  #   ttmp = quantile(LPS_score, probs = 1-ratioPrior)
+  #   rtmp = quantile(LPS_score, probs = ratioPrior)
+  #   ttmp = LPS_score[which(LPS_score >= ttmp)]
+  #   rtmp = LPS_score[which(LPS_score < rtmp)]
+  # } else{
+  #   ttmp = quantile(LPS_score, probs = ratioPrior)
+  #   rtmp = quantile(LPS_score, probs = 1- ratioPrior)
+  #   ttmp = LPS_score[which(LPS_score <= ttmp)]
+  #   rtmp = LPS_score[which(LPS_score > rtmp)]
+  # }
+  # ### notice that both ttmp and rtmp are the two ends, meaning that length(rtmp + ttmp) < length(all scores), it will be equal if ratioRrior is 0.5
+  # 
   # ### make changes on 20190425 after comparisons on 20190424
   # ### the following 3 lines are actually consistent to the feature level setting for ratio prior usage
   # ###  more importantly, the following 3 lines are also consistent to JCO paper where the original PRPS was defined and used with ratio prior
-  # tmpcut = quantile(PRPS_score, probs = 1-ratioPrior)
-  # ttmp = PRPS_score[which(PRPS_score >= tmpcut)]
-  # rtmp = PRPS_score[which(PRPS_score < tmpcut)]
-  # 
+  tmpcut = quantile(LPS_score, probs = 1-ratioPrior)
+  ttmp = LPS_score[which(LPS_score >= tmpcut)]
+  rtmp = LPS_score[which(LPS_score < tmpcut)]
   
   testLPSmean = mean(ttmp)
   refLPSmean = mean(rtmp)

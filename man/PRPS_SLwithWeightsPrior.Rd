@@ -44,12 +44,13 @@ the median value of the chose direction with "byrow" data to be used}
 }
 \value{
 A list with two items is returned: PRPS parameters for selected features, PRPS scores and classifications for the given samples.
-\item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PRPS
- calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，and the 3rd item 
- is a data frame contains mean and sd for each group and for each selected feature}
-\item{PRPS_test}{a data frame of PRPS score, Empirical Bayesian probabilites for both groups and classification based on EM
-grouping, classification based on 0 as natural cutoff,  Empirical Bayesian probabilites for both groups and classification based on
-ratio prior. Notice that the ratio prior is used for two ends with the same prior in this very last step}
+\item{PRPS_pars}{a list of 4 items, the 1st item is a data frame with weights of each selected features for PRPS
+ calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups based on a given prior，the 3rd item 
+ is a data frame contains mean and sd for each group and for each selected feature based on a given prior, and the 4th
+ item is a numeric vector containing PRPS mean and sd for two groups based on EM}
+\item{PRPS_test}{a data frame of PRPS score, classification and two groups' Empirical Bayesian probabilites based on a given prior, 
+classification based on 0 as natural cutoff, classification and two groups' Empirical Bayesian probabilites based on EM 
+Notice that the ratio prior is used for two ends with the same prior for prior based calls}
 }
 \description{
 This is the function to calculate PRPS (Probability ratio based classification predication score) scores for a testing data set 
@@ -98,6 +99,13 @@ Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A
 Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Gene Expression Signature Defines
 a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 
 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
+
+#' Ultsch, A., Thrun, M.C., Hansen-Goos, O., Loetsch, J.: Identification of Molecular Fingerprints
+in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
+International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
+
+Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and 
+density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
 }
 \author{
 Aixiang Jiang

@@ -4,21 +4,29 @@
 \alias{plotTraining}
 \title{Plot function for training objects}
 \usage{
-plotTraining(trainObj, plotName, breaks = 30)
+plotTraining(trainObj, plotName, xshift = -0.05, yshift = 0.02,
+  breaks = 30)
 }
 \arguments{
 \item{trainObj}{a training object from LPStraining, or PRPStraining, or PStraining}
+
+\item{xshift}{a numeric variable to indicate how much value shift along x-axis to move the label position for the natural 0 cutoff point,
+default value is -0.05, which is used for ROC plot}
+
+\item{yshift}{a numeric variable to indicate how much value shift along y-axis to move the label position for the natural 0 cutoff point,
+default value is 0.02, which is used for ROC plot}
 
 \item{breaks}{a integer to indicate how many cells in the histogram}
 
 \item{plotNanme}{a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)}
 }
 \description{
-This is to plot hist for a given training object, and scatter plot if the training object us from LPStraining or PRPStraining
+This is to plot ROC and hist for a given training object, and scatter plot if the training object us from LPStraining or PRPStraining
 }
 \author{
 Aixiang Jiang
 }
+\keyword{ROC,}
 \keyword{hist,}
 \keyword{plot}
 \keyword{scatter}

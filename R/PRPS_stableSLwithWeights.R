@@ -56,11 +56,12 @@
 #' @param imputeValue a character variable to indicate which value to be used to replace NA, default is "median", 
 #'  the median value of the chose direction with "byrow" data to be used
 #' @return A list with two items is returned: PRPS parameters for selected features, PRPS scores and classifications for the given samples.
-#' \item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PRPS
-#'  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，and the 3rd item is a data frame contains mean and sd
-#'   for each group and for each selected feature}
-#' \item{PRPS_test}{a data frame of PRPS score,  classification and two groups' Empirical Bayesian probabilites based on EM, and
-#' classification with natural 0 cutoff}
+#' \item{PRPS_pars}{a list of 4 items, the 1st item is a data frame with weights of each selected features for PRPS
+#'  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，the 3rd item is a data frame contains mean and sd
+#'   for each group and for each selected feature based on stable classes, and the last item is a numeric vector containing PRPS mean and sd 
+#'   for two groups based on EM}
+#' \item{PRPS_test}{a data frame of PRPS score, classification and two groups' Empirical Bayesian probabilites based on stable classes, 
+#' classification with natural 0 cutoff, classification and two groups' Empirical Bayesian probabilites based on EM}
 #' @keywords PRPS EM 
 #' @author Aixiang Jiang
 #' @references Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 
@@ -79,7 +80,7 @@
 
 #' @export
 
-PRPS_SLwithWeights = function(indat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
+PRPS_stableSLwithWeights = function(indat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
                     PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   require(mclust)
   imputeValue = imputeValue[1]
@@ -100,6 +101,10 @@ PRPS_SLwithWeights = function(indat, weights, standardization=FALSE, classProbCu
   
   rpsres = sapply(rps, FUN = function(xx){
     tmp = PRPS_SLwithWeightsPrior(newdat=indat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
+    ### note on 2019-05-08: realize that the EM related output from PRPS_SLwithWeightsPrior is actually not used at all in mcls
+    ###                     only the prior based scores are used in the following step
+    ###                     question: should I not call PRPS_SLwithWeightsPrior at all? should I just copy the prior PRPS score part?
+    ###                               or should I use the EM results from output of PRPS_SLwithWeightsPrior?
     mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
     return(mcls$classification)
   })
@@ -126,26 +131,19 @@ PRPS_SLwithWeights = function(indat, weights, standardization=FALSE, classProbCu
   sds1 = apply(datgrp1,1,sd)
   sds2 = apply(datgrp2,1,sd)
   
-  # if(length(grp1) >= length(grp2)){
-  #   allmeans = cbind(means2, means1)
-  #   allsds = cbind(sds2, sds1)
-  # }else{
-  #   allmeans = cbind(means1, means2)
-  #   allsds = cbind(sds1, sds2)
-  # }
-  
   #### I need to determine the direction for allmeans, and allsds
   #### maybe I can use the middle prior to make the decision
   xx=median(rps)
   tmp = PRPS_SLwithWeightsPrior(newdat=indat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
   mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
-  #### in fact, there are group labels in mcls$mean
-  #### get the two groups score means and decide which group is which
   
   mmean = mcls$parameters$mean
   if(mmean[2] > mmean[1]){
     allmeans = cbind(means2, means1)
     allsds = cbind(sds2, sds1)
+    tt = grp1
+    grp1 = grp2
+    grp2 = tt
   }else{
     allmeans = cbind(means1, means2)
     allsds = cbind(sds1, sds2)
@@ -158,36 +156,67 @@ PRPS_SLwithWeights = function(indat, weights, standardization=FALSE, classProbCu
   emsearch = plotHistEM(PRPS_score, G = 2:4, breaks = breaks, EMmaxRuns = EMmaxRuns, scoreName = "PRPS_score")
   bestG = emsearch$bestG
   emcut = emsearch$emcut
-  
+
   ### no matter how many bestG, only keep the 1st and last one for the following
   gmeans = c(emcut$Means[1], emcut$Means[bestG])
   gsds = c(emcut$SDs[1], emcut$SDs[bestG])
   
-  PRPS_prob1 = getProb(PRPS_score, groupMeans = gmeans, groupSds = gsds)
-  PRPS_prob2 = getProb(PRPS_score, groupMeans = rev(gmeans), groupSds = rev(gsds))
-  
   if(gmeans[1]> gmeans[2]){
     name1 = PRPShighGroup
     name2 = PRPSlowGroup
-    scoreMeanSds = c(gmeans, gsds)
+    scoreMeanSds_EM = c(gmeans, gsds)
   }else{
     name1 = PRPSlowGroup
     name2 = PRPShighGroup
-    scoreMeanSds = c(rev(gmeans), rev(gsds))
+    scoreMeanSds_EM = c(rev(gmeans), rev(gsds))
   }
   
-  PRPS_class = rep("UNCLASS",length(PRPS_score))
-  PRPS_class[which(PRPS_prob1 >= classProbCut)] = name1
-  PRPS_class[which(PRPS_prob2 >= classProbCut)] = name2
+  PRPS_prob1_EM = getProb(PRPS_score, groupMeans = scoreMeanSds_EM[1:2], groupSds = scoreMeanSds_EM[3:4])
+  PRPS_prob2_EM = getProb(PRPS_score, groupMeans = rev(scoreMeanSds_EM[1:2]), groupSds = rev(scoreMeanSds_EM[3:4]))
   
-  names(scoreMeanSds) = c("testPRPSmean","refPRPSmean","testPRPSsd","refPRPSsd")
+  PRPS_class_EM = rep("UNCLASS",length(PRPS_score))
+  PRPS_class_EM[which(PRPS_prob1_EM >= classProbCut)] = PRPShighGroup
+  PRPS_class_EM[which(PRPS_prob2_EM >= classProbCut)] = PRPSlowGroup
+
+  names(scoreMeanSds_EM) = c("testPRPSmean_EM","refPRPSmean_EM","testPRPSsd_EM","refPRPSsd_EM")
+  
+  ##### make changes on 20190502
+  ### use my stable two groups across priors to do the last step group mean and sd as well, which might be more reasonable instead of forcing two groups?
+  #### also, still keep the histogram plus EM lines
+  
+  grp1score = PRPS_score[grp1]
+  grp2score = PRPS_score[grp2]
+  
+  scoreMeans = c(mean(grp1score), mean(grp2score))
+  scoreSds = c(sd(grp1score), sd(grp2score))
+  
+  PRPS_prob1 = getProb(PRPS_score, groupMeans = scoreMeans, groupSds = scoreSds)
+  PRPS_prob2 = getProb(PRPS_score, groupMeans = rev(scoreMeans), groupSds = rev(scoreSds))
+  
+  PRPS_class = rep("UNCLASS",length(PRPS_score))
+  PRPS_class[which(PRPS_prob1 >= classProbCut)] = PRPShighGroup
+  PRPS_class[which(PRPS_prob2 >= classProbCut)] = PRPSlowGroup
   
   PRPS_class0 = ifelse(PRPS_score > 0,  PRPShighGroup, PRPSlowGroup)
   
   PRPS_score = data.frame(PRPS_score)
   PRPS_test = cbind(PRPS_score, PRPS_class, PRPS_prob1, PRPS_prob2, PRPS_class0,stringsAsFactors =F)
-
+  
+  ### 20190503: add the stable classification 
+  PRPS_test$stable_class = "UNCLASS"
+  PRPS_test[grp1,"stable_class"] = PRPShighGroup
+  PRPS_test[grp2,"stable_class"] = PRPSlowGroup
+  
+  ###################### remove for now, update description later ############
+  #### finally, add EM class into
+  #PRPS_test = cbind(PRPS_test, PRPS_class_EM, PRPS_prob1_EM, PRPS_prob2_EM, stringsAsFactors =F)
+  
   weights = data.frame(weights)
+  scoreMeanSds = c(scoreMeans, scoreSds)
+  
+  #### remove EM part
+  #PRPS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds),scoreMeanSds_EM)
+  #names(PRPS_pars) = c("weights","meansds","traitsmeansds", "meanSds_EM")
   
   PRPS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds))
   names(PRPS_pars) = c("weights","meansds","traitsmeansds")

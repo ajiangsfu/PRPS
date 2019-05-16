@@ -1,11 +1,12 @@
 
 #' PRPS score calculation and binary classification for a testing new data set based on a self learning object
 #' @description This is the function to calculate PRPS (Probability ratio based classification predication score)
-#'  scores and make binary classification calls for a testing data set with PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM self learning object. 
-#'  The selected feature list, these features' parameters are from the given PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM object.
+#'  scores and make binary classification calls for a testing data set with PRPS_stableSLwithWeights or PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM self learning object. 
+#'  The selected feature list, these features' parameters are from the given PRPS_stableSLwithWeightsor PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM object.
 #' @details  This is the function to calculate PRPS scores, Empirical Bayesian probabilities and make classification 
-#' for a testing new data set. However, this new data set should be comparable to the self learning data set used for PRPS_SLwithWeights
-#' or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM as much as possible. Within PRPS_SLwithWeights/PRPS_SLwithWeightsPrior/PRPS_SLwithWeightsEM and within this current PRPS_SLextension functions, 
+#' for a testing new data set. However, this new data set should be comparable to the self learning data set used for PRPS_stableSLwithWeights or PRPS_SLwithWeights
+#' or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM as much as possible. Within PRPS_stableSLwithWeights/PRPS_SLwithWeights/PRPS_SLwithWeightsPrior/PRPS_SLwithWeightsEM 
+#' and within this current PRPS_SLextension functions, 
 #'  standardization step is included as an option to minimize the difference between self learning and testing data sets, 
 #'  but this step is only done to make distributions of each selected feature comparable. 
 #'  Be aware that this feature-wise standardization cannot make the sample-wise distributions comparable. 
@@ -33,7 +34,7 @@
 #'  Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 #'  we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
 #' @param PRPS_SLObj a PRPS self learning object that is the output from function
-#' PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM.
+#' PRPS_stableSLwithWeights or PRPS_SLwithWeights or PRPS_SLwithWeightsPrior or PRPS_SLwithWeightsEM.
 #' @param newdat a new data matrix or data frame, which is comparable to self learning data set, 
 #'  with columns for samples and rows for features
 #' @param standardization a logic variable to indicate if standardization is needed before classification 

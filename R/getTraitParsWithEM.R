@@ -14,6 +14,9 @@
 #' in Human Heat Pain Thresholds by Use of an Interactive Mixture Model R Toolbox(AdaptGauss),
 #' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
 #' 
+#' #' Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and 
+#' density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
+#' 
 #' @export
 getTraitParsWithEM = function(datin, weights, EMmaxRuns = 50){
   ### first of all, make sure all of the names in weights are also in datin, and make sure that theya are in the same order
@@ -23,40 +26,29 @@ getTraitParsWithEM = function(datin, weights, EMmaxRuns = 50){
   datin = datin[tmp,]
   weights = weights[tmp]
   
-  ### for each feature, get EM objects with K=2
+  ### for each feature, get EM objects 
   res = t(apply(cbind(weights,datin), 1, function(xx){
     x1 = xx[1]
     xx=xx[-1]
- 
-    ###### note on 201904903 ########################
-    # xx = AdaptGauss::EMGauss(xx, K = 2)
-    # xm = xx$Means
-    # ## without knowing further info, all I can do is to make the mean of the 1st group has the consistent direction with weights
-    # if(sign(xm[1]-xm[2])*sign(x1)>0){
-    #   ms = xx$Means
-    #   sds = xx$SDs
-    # }else{
-    #   ms = rev(xx$Means)
-    #   sds = rev(xx$Means)
-    # }
-    # mm = mean(ms)
-    ### seems that there is a problem with AdaptGauss::EMGauss
-    ### change to original EM clustering function
+
+    ### update on 20190503
+    #require(mclust)
+    #require(AdaptGauss)
+    clustG = mclust::Mclust(xx, G=2:4)
+    bestG = clustG$G
+    emcut = AdaptGauss::EMGauss(xx, K = bestG, fast=TRUE, MaxNumberofIterations = EMmaxRuns)
     
-    #y1= mclust::Mclust(data = xx, G=1:5, modelNames = "V")  
-    ### seems a problem, when there is only one reasonable distribution, and in this case, has to include 1 in the G
-    ### on the other hand, I can still stick on AdaptGauss::EMGauss, however, set fast = TRUE
-    ###    -> and if one group prop=0, use median as cutoff to calculate mean and sd
-    ###       -> however, so far, no problem!!! happy face -:)
-    xx = AdaptGauss::EMGauss(xx, K = 2, fast=TRUE, MaxNumberofIterations = EMmaxRuns)
-    xm = xx$Means
+    ### no matter how many bestG, only keep the 1st and last one for the following
+    xm = c(emcut$Means[1], emcut$Means[bestG])
+    sds = c(emcut$SDs[1], emcut$SDs[bestG])
+
     ## without knowing further info, all I can do is to make the mean of the 1st group has the consistent direction with weights
     if(sign(xm[1]-xm[2])*sign(x1)>0){
-      ms = xx$Means
-      sds = xx$SDs
+      ms = xm
+      sds = sds
     }else{
-      ms = rev(xx$Means)
-      sds = rev(xx$Means)
+      ms = rev(xm)
+      sds = rev(sds)
     }
     mm = mean(ms)
     
