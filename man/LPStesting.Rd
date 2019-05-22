@@ -5,7 +5,7 @@
 \title{LPS score calculation for a testing new data set}
 \usage{
 LPStesting(LPStrainObj, newdat, standardization = FALSE,
-  classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE,
+  classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
   imputeValue = c("median", "mean"))
 }
 \arguments{

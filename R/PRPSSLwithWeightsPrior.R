@@ -84,7 +84,7 @@
 #' 
 #' @export
 
-PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  classProbCut = 0.8, ratioPrior = 1/3, PRPShighGroup = "PRPShigh", 
+PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  classProbCut = 0.9, ratioPrior = 1/3, PRPShighGroup = "PRPShigh", 
                     PRPSlowGroup = "PRPSlow", EMmaxRuns = 50, breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true

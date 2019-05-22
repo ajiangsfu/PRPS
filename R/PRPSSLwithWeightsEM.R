@@ -76,7 +76,7 @@
 #' density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
 #' @export
 
-PRPSSLwithWeightsEM = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
+PRPSSLwithWeightsEM = function(newdat, weights, standardization=FALSE, classProbCut = 0.9, PRPShighGroup = "PRPShigh", 
                     PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true

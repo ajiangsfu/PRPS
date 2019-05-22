@@ -5,7 +5,7 @@
 \title{PRPS score calculation and binary classification for a testing data set without training data set, but with selected feature weights}
 \usage{
 PRPSSLwithWeightsEM(newdat, weights, standardization = FALSE,
-  classProbCut = 0.8, PRPShighGroup = "PRPShigh",
+  classProbCut = 0.9, PRPShighGroup = "PRPShigh",
   PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50,
   imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"))
 }

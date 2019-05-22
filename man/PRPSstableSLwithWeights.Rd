@@ -5,7 +5,7 @@
 \title{Self learning binary classification with selected features and their weights}
 \usage{
 PRPSstableSLwithWeights(newdat, weights, standardization = FALSE,
-  classProbCut = 0.8, PRPShighGroup = "PRPShigh",
+  classProbCut = 0.9, PRPShighGroup = "PRPShigh",
   PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50,
   imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"))
 }

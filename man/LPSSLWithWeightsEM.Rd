@@ -5,7 +5,7 @@
 \title{LPS score calculation and binary classification for a testing data set without training data set, but with selected feature weights}
 \usage{
 LPSSLWithWeightsEM(newdat, weights, standardization = FALSE,
-  classProbCut = 0.8, LPShighGroup = "LPShigh",
+  classProbCut = 0.9, LPShighGroup = "LPShigh",
   LPSlowGroup = "LPSlow", breaks = 50, EMmaxRuns = 50,
   imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"))
 }

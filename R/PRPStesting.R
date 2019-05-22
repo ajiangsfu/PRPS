@@ -66,7 +66,7 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 
-PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCut = 0.8,
+PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCut = 0.9,
                        imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean"), isCompToTrain = TRUE , group1ratioPrior = 1/2){
   imputeValue = imputeValue[1]
   

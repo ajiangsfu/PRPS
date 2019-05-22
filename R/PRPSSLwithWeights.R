@@ -43,7 +43,7 @@
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-#'  often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+#'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
 #' @param PRPShighGroup a string to indicate group name with high PRPS score
 #' @param PRPSlowGroup a string to indicate group name with low PRPS score
@@ -79,7 +79,7 @@
 
 #' @export
 
-PRPSSLwithWeights = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, PRPShighGroup = "PRPShigh", 
+PRPSSLwithWeights = function(newdat, weights, standardization=FALSE, classProbCut = 0.9, PRPShighGroup = "PRPShigh", 
                     PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   require(mclust)
   imputeValue = imputeValue[1]

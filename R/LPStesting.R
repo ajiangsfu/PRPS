@@ -51,7 +51,7 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 
-LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue =c("median","mean")){
+LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut = 0.9,  imputeNA = FALSE, byrow = TRUE, imputeValue =c("median","mean")){
   imputeValue = imputeValue[1]
   
   if(is.null(LPStrainObj)){print("Please input your LPS training object")}

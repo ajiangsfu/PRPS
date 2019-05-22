@@ -5,7 +5,7 @@
 \title{PRPS score calculation for a testing new data set}
 \usage{
 PRPStesting(PRPStrainObj, newdat, standardization = FALSE,
-  classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE,
+  classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
   imputeValue = c("median", "mean"), isCompToTrain = TRUE,
   group1ratioPrior = 1/2)
 }

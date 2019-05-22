@@ -7,7 +7,7 @@ a ratio prior}
 \usage{
 LPSSLwithWeightsPrior(newdat, weights, ratioPrior = 1/3, testGroup,
   refGroup, isTestGroupHighLPS = TRUE, standardization = FALSE,
-  classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE,
+  classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
   imputeValue = c("median", "mean"))
 }
 \arguments{

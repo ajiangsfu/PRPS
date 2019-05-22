@@ -7,7 +7,7 @@
 PRPStraining(trainDat, standardization = FALSE, selectedTraits = NULL,
   groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
   weightMethod = c("ttest", "limma", "PearsonR", "SpearmanR",
-  "MannWhitneyU"), classProbCut = 0.8, imputeNA = FALSE,
+  "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE,
   byrow = TRUE, imputeValue = c("median", "mean"))
 }
 \arguments{

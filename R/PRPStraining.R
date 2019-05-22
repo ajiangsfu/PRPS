@@ -65,7 +65,7 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
-                        weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+                        weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   weightMethod = weightMethod[1]
   
   ### STEPs

@@ -5,7 +5,7 @@
 \title{PRPS score calculation and binary classification for a testing new data set based on a self learning object}
 \usage{
 PRPSSLextension(PRPSSLObj, newdat, standardization = FALSE,
-  classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE,
+  classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
   imputeValue = c("median", "mean"))
 }
 \arguments{

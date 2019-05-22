@@ -67,7 +67,7 @@
 #' International Journal of Molecular Sciences, doi:10.3390/ijms161025897, 2015.
 #' @export
 
-LPSSLWithWeightsEM = function(newdat, weights, standardization=FALSE, classProbCut = 0.8, LPShighGroup = "LPShigh", 
+LPSSLWithWeightsEM = function(newdat, weights, standardization=FALSE, classProbCut = 0.9, LPShighGroup = "LPShigh", 
                     LPSlowGroup = "LPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true

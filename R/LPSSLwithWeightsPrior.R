@@ -62,7 +62,7 @@
 #' @export
 
 LPSSLwithWeightsPrior = function(newdat, weights, ratioPrior = 1/3, testGroup, refGroup, isTestGroupHighLPS = TRUE,
-                      standardization=FALSE, classProbCut = 0.8,  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+                      standardization=FALSE, classProbCut = 0.9,  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){

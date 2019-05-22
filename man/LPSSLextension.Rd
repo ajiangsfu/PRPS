@@ -5,7 +5,7 @@
 \title{LPS score calculation and binary classification for a testing new data set based on a self learning object}
 \usage{
 LPSSLextension(LPSSLObj, newdat, standardization = FALSE,
-  classProbCut = 0.8, imputeNA = FALSE, byrow = TRUE,
+  classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
   imputeValue = c("median", "mean"))
 }
 \arguments{
@@ -18,7 +18,7 @@ with columns for samples and rows for features}
 score calculation}
 
 \item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 the samples that are not included in either group will be assigned as UNCLASS}
 
 \item{imputeNA}{a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 

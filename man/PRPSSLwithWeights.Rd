@@ -5,7 +5,7 @@
 \title{Self learning binary classification with selected features and their weights}
 \usage{
 PRPSSLwithWeights(newdat, weights, standardization = FALSE,
-  classProbCut = 0.8, PRPShighGroup = "PRPShigh",
+  classProbCut = 0.9, PRPShighGroup = "PRPShigh",
   PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50,
   imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"))
 }
@@ -18,7 +18,7 @@ PRPSSLwithWeights(newdat, weights, standardization = FALSE,
 score calculation}
 
 \item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 the samples that are not included in either group will be assigned as UNCLASS}
 
 \item{PRPShighGroup}{a string to indicate group name with high PRPS score}
