@@ -159,6 +159,9 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
       uout = sum(xx[-g0]) - 0.5*ntmp[2]*(ntmp[2]+1)
       rbc = 1-2*uout/nn  ### Rank-biserial correlation
       
+      ### somehow, I got wrong direction, make changes on 20190529
+      rbc = -rbc  ### do this for now, should change the above two lines later
+      
       return(c(rbc, tmp$p.value))
     }))
     
