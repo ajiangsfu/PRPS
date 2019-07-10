@@ -35,7 +35,24 @@ plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, break
   
   ### ROC, the following row is not correct
   ### plotROC(contdat = datin[,1], contname = colnames(datin)[1], catdat = datin$class01, catname = colnames(datin)[2], xshift = xshift, yshift = yshift)
-  plotROC(contdat = datin[,1], contname = colnames(datin)[1], catdat = datin[,2], catname = colnames(datin)[2], xshift = xshift, yshift = yshift)
+  
+  ################################ ROC plot with discussion, ignore for now ##################################################
+  #plotROC(contdat = datin[,1], contname = colnames(datin)[1], catdat = datin[,2], catname = colnames(datin)[2], xshift = xshift, yshift = yshift)
+  ### 1st column is the score, 2nd column is the true class
+  ### the code itself is correct, for an example:
+  # > head(tmp)
+  # PRPS_score true_class PRPS_class PRPS_prob_test PRPS_prob_ref PRPS_class0
+  # LYM018 -139.91397        GCB        GCB   3.202854e-10  1.000000e+00         GCB
+  # LYM120   81.31242        ABC        ABC   9.997699e-01  2.301337e-04         ABC
+  # LYM180  154.28566        ABC        ABC   9.999996e-01  4.122399e-07         ABC
+  # LYM285  -43.14212        GCB        GCB   1.375906e-03  9.986241e-01         GCB
+  # LYM233 -128.44472        GCB        GCB   2.311920e-09  1.000000e+00         GCB
+  # LYM407 -123.17014        GCB        GCB   5.652463e-09  1.000000e+00         GCB
+  # pRPC::roc(tmp$true_class, tmp$PRPS_score,percent=TRUE, plot=TRUE, ci=TRUE)
+  # ### Data: tmp$PRPS_score in 17 controls (tmp$true_class ABC) > 23 cases (tmp$true_class GCB).
+  ### Area under the curve: 100%
+  ### 95% CI: 100%-100% (DeLong)
+  ############ this example gave me 100% AUC, which looks strange, but this is correct
   
   ### hist
   hist(datin[,1], breaks = breaks, xlab = colnames(datin)[1], main = paste("Histogram of ",colnames(datin)[1], sep=""))

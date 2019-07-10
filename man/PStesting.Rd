@@ -55,9 +55,8 @@ This is the function to calculate PS scores and make classification for a testin
   in the testing group.
 }
 \references{
-TR Golub, DK Slonim, P Tamayo, C Huard, M Gaasenbeek, JP Mesirov, H Coller, ML Loh, JR Downing, MA Caligiuri, et al.
-Molecular classification of cancer: class discovery and class prediction by gene expression monitoring
-Science, 286 (1999), pp. 531-537
+Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, et al. Molecular classification of cancer: 
+class discovery and class prediction by gene expression monitoring. Science. 1999;286:531–7
 }
 \author{
 Aixiang Jiang

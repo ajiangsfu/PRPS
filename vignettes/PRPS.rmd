@@ -450,7 +450,7 @@ plotTraining(trainObj = trainPRPS, plotName = trainNames[2])
 plotTraining(trainObj = trainPS, plotName = trainNames[3])
 ```
 
-The plot files are saved with given file names.
+The plot files are saved with given file names. Notice that the ROC curve usually ahould be 100% AUC, this is because classification scores from one given group should be always bigger or smaller than the other group. When the scores are overlapped in order, AUC will not 100% any more.
 
 
 ## 2. Plot testing objects

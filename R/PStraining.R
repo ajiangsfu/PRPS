@@ -41,9 +41,8 @@
 #' \item{classCompare}{a confusion matrix list object that compare PS classification based on selected features and weights compared to input group classification for training data set}
 #' \item{classTable}{a table to display comparison of PS classification based on selected features and weights compared to input group classification for training data set}
 #' @references 
-#' TR Golub, DK Slonim, P Tamayo, C Huard, M Gaasenbeek, JP Mesirov, H Coller, ML Loh, JR Downing, MA Caligiuri, et al.
-#' Molecular classification of cancer: class discovery and class prediction by gene expression monitoring
-#' Science, 286 (1999), pp. 531-537
+#' Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, et al. Molecular classification of cancer: 
+#' class discovery and class prediction by gene expression monitoring. Science. 1999;286:531–7
 #' @export
 PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
                       weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
