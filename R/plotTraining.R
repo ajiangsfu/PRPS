@@ -11,7 +11,6 @@
 #' @keywords ROC, hist, scatter plot
 #' @author Aixiang Jiang
 #' @export
-
 plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, breaks = 30){
   
   ## call plotROC, hist, and scatter plot
@@ -91,21 +90,19 @@ plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, break
     abline(h=0.1, lty=3)
     abline(h=0.9, lty=3)
     
-    datin$pcolor = ifelse(datin$true_class == grp1, "red", ifelse(datin$true_class == grp2, "green","white"))
     rps = subset(datin, datin$true_class == grp1)
     gps = subset(datin, datin$true_class == grp2)
     
-    points(rps[,1], rps[,tmp[1]], col= "red")
-    points(rps[,1], rps[,tmp[2]], col= "red")
+    points(rps[,1], rps[,tmp[1]], col= "red", pch = 19)
+    points(rps[,1], rps[,tmp[2]], col= "red", pch = 19)
     
-    points(gps[,1], gps[,tmp[1]], col= "red")
-    points(gps[,1], gps[,tmp[2]], col= "red")
+    points(gps[,1], gps[,tmp[1]], col= "green", pch = 19)
+    points(gps[,1], gps[,tmp[2]], col= "green", pch = 19)
     
-    legend("right", datin$true_class, col=datin$pcolor, pch = par("pch"), bty="n")
+    legend("right", c(grp1, grp2), col=c("red", "green"), pch = 19, bty="n")
     
   }
   
   dev.off()
   
 }
-
