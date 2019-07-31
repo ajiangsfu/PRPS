@@ -43,9 +43,7 @@ A list with two items is returned: PS parameters for selected features, PS score
 \item{PS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PS
  calculation, the 2nd item is a numeric vector containing PS mean of two group means，and the 3rd item 
  is a data frame contains mean and sd for each group and for each selected feature}
-\item{PS_test}{a data frame of PS score, Empirical Bayesian probabilites for both groups and classification based on EM
-grouping, classification based on 0 as natural cutoff,  Empirical Bayesian probabilites for both groups and classification based on
-ratio prior. Notice that the ratio prior is used for two ends with the same prior in this very last step}
+\item{PS_test}{a data frame of PS score, and classification based on 0 as natural cutoff}
 }
 \description{
 This is the function to calculate PS (Prediction Strength) scores for a testing data set 

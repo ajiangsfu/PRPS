@@ -40,12 +40,11 @@ the median value of the chose direction with "byrow" data to be used}
 }
 \value{
 A list with two items is returned: PRPS parameters for selected features, PRPS scores and classifications for the given samples.
-\item{PRPS_pars}{a list of 4 items, the 1st item is a data frame with weights of each selected features for PRPS
+\item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PRPS
  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，the 3rd item is a data frame contains mean and sd
-  for each group and for each selected feature based on stable classes, and the last item is a numeric vector containing PRPS mean and sd 
-  for two groups based on EM}
+  for each group and for each selected feature based on stable classes}
 \item{PRPS_test}{a data frame of PRPS score, classification and two groups' Empirical Bayesian probabilites based on stable classes, 
-classification with natural 0 cutoff, classification and two groups' Empirical Bayesian probabilites based on EM}
+and classification with natural 0 cutoff}
 }
 \description{
 This function is to calculate PRPS (Probability ratio based classification predication score) scores and 
@@ -108,3 +107,4 @@ Aixiang Jiang
 }
 \keyword{EM}
 \keyword{PRPS}
+\keyword{self-learning}

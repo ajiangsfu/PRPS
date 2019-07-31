@@ -11,6 +11,7 @@
 #' @keywords ROC, hist, scatter plot
 #' @author Aixiang Jiang
 #' @export
+
 plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, breaks = 30){
   
   ## call plotROC, hist, and scatter plot
@@ -64,13 +65,6 @@ plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, break
     ### order data first before plot
     datin = datin[order(datin[,1]),]
     
-    plot(datin[,1], datin[,tmp[1]],xlab = colnames(datin)[1], ylab = "Empirical Bayesian probabilites",
-         main = paste("Scatter Plot of Prob vs. ",colnames(datin)[1], sep=""))
-    points(datin[,1], datin[,tmp[2]])
-    
-    lines(datin[,1], datin[,tmp[1]], col="red")
-    lines(datin[,1], datin[,tmp[2]], col="green")
-    
     ### now, should figure out labels for the two groups
     prob1 = datin[1,tmp[1]]
     prob2 = datin[1,tmp[2]]
@@ -81,12 +75,37 @@ plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, break
       grp2 = datin[1,2]
       grp1 = setdiff(grps,grp2)
     }
-    legend("left",c(grp1,grp2), col=c("red", "green"), lty=1)
+    
+    datin$true_class
+    plot(datin[,1], datin[,tmp[1]],xlab = colnames(datin)[1], ylab = "Empirical Bayesian probabilites",
+         main = paste("Scatter Plot of Prob vs. ",colnames(datin)[1], sep=""))
+    points(datin[,1], datin[,tmp[2]])
+    
+    lines(datin[,1], datin[,tmp[1]], col="red")
+    lines(datin[,1], datin[,tmp[2]], col="green")
+    
+    ### change on 20190731
+    pgrp1 = paste("prob", grp1, sep="_")
+    pgrp2 = paste("prob", grp2, sep="_")
+    legend("left",c(pgrp1,pgrp2), col=c("red", "green"), lty=1, bty = "n")
+    abline(h=0.1, lty=3)
+    abline(h=0.9, lty=3)
+    
+    datin$pcolor = ifelse(datin$true_class == grp1, "red", ifelse(datin$true_class == grp2, "green","white"))
+    rps = subset(datin, datin$true_class == grp1)
+    gps = subset(datin, datin$true_class == grp2)
+    
+    points(rps[,1], rps[,tmp[1]], col= "red")
+    points(rps[,1], rps[,tmp[2]], col= "red")
+    
+    points(gps[,1], gps[,tmp[1]], col= "red")
+    points(gps[,1], gps[,tmp[2]], col= "red")
+    
+    legend("right", datin$true_class, col=datin$pcolor, pch = par("pch"), bty="n")
+    
   }
   
   dev.off()
-  
-  
   
 }
 

@@ -46,7 +46,14 @@ plotTesting = function(testObj, plotName, breaks = 30){
       grp2 = testObj[1,2]
       grp1 = setdiff(grps,grp2)
     }
-    legend("left",c(grp1,grp2), col=c("red", "green"), lty=1)
+    ### change on 20190731
+    pgrp1 = paste("prob", grp1, sep="_")
+    pgrp2 = paste("prob", grp2, sep="_")
+    
+    legend("left",c(pgrp1,pgrp2), col=c("red", "green"), lty=1, bty="n")
+    abline(h=0.1, lty=3)
+    abline(h=0.9, lty=3)
+    
   }
   
   dev.off()

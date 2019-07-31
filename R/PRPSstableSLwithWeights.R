@@ -56,13 +56,12 @@
 #' @param imputeValue a character variable to indicate which value to be used to replace NA, default is "median", 
 #'  the median value of the chose direction with "byrow" data to be used
 #' @return A list with two items is returned: PRPS parameters for selected features, PRPS scores and classifications for the given samples.
-#' \item{PRPS_pars}{a list of 4 items, the 1st item is a data frame with weights of each selected features for PRPS
+#' \item{PRPS_pars}{a list of 3 items, the 1st item is a data frame with weights of each selected features for PRPS
 #'  calculation, the 2nd item is a numeric vector containing PRPS mean and sd for two groups，the 3rd item is a data frame contains mean and sd
-#'   for each group and for each selected feature based on stable classes, and the last item is a numeric vector containing PRPS mean and sd 
-#'   for two groups based on EM}
+#'   for each group and for each selected feature based on stable classes}
 #' \item{PRPS_test}{a data frame of PRPS score, classification and two groups' Empirical Bayesian probabilites based on stable classes, 
-#' classification with natural 0 cutoff, classification and two groups' Empirical Bayesian probabilites based on EM}
-#' @keywords PRPS EM 
+#' and classification with natural 0 cutoff}
+#' @keywords PRPS EM self-learning
 #' @author Aixiang Jiang
 #' @references Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 
 #'  Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, 
@@ -207,16 +206,8 @@ PRPSstableSLwithWeights = function(newdat, weights, standardization=FALSE, class
   PRPS_test[grp1,"stable_class"] = PRPShighGroup
   PRPS_test[grp2,"stable_class"] = PRPSlowGroup
   
-  ###################### remove for now, update description later ############
-  #### finally, add EM class into
-  #PRPS_test = cbind(PRPS_test, PRPS_class_EM, PRPS_prob1_EM, PRPS_prob2_EM, stringsAsFactors =F)
-  
   weights = data.frame(weights)
   scoreMeanSds = c(scoreMeans, scoreSds)
-  
-  #### remove EM part
-  #PRPS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds),scoreMeanSds_EM)
-  #names(PRPS_pars) = c("weights","meansds","traitsmeansds", "meanSds_EM")
   
   PRPS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds))
   names(PRPS_pars) = c("weights","meansds","traitsmeansds")
