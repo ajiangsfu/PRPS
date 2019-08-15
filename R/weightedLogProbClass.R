@@ -1,32 +1,3 @@
-
-#' PRPS score calculation for a data set
-#' @description This is usually as an internal function called by PRPStraining, PRPStesting and getClassScores, which is used to actually
-#'  calculate PRPS scores However, it can be also called directly.
-#' @details #'  PRPS calculation is based on Ennishi 2018. The fomula is 
-#'  \eqn{PRPS(X) = \sum a_j x_ij}
-#'  Here, a_j represents the jth selected feature weightss, and x_ij is the corresponding feature value for the ith sample, P1 and P0 are the probabilities that the ith sample belongs to two different group.
-#'  When calculate a Empirical Bayes' probability, the 1st group in the input mean and sd vectors is treated as
-#'  the test group. 
-#'  If there are NAs in the data and not imputed before calling this function, these NAs will be ignored for PRPS score calculation.
-#'  If you want to call this function directly, make sure to give all values for its parameters. If you do not have PRPStraining object
-#'   but would like to calculate PRPS scores, this is function is much easier to use than PRPStesting, and this function is 
-#'   identical if you work on PRPS approach.
-#' @param newdat a new data matrix or data frame, with columns for samples and rows for features
-#' @param topTraits selected features used for PRPS calculation
-#' @param weights feature weights
-#' @param classMeans a data frame or data matrix of two group means for each selected features, the 1st column is for testing group, 
-#'  while the 2nd column is for reference group
-#' @param classSds  a data frame or data matrix of two group standard deviations (sds) for each selected features, 
-#' the 1st column is for testing group, while the 2nd column is for reference group
-#' @return A numeric vector of PRPS 
-#' @keywords PRPS
-#' @author Aixiang Jiang
-#' @references Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 
-#'  Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, 
-#'  Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Gene Expression Signature Defines
-#'  a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 
-#'  2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
-#' @export
 weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds) {
   
   genedat = newdat[topTraits,]
