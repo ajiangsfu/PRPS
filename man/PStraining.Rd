@@ -6,8 +6,8 @@
 \usage{
 PStraining(trainDat, selectedTraits = NULL, groupInfo, refGroup = 0,
   topN = NULL, FDRcut = 0.1, weightMethod = c("ttest", "limma",
-  "PearsonR", "SpearmanR", "MannWhitneyU"), imputeNA = FALSE,
-  byrow = TRUE, imputeValue = c("median", "mean"))
+  "PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9,
+  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{trainDat}{training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows}
@@ -28,6 +28,10 @@ all features will be returned if both topN and FDRcut are set as default NULL}
 "limma" for for limma linear model based t value,"ttest" for t test based t value, 
 "MannWhitneyU" for Mann Whitney U based rank-biserial,"PearsonR" for Pearson correlation coefficient,
 "SpearmanR" for Spearman correlation coefficient, and the defualt value is "limma"}
+
+\item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
+often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
+the samples that are not included in either group will be assigned as UNCLASS}
 
 \item{imputeNA}{a logic variable to indicate if NA imputation is needed, if it is TRUE, 
 NA imputation is processed before any other steps, the default is FALSE}

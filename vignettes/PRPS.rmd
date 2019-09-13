@@ -146,6 +146,13 @@ str(DHITsig)
 head(DHITsig)
 ```
 
+If your data are in ENSG ID format, you need to load DHITsigENSG
+
+```{r}
+data("DHITsigENSG")
+str(DHITsigENSG)
+head(DHITsigENSG)
+```
 
 #### References:
 Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell
@@ -304,16 +311,18 @@ More detail information about LPStraining function can be found with the two cho
 help(PStraining)
 ```
 
+
 #### PStesting
 
 With the exact same testing data set as above, use the output from PStraining, we can apply PStesting as following:
-  
+
 ```{r}
 testPS = PStesting(PStrainObj = trainPS, newdat = dat[,rownames(testset)])
 str(testPS)
 table(testPS$PS_class)
 table(testPS$PS_class, testset$group)
 ```
+
 
 We can also combine training and testing data sets together for testing
 
@@ -465,6 +474,16 @@ plotTesting(testObj = testPS, plotName = testNames[3])
 ```
 
 The plot files are saved with given file names.
+
+
+
+
+
+
+
+
+
+
 
 
 

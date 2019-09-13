@@ -21,8 +21,6 @@
 #' @param PStraingObj a PS training object, which is the output from function PStraining
 #' @param newdat a new data matrix or data frame, which is comparable to training data set, 
 #'  with columns for samples and rows for features
-#' @param standardization a logic variable to indicate if standardization is needed before classification 
-#'  score calculation
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 #'  often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
@@ -40,8 +38,8 @@
 #' class discovery and class prediction by gene expression monitoring. Science. 1999;286:531–7
 #' @export
 
-PStesting = function(PStrainObj, newdat, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
-  
+PStesting = function(PStrainObj, newdat, classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+
   if(is.null(PStrainObj)){print("Please input your PS training object")}
   PS_pars = PStrainObj$PS_pars
   
@@ -55,18 +53,38 @@ PStesting = function(PStrainObj, newdat, imputeNA = FALSE, byrow = TRUE, imputeV
   ### standardize data first
   newdat = standardize(newdat)
   
+  ### 20190905, since I changed PS_par in the the output of PStraining, I should make changes accordingly here
+  parin = cbind(PS_pars$traits[,1], PS_pars$weights[,1])
+  
   # get PS scores for all samples
-  PS_score = apply(newdat[rownames(PS_pars),], 2, getPS1sample, PSpars = PS_pars[,1:2])
+  PS_score = apply(newdat[rownames(PS_pars$weights),], 2, getPS1sample, PSpars = parin)
   
   testGroup = PStrainObj$classCompare$positive
+  
+  ### 20190912, change the following line since training object is changed
   refGroup = setdiff(unique(PStrainObj$PS_train$PS_class),testGroup)
   
   # for PS, 0 is a natural cutoff for two group classification
+  PS_class0 = ifelse(PS_score >= 0, testGroup, refGroup)
   
-  PS_class = ifelse(PS_score >= 0, testGroup, refGroup)
+  ### 20190905, add more to consistent to other functions
+  #### use the 0 theoretical cutoff to get two groups, which are used for empirial Bayesian prob calculation
+  ttmp = PS_score[which(PS_score >= 0)]
+  rtmp = PS_score[which(PS_score < 0)]
+  testPSmean = mean(ttmp)
+  refPSmean = mean(rtmp)
+  testPSsd = sd(ttmp)
+  refPSsd = sd(rtmp)
+  
+  PS_prob_test = getProb(PS_score, groupMeans = c(testPSmean, refPSmean), groupSds = c(testPSsd, refPSsd))
+  PS_prob_ref= getProb(PS_score, groupMeans = c(refPSmean, testPSmean), groupSds = c(refPSsd, testPSsd))
+  
+  PS_class = rep("UNCLASS",length(PS_score))
+  PS_class[which(PS_prob_test >= classProbCut)] = testGroup
+  PS_class[which(PS_prob_ref >= classProbCut)] = refGroup
   
   PS_score = data.frame(PS_score)
-  PS_test = cbind(PS_score, PS_class, stringsAsFactors =F)
+  PS_test = cbind(PS_score, PS_class, PS_prob_test, PS_prob_ref, PS_class0, stringsAsFactors =F)
   
   return(PS_test)
   

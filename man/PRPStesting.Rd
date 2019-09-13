@@ -6,8 +6,7 @@
 \usage{
 PRPStesting(PRPStrainObj, newdat, standardization = FALSE,
   classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = c("median", "mean"), isCompToTrain = TRUE,
-  group1ratioPrior = 1/2)
+  imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{newdat}{a new data matrix or data frame, which is comparable to training data set, 
@@ -28,12 +27,6 @@ which will use the row data for imputation}
 
 \item{imputeValue}{a character variable to indicate which value to be used to replace NA, default is "median", 
 the median value of the chose direction with "byrow" data to be used}
-
-\item{isCompToTrain}{a logic variable to indicate if testing data set is comparable to the training data set, if so, 
-group mean and sd values from PRPStraingObj are used for each selected feature}
-
-\item{group1ratioPrior}{a prior of two group ratio (test group over reference group) that is used to calculate
-group mean and sd values for each selected feature when isCompToTrain is set as FALSE}
 
 \item{PRPStraingObj}{a PRPS training object, which is the output from function PRPStraining}
 }

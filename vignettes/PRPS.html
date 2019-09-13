@@ -206,6 +206,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">head</span>(DHITsig)
 <span class="co">#&gt;    OR13A1   FAM216A       MYC  SLC25A27     ALOX5     UQCRH </span>
 <span class="co">#&gt; 0.6742184 0.6662736 0.6180968 0.5973289 0.5822841 0.5545504</span></code></pre></div>
+<p>If your data are in ENSG ID format, you need to load DHITsigENSG</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;DHITsigENSG&quot;</span>)
+<span class="kw">str</span>(DHITsigENSG)
+<span class="co">#&gt;  Named num [1:104] 0.674 0.666 0.618 0.597 0.582 ...</span>
+<span class="co">#&gt;  - attr(*, &quot;names&quot;)= chr [1:104] &quot;ENSG00000256574&quot; &quot;ENSG00000204856&quot; &quot;ENSG00000136997&quot; &quot;ENSG00000153291&quot; ...</span>
+<span class="kw">head</span>(DHITsigENSG)
+<span class="co">#&gt; ENSG00000256574 ENSG00000204856 ENSG00000136997 ENSG00000153291 </span>
+<span class="co">#&gt;       0.6742184       0.6662736       0.6180968       0.5973289 </span>
+<span class="co">#&gt; ENSG00000012779 ENSG00000173660 </span>
+<span class="co">#&gt;       0.5822841       0.5545504</span></code></pre></div>
 <div id="references-6" class="section level4">
 <h4>References:</h4>
 <p>Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.</p>
@@ -426,17 +436,24 @@ trainPRPS =<span class="st"> </span><span class="kw">PRPStraining</span> (<span 
 trainPS =<span class="st"> </span><span class="kw">PStraining</span> (<span class="dt">trainDat =</span> dat[,<span class="kw">rownames</span>(trainset)], <span class="dt">groupInfo =</span> trainset$group, <span class="dt">refGroup =</span> <span class="st">&quot;GCB&quot;</span>, <span class="dt">topN =</span> nin, <span class="dt">weightMethod =</span> <span class="st">&quot;ttest&quot;</span>)
 <span class="kw">str</span>(trainPS)
 <span class="co">#&gt; List of 4</span>
-<span class="co">#&gt;  $ PS_pars     :'data.frame':    100 obs. of  6 variables:</span>
-<span class="co">#&gt;   ..$ meanOfGroupMeans: num [1:100] 0.0999 0.1135 0.1108 0.1107 0.0928 ...</span>
-<span class="co">#&gt;   ..$ tValue          : num [1:100] 7.94 7.43 7.14 6.86 6.79 ...</span>
-<span class="co">#&gt;   ..$ refGroupMean    : num [1:100] -0.679 -0.643 -0.628 -0.627 -0.631 ...</span>
-<span class="co">#&gt;   ..$ testGroupMean   : num [1:100] 0.879 0.87 0.849 0.849 0.816 ...</span>
-<span class="co">#&gt;   ..$ pValue          : num [1:100] 1.66e-09 6.59e-09 1.59e-08 4.85e-08 6.07e-08 ...</span>
-<span class="co">#&gt;   ..$ FDR             : num [1:100] 1.23e-05 2.44e-05 3.93e-05 8.98e-05 8.98e-05 ...</span>
-<span class="co">#&gt;  $ PS_train    :'data.frame':    40 obs. of  3 variables:</span>
-<span class="co">#&gt;   ..$ PS_score  : num [1:40] -0.783 0.53 0.866 -0.27 -0.727 ...</span>
-<span class="co">#&gt;   ..$ true_class: Factor w/ 2 levels &quot;ABC&quot;,&quot;GCB&quot;: 2 1 1 2 2 2 1 2 1 1 ...</span>
-<span class="co">#&gt;   ..$ PS_class  : chr [1:40] &quot;GCB&quot; &quot;ABC&quot; &quot;ABC&quot; &quot;GCB&quot; ...</span>
+<span class="co">#&gt;  $ PS_pars     :List of 3</span>
+<span class="co">#&gt;   ..$ weights:'data.frame':  100 obs. of  3 variables:</span>
+<span class="co">#&gt;   .. ..$ tValue: num [1:100] 7.94 7.43 7.14 6.86 6.79 ...</span>
+<span class="co">#&gt;   .. ..$ pValue: num [1:100] 1.66e-09 6.59e-09 1.59e-08 4.85e-08 6.07e-08 ...</span>
+<span class="co">#&gt;   .. ..$ FDR   : num [1:100] 1.23e-05 2.44e-05 3.93e-05 8.98e-05 8.98e-05 ...</span>
+<span class="co">#&gt;   ..$ meansds: Named num [1:4] 0.813 -0.752 0.169 0.228</span>
+<span class="co">#&gt;   .. ..- attr(*, &quot;names&quot;)= chr [1:4] &quot;testPSmean&quot; &quot;refPSmean&quot; &quot;testPSsd&quot; &quot;refPSsd&quot;</span>
+<span class="co">#&gt;   ..$ traits : num [1:100, 1:3] 0.0999 0.1135 0.1108 0.1107 0.0928 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, &quot;dimnames&quot;)=List of 2</span>
+<span class="co">#&gt;   .. .. ..$ : chr [1:100] &quot;17708&quot; &quot;27631&quot; &quot;24796&quot; &quot;26697&quot; ...</span>
+<span class="co">#&gt;   .. .. ..$ : chr [1:3] &quot;meanOfGroupMeans&quot; &quot;refGroupMean&quot; &quot;testGroupMean&quot;</span>
+<span class="co">#&gt;  $ PS_train    :'data.frame':    40 obs. of  6 variables:</span>
+<span class="co">#&gt;   ..$ PS_score    : num [1:40] -0.783 0.53 0.866 -0.27 -0.727 ...</span>
+<span class="co">#&gt;   ..$ true_class  : Factor w/ 2 levels &quot;ABC&quot;,&quot;GCB&quot;: 2 1 1 2 2 2 1 2 1 1 ...</span>
+<span class="co">#&gt;   ..$ PS_class    : chr [1:40] &quot;GCB&quot; &quot;ABC&quot; &quot;ABC&quot; &quot;GCB&quot; ...</span>
+<span class="co">#&gt;   ..$ PS_prob_test: num [1:40] 7.12e-20 1.00 1.00 1.68e-08 1.54e-18 ...</span>
+<span class="co">#&gt;   ..$ PS_prob_ref : num [1:40] 1.00 3.93e-07 8.58e-12 1.00 1.00 ...</span>
+<span class="co">#&gt;   ..$ PS_class0   : chr [1:40] &quot;GCB&quot; &quot;ABC&quot; &quot;ABC&quot; &quot;GCB&quot; ...</span>
 <span class="co">#&gt;  $ classCompare:List of 6</span>
 <span class="co">#&gt;   ..$ positive: chr &quot;ABC&quot;</span>
 <span class="co">#&gt;   ..$ table   : 'table' int [1:2, 1:2] 23 0 0 17</span>
@@ -450,16 +467,16 @@ trainPS =<span class="st"> </span><span class="kw">PStraining</span> (<span clas
 <span class="co">#&gt;   ..$ mode    : chr &quot;sens_spec&quot;</span>
 <span class="co">#&gt;   ..$ dots    : list()</span>
 <span class="co">#&gt;   ..- attr(*, &quot;class&quot;)= chr &quot;confusionMatrix&quot;</span>
-<span class="co">#&gt;  $ classTable  : 'table' int [1:2, 1:2] 23 0 0 17</span>
+<span class="co">#&gt;  $ classTable  : 'table' int [1:2, 1:2] 0 17 23 0</span>
 <span class="co">#&gt;   ..- attr(*, &quot;dimnames&quot;)=List of 2</span>
 <span class="co">#&gt;   .. ..$ groupInfo: chr [1:2] &quot;GCB&quot; &quot;ABC&quot;</span>
-<span class="co">#&gt;   .. ..$ PS_class : chr [1:2] &quot;GCB&quot; &quot;ABC&quot;</span></code></pre></div>
+<span class="co">#&gt;   .. ..$ PS_class : chr [1:2] &quot;ABC&quot; &quot;GCB&quot;</span></code></pre></div>
 <p>The last item in the output of PStraining provides information on how our PS prediction model is doing</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trainPS$classTable
 <span class="co">#&gt;          PS_class</span>
-<span class="co">#&gt; groupInfo GCB ABC</span>
-<span class="co">#&gt;       GCB  23   0</span>
-<span class="co">#&gt;       ABC   0  17</span></code></pre></div>
+<span class="co">#&gt; groupInfo ABC GCB</span>
+<span class="co">#&gt;       GCB   0  23</span>
+<span class="co">#&gt;       ABC  17   0</span></code></pre></div>
 <p>This means with given COO info, and with top 100 significant genes based on t test, PS classification is 100% matching to given COO.</p>
 <p>More detail information about LPStraining function can be found with the two choices:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">?(PStraining)
@@ -471,34 +488,42 @@ trainPS =<span class="st"> </span><span class="kw">PStraining</span> (<span clas
 <p>With the exact same testing data set as above, use the output from PStraining, we can apply PStesting as following:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testPS =<span class="st"> </span><span class="kw">PStesting</span>(<span class="dt">PStrainObj =</span> trainPS, <span class="dt">newdat =</span> dat[,<span class="kw">rownames</span>(testset)])
 <span class="kw">str</span>(testPS)
-<span class="co">#&gt; 'data.frame':    20 obs. of  2 variables:</span>
-<span class="co">#&gt;  $ PS_score: num  -0.23 -0.367 -0.669 0.609 0.788 ...</span>
-<span class="co">#&gt;  $ PS_class: chr  &quot;GCB&quot; &quot;GCB&quot; &quot;GCB&quot; &quot;ABC&quot; ...</span>
+<span class="co">#&gt; 'data.frame':    20 obs. of  5 variables:</span>
+<span class="co">#&gt;  $ PS_score    : num  -0.23 -0.367 -0.669 0.609 0.788 ...</span>
+<span class="co">#&gt;  $ PS_class    : chr  &quot;GCB&quot; &quot;GCB&quot; &quot;GCB&quot; &quot;ABC&quot; ...</span>
+<span class="co">#&gt;  $ PS_prob_test: num  1.31e-03 8.79e-05 1.66e-07 1.00 1.00 ...</span>
+<span class="co">#&gt;  $ PS_prob_ref : num  9.99e-01 1.00 1.00 3.71e-04 2.58e-05 ...</span>
+<span class="co">#&gt;  $ PS_class0   : chr  &quot;GCB&quot; &quot;GCB&quot; &quot;GCB&quot; &quot;ABC&quot; ...</span>
 <span class="kw">table</span>(testPS$PS_class)
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ABC GCB </span>
-<span class="co">#&gt;   7  13</span>
+<span class="co">#&gt;     ABC     GCB UNCLASS </span>
+<span class="co">#&gt;       6      13       1</span>
 <span class="kw">table</span>(testPS$PS_class, testset$group)
-<span class="co">#&gt;      </span>
-<span class="co">#&gt;       ABC GCB</span>
-<span class="co">#&gt;   ABC   6   1</span>
-<span class="co">#&gt;   GCB   0  13</span></code></pre></div>
+<span class="co">#&gt;          </span>
+<span class="co">#&gt;           ABC GCB</span>
+<span class="co">#&gt;   ABC       6   0</span>
+<span class="co">#&gt;   GCB       0  13</span>
+<span class="co">#&gt;   UNCLASS   0   1</span></code></pre></div>
 <p>We can also combine training and testing data sets together for testing</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fullPS =<span class="st"> </span><span class="kw">PStesting</span>(<span class="dt">PStrainObj =</span> trainPS, <span class="dt">newdat =</span> dat)
 <span class="kw">str</span>(fullPS)
-<span class="co">#&gt; 'data.frame':    60 obs. of  2 variables:</span>
-<span class="co">#&gt;  $ PS_score: num  -0.781 0.51 0.883 -0.224 -0.701 ...</span>
-<span class="co">#&gt;  $ PS_class: chr  &quot;GCB&quot; &quot;ABC&quot; &quot;ABC&quot; &quot;GCB&quot; ...</span>
+<span class="co">#&gt; 'data.frame':    60 obs. of  5 variables:</span>
+<span class="co">#&gt;  $ PS_score    : num  -0.781 0.51 0.883 -0.224 -0.701 ...</span>
+<span class="co">#&gt;  $ PS_class    : chr  &quot;GCB&quot; &quot;ABC&quot; &quot;ABC&quot; &quot;GCB&quot; ...</span>
+<span class="co">#&gt;  $ PS_prob_test: num  4.46e-12 1.00 1.00 1.01e-04 5.74e-11 ...</span>
+<span class="co">#&gt;  $ PS_prob_ref : num  1.00 6.17e-05 1.83e-08 1.00 1.00 ...</span>
+<span class="co">#&gt;  $ PS_class0   : chr  &quot;GCB&quot; &quot;ABC&quot; &quot;ABC&quot; &quot;GCB&quot; ...</span>
 <span class="kw">table</span>(fullPS$PS_class)
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ABC GCB </span>
-<span class="co">#&gt;  24  36</span></code></pre></div>
+<span class="co">#&gt;     ABC     GCB UNCLASS </span>
+<span class="co">#&gt;      23      36       1</span></code></pre></div>
 <p>Now, we are wondering if the testLPS and fulltest give us consistent results.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(testPS$PS_class, fullPS[<span class="kw">rownames</span>(testset), <span class="st">&quot;PS_class&quot;</span>])
-<span class="co">#&gt;      </span>
-<span class="co">#&gt;       ABC GCB</span>
-<span class="co">#&gt;   ABC   7   0</span>
-<span class="co">#&gt;   GCB   0  13</span></code></pre></div>
+<span class="co">#&gt;          </span>
+<span class="co">#&gt;           ABC GCB UNCLASS</span>
+<span class="co">#&gt;   ABC       6   0       0</span>
+<span class="co">#&gt;   GCB       0  13       0</span>
+<span class="co">#&gt;   UNCLASS   0   0       1</span></code></pre></div>
 <p>PS performs exactly the same as LPS for the above training and testing data sets.</p>
 <p>   </p>
 </div>

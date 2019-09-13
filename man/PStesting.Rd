@@ -4,12 +4,16 @@
 \alias{PStesting}
 \title{PS score calculation for a testing new data set}
 \usage{
-PStesting(PStrainObj, newdat, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = c("median", "mean"))
+PStesting(PStrainObj, newdat, classProbCut = 0.9, imputeNA = FALSE,
+  byrow = TRUE, imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{newdat}{a new data matrix or data frame, which is comparable to training data set, 
 with columns for samples and rows for features}
+
+\item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
+often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+the samples that are not included in either group will be assigned as UNCLASS}
 
 \item{imputeNA}{a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 processed before any other steps, the default is FALSE}
@@ -21,13 +25,6 @@ which will use the row data for imputation}
 the median value of the chose direction with "byrow" data to be used}
 
 \item{PStraingObj}{a PS training object, which is the output from function PStraining}
-
-\item{standardization}{a logic variable to indicate if standardization is needed before classification 
-score calculation}
-
-\item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
-the samples that are not included in either group will be assigned as UNCLASS}
 }
 \value{
 A data frame with PS score and classification

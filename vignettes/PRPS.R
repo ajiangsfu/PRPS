@@ -25,6 +25,11 @@ str(DHITsig)
 head(DHITsig)
 
 ## ------------------------------------------------------------------------
+data("DHITsigENSG")
+str(DHITsigENSG)
+head(DHITsigENSG)
+
+## ------------------------------------------------------------------------
 dat = rosenwald.expr
 trainset = subset(rosenwald.cli, rosenwald.cli$set == "Training")
 testset = subset(rosenwald.cli, rosenwald.cli$set == "Validation")

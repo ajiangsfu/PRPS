@@ -47,10 +47,6 @@
 #'  which will use the row data for imputation
 #' @param imputeValue a character variable to indicate which value to be used to replace NA, default is "median", 
 #'  the median value of the chose direction with "byrow" data to be used
-#' @param isCompToTrain a logic variable to indicate if testing data set is comparable to the training data set, if so, 
-#'  group mean and sd values from PRPStraingObj are used for each selected feature
-#' @param group1ratioPrior a prior of two group ratio (test group over reference group) that is used to calculate
-#'  group mean and sd values for each selected feature when isCompToTrain is set as FALSE
 #' @return  A data frame with PRPS scores, Empirical Bayesian probabilites for two groups and classification, and classification based on 0 natural cutoff on PRPS scores. 
 #' @keywords PRPS
 #' @author Aixiang Jiang
@@ -67,7 +63,7 @@
 #' @export
 
 PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCut = 0.9,
-                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean"), isCompToTrain = TRUE , group1ratioPrior = 1/2){
+                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   
   if(is.null(PRPStrainObj)){print("Please input your PRPS training object")}
@@ -82,13 +78,16 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   # for PRPS approach, it does not require standardization, however, if standardization = TRUE, do the standardization
   if(standardization){newdat = standardize(newdat)}
   
-  ### if the testing data is not comparable to training data set, get group mean and sd for selected features
-  if(isCompToTrain != T | isCompToTrain != TRUE){
-    Traitsmeansds = getMeanSdNewAllTraits(testdat = newdat, selectedTraits = rownames(weights),
-                                        selectedTraitWeights = weights[,1], group1ratioPrior)
-  }else{
-    Traitsmeansds = PRPS_pars$traitsmeansds
-  }
+  ### change the following part on 20190912, the testing data have to be comparable to traning data set
+  # ### if the testing data is not comparable to training data set, get group mean and sd for selected features
+  # if(isCompToTrain != T | isCompToTrain != TRUE){
+  #   Traitsmeansds = getMeanSdNewAllTraits(testdat = newdat, selectedTraits = rownames(weights),
+  #                                       selectedTraitWeights = weights[,1], group1ratioPrior)
+  # }else{
+  #   Traitsmeansds = PRPS_pars$traitsmeansds
+  # }
+  
+  Traitsmeansds = PRPS_pars$traitsmeansds
   
   # if NA is not imputed, remove it from PRPS score calculation
   PRPS_score = weightedLogProbClass(newdat, topTraits=rownames(weights), weights=weights[,1],

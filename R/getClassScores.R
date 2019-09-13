@@ -1,3 +1,4 @@
+#' @export
 getClassScores = function(testdat, classMethod = c("LPS","PRPS","PS"), weights, classMeans, classSds){
   ### testdat: gene is row, sample is column
   ### weights should have names with it

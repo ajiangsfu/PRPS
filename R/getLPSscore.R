@@ -1,3 +1,4 @@
+#' @export
 getLPSscore = function(vdat, coefs){
   tmp = which(is.na(vdat))
   if(length(tmp) > 0){
