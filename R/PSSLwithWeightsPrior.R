@@ -3,8 +3,8 @@
 ### 2) for PS, should I use empirical call in the end? struggled for a while, decide to add this in
 ### 3) while I try to keep similar output as for PRPSSLwithWeightsPrior, the 3rd item of this function item is different
 ###     this is because I use different parameter for PS score calculation if extension is needed
-
-PSSLwithWeightsPrior = function(newdat, weights, ratioPrior = 1/3,  PShighGroup = "PShigh", 
+#' @export
+PSSLwithWeightsPrior = function(newdat, weights, classProbCut = 0.9, ratioPrior = 1/2,  PShighGroup = "PShigh", 
                     PSlowGroup = "PSlow", imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
@@ -31,10 +31,10 @@ PSSLwithWeightsPrior = function(newdat, weights, ratioPrior = 1/3,  PShighGroup 
   
   # in fact, the above two objects can be combined into one matrix, and put the two most important items into col1 and col2
   PS_pars = cbind( mean_2means[,1],weights, mean_2means[,-1])
-  colnames(PS_pars)[1:2] = c(colnames(mean_2means)[1],colnames(weights)[1])
+  colnames(PS_pars)[1] = colnames(mean_2means)[1]
   
   # get PS scores for all samples
-  PS_score = apply(trainDat[names(weights),], 2, getPS1sample, PSpars = PS_pars[,1:2])
+  PS_score = apply(newdat[names(weights),], 2, getPS1sample, PSpars = PS_pars[,1:2])
   
   PS_class0 = ifelse(PS_score > 0,  PShighGroup,  PSlowGroup)  
   
@@ -83,7 +83,7 @@ PSSLwithWeightsPrior = function(newdat, weights, ratioPrior = 1/3,  PShighGroup 
   # 
   PS_test = cbind(PS_score, PS_class, PS_prob1, PS_prob2, PS_class0, stringsAsFactors =F)
   
-  weights = data.frame(weights)
+  #weights = data.frame(weights)
   
   PS_pars =  list(weights, meansds = c(testPSmean, refPSmean, testPSsd, refPSsd), traitsmeans = mean_2means)
   names(PS_pars) = c("weights","meansds","traitsmeans")

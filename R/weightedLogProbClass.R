@@ -1,3 +1,4 @@
+#' @export
 weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds) {
   
   genedat = newdat[topTraits,]

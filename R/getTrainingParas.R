@@ -1,3 +1,4 @@
+#' @export
 getTrainingParas = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = 0, weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), topN = NULL){
   ### trainDat: training data set, matrix or data.frame, it should contain all samples in the groupInfo, while it can contain more samples
   ### groupInfo: grouping info of samples with names, the info could be 0-1 format or caterigorical chars

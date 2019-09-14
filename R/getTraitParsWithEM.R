@@ -1,3 +1,4 @@
+#' @export
 getTraitParsWithEM = function(datin, weights, EMmaxRuns = 50){
   ### first of all, make sure all of the names in weights are also in datin, and make sure that theya are in the same order
   ### I did this step in the current functions that I call this function, however, to avoid any potential problem when is used elsewhere,

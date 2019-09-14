@@ -1,3 +1,4 @@
+#' @export
 standardize = function(dataIn, byrow = TRUE){
   ind = ifelse(byrow == TRUE, 1,2)
   outs = apply(dataIn, ind, FUN = function(xx){

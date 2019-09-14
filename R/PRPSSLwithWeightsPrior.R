@@ -1,7 +1,7 @@
 ### change PRPSSLwithWeightsPrior.R on 20190904.  
 ### 1) remove EM part; 2) for the empirical Bayesian prob part, use class0 (use 0 as cutoff) to calculate group mean and sd
-
-PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  classProbCut = 0.9, ratioPrior = 1/3, PRPShighGroup = "PRPShigh", 
+#' @export
+PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  classProbCut = 0.9, ratioPrior = 1/2, PRPShighGroup = "PRPShigh", 
                     PRPSlowGroup = "PRPSlow", imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
@@ -93,7 +93,7 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
   # 
   PRPS_test = cbind(PRPS_score, PRPS_class, PRPS_prob1, PRPS_prob2, PRPS_class0, stringsAsFactors =F)
   
-  weights = data.frame(weights)
+  #weights = data.frame(weights)
   
   PRPS_pars =  list(weights, meansds = c(testPRPSmean, refPRPSmean, testPRPSsd, refPRPSsd), traitsmeansds = meansd)
   names(PRPS_pars) = c("weights","meansds","traitsmeansds")

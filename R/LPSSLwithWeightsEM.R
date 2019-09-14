@@ -1,3 +1,4 @@
+#' @export
 LPSSLWithWeightsEM = function(newdat, weights, standardization=FALSE, classProbCut = 0.9, LPShighGroup = "LPShigh", 
                     LPSlowGroup = "LPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]

@@ -1,3 +1,4 @@
+#' @export
 plotHistEM = function(scoreIn, G = 1:9, breaks = 50, EMmaxRuns = 50, scoreName = "Input score"){
   #require(mclust)
   #require(AdaptGauss)

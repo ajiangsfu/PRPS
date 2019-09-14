@@ -1,3 +1,4 @@
+#' @export
 imputeNAs = function(dataIn, byrow = TRUE, imputeValue = c("median","mean")){ ### I usually put feature in the row, and sample in the column
   imputeValue = imputeValue[1]
   if(byrow){

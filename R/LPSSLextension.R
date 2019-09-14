@@ -1,3 +1,4 @@
+#' @export
 LPSSLextension = function(LPSSLObj, newdat, standardization=FALSE, classProbCut = 0.9,  imputeNA = FALSE, byrow = TRUE, imputeValue =c("median","mean")){
   imputeValue = imputeValue[1]
   

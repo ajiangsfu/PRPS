@@ -86,108 +86,103 @@ PSstableSLwithWeights = function(newdat, weights, PShighGroup = "PShigh", PSlowG
   grp1 = rownames(res1[which(rowSums(res1) == 0),])
   grp2 = rownames(res1[which(rowSums(res2) == 0),])
   
-  ### now, I need to work on group mean and sd for each feature
+  ### now, I need to work on group mean and mean of two means for each feature
   datgrp1 = newdat[,grp1]
   datgrp2 = newdat[,grp2]
   
-  means1 = rowMeans(datgrp1) 
-  means2 = rowMeans(datgrp2)
+  means1 = rowMeans(datgrp1, na.rm = T) 
+  means2 = rowMeans(datgrp2, na.rm = T)
   
-  sds1 = apply(datgrp1,1,sd)
-  sds2 = apply(datgrp2,1,sd)
+  mean_2means = rowMeans(cbind(means1, means2))  ### this is a vector of mean of group means for each feature
+  mean_2means = cbind(mean_2means, means1, means2)
+  colnames(mean_2means) = c("meanOfGroupMeans","groupMean1","groupMean2")
+
+  PS_pars = cbind( mean_2means[,1],weights, mean_2means[,-1])
+  colnames(PS_pars)[1] = colnames(mean_2means)[1]
   
-  #### I need to determine the direction for allmeans, and allsds
-  #### maybe I can use the middle prior to make the decision
-  xx=median(rps)
-  tmp = PSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PShighGroup = PShighGroup, PSlowGroup = PSlowGroup)
-  mcls = mclust::Mclust(tmp$PS_test$PS_score, G=2)
+  # get PS scores for all samples
+  PS_score = apply(newdat[names(weights),], 2, getPS1sample, PSpars = PS_pars[,1:2])
   
-  mmean = mcls$parameters$mean
-  if(mmean[2] > mmean[1]){
-    allmeans = cbind(means2, means1)
-    allsds = cbind(sds2, sds1)
-    tt = grp1
-    grp1 = grp2
-    grp2 = tt
-  }else{
-    allmeans = cbind(means1, means2)
-    allsds = cbind(sds1, sds2)
-  }
+  PS_class0 = ifelse(PS_score > 0,  PShighGroup,  PSlowGroup)  
   
-  PS_score = weightedLogProbClass(newdat = newdat, topTraits=names(weights), weights=weights,
-                                    classMeans = allmeans, classSds = allsds)
   
   #### 20190503, call plotHistEM 
   emsearch = plotHistEM(PS_score, G = 2:4, breaks = breaks, EMmaxRuns = EMmaxRuns, scoreName = "PS_score")
-  bestG = emsearch$bestG
-  emcut = emsearch$emcut
-
-  ### no matter how many bestG, only keep the 1st and last one for the following
-  gmeans = c(emcut$Means[1], emcut$Means[bestG])
-  gsds = c(emcut$SDs[1], emcut$SDs[bestG])
-  
-  if(gmeans[1]> gmeans[2]){
-    name1 = PShighGroup
-    name2 = PSlowGroup
-    scoreMeanSds_EM = c(gmeans, gsds)
-  }else{
-    name1 = PSlowGroup
-    name2 = PShighGroup
-    scoreMeanSds_EM = c(rev(gmeans), rev(gsds))
-  }
-  
-  PS_prob1_EM = getProb(PS_score, groupMeans = scoreMeanSds_EM[1:2], groupSds = scoreMeanSds_EM[3:4])
-  PS_prob2_EM = getProb(PS_score, groupMeans = rev(scoreMeanSds_EM[1:2]), groupSds = rev(scoreMeanSds_EM[3:4]))
-  
-  PS_class_EM = rep("UNCLASS",length(PS_score))
-  PS_class_EM[which(PS_prob1_EM >= classProbCut)] = PShighGroup
-  PS_class_EM[which(PS_prob2_EM >= classProbCut)] = PSlowGroup
-
-  names(scoreMeanSds_EM) = c("testPSmean_EM","refPSmean_EM","testPSsd_EM","refPSsd_EM")
-  
+  # bestG = emsearch$bestG
+  # emcut = emsearch$emcut
+  # 
+  # ### no matter how many bestG, only keep the 1st and last one for the following
+  # gmeans = c(emcut$Means[1], emcut$Means[bestG])
+  # gsds = c(emcut$SDs[1], emcut$SDs[bestG])
+  # 
+  # if(gmeans[1]> gmeans[2]){
+  #   name1 = PShighGroup
+  #   name2 = PSlowGroup
+  #   scoreMeanSds_EM = c(gmeans, gsds)
+  # }else{
+  #   name1 = PSlowGroup
+  #   name2 = PShighGroup
+  #   scoreMeanSds_EM = c(rev(gmeans), rev(gsds))
+  # }
+  # 
+  # PS_prob1_EM = getProb(PS_score, groupMeans = scoreMeanSds_EM[1:2], groupSds = scoreMeanSds_EM[3:4])
+  # PS_prob2_EM = getProb(PS_score, groupMeans = rev(scoreMeanSds_EM[1:2]), groupSds = rev(scoreMeanSds_EM[3:4]))
+  # 
+  # PS_class_EM = rep("UNCLASS",length(PS_score))
+  # PS_class_EM[which(PS_prob1_EM >= classProbCut)] = PShighGroup
+  # PS_class_EM[which(PS_prob2_EM >= classProbCut)] = PSlowGroup
+  # 
+  # names(scoreMeanSds_EM) = c("testPSmean_EM","refPSmean_EM","testPSsd_EM","refPSsd_EM")
+  # 
   ##### make changes on 20190502
   ### use my stable two groups across priors to do the last step group mean and sd as well, which might be more reasonable instead of forcing two groups?
   #### also, still keep the histogram plus EM lines
   
-  grp1score = PS_score[grp1]
-  grp2score = PS_score[grp2]
+  #### 20190913, use the 0 theoretical cutoff to get two groups, which are used for empirial Bayesian prob calculation
+  ttmp = PS_score[which(PS_score >= 0)]
+  rtmp = PS_score[which(PS_score < 0)]
+  testPSmean = mean(ttmp)
+  refPSmean = mean(rtmp)
+  testPSsd = sd(ttmp)
+  refPSsd = sd(rtmp)
   
-  scoreMeans = c(mean(grp1score), mean(grp2score))
-  scoreSds = c(sd(grp1score), sd(grp2score))
+  PS_prob1 = getProb(PS_score, groupMeans = c(testPSmean, refPSmean), groupSds = c(testPSsd, refPSsd))
   
-  PS_prob1 = getProb(PS_score, groupMeans = scoreMeans, groupSds = scoreSds)
-  PS_prob2 = getProb(PS_score, groupMeans = rev(scoreMeans), groupSds = rev(scoreSds))
+  PS_prob2= getProb(PS_score, groupMeans = c(refPSmean, testPSmean), groupSds = c(refPSsd, testPSsd))
   
   PS_class = rep("UNCLASS",length(PS_score))
   PS_class[which(PS_prob1 >= classProbCut)] = PShighGroup
   PS_class[which(PS_prob2 >= classProbCut)] = PSlowGroup
   
-  PS_class0 = ifelse(PS_score > 0,  PShighGroup, PSlowGroup)
+  score1 = PS_score[grp1]
+  score2 = PS_score[grp2]
+  
+  sig1 = PShighGroup
+  sig2 = PSlowGroup
+  
+  if(mean(score1) < mean(score2)){
+    sig2 = PShighGroup
+    sig1 = PSlowGroup
+  }
   
   PS_score = data.frame(PS_score)
   PS_test = cbind(PS_score, PS_class, PS_prob1, PS_prob2, PS_class0,stringsAsFactors =F)
   
   ### 20190503: add the stable classification 
   PS_test$stable_class = "UNCLASS"
-  PS_test[grp1,"stable_class"] = PShighGroup
-  PS_test[grp2,"stable_class"] = PSlowGroup
+  PS_test[grp1,"stable_class"] = sig1
+  PS_test[grp2,"stable_class"] = sig2
   
   ###################### remove for now, update description later ############
   #### finally, add EM class into
   #PS_test = cbind(PS_test, PS_class_EM, PS_prob1_EM, PS_prob2_EM, stringsAsFactors =F)
-  
-  weights = data.frame(weights)
-  scoreMeanSds = c(scoreMeans, scoreSds)
-  
-  #### remove EM part
-  #PS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds),scoreMeanSds_EM)
-  #names(PS_pars) = c("weights","meansds","traitsmeansds", "meanSds_EM")
-  
-  PS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds))
-  names(PS_pars) = c("weights","meansds","traitsmeansds")
+
+  PS_pars =  list(weights, meansds = c(scoreMeans, scoreSds), traitsmeans = mean_2means)
+  names(PS_pars) = c("weights","meansds","traitsmeans")
   
   outs = list(PS_pars, PS_test)
   names(outs) = c("PS_pars","PS_test")
+  
   return(outs)
   
 }

@@ -1,3 +1,4 @@
+#' @export
 getMeanOfGroupMeans= function(traitdat, groupInfo, refGroup = 0){  
   
   groupInfo = ifelse(groupInfo == refGroup, 0, 1)

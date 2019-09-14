@@ -1,3 +1,4 @@
+#' @export
 getProb = function(inscore, groupMeans, groupSds){
   ### assume groupMeans contain 2 values for 2 group, and the 1st one is for positive group
   ### assume groupSds contain 2 values for 2 group, and the 1st one is for positive group
