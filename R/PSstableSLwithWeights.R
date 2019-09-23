@@ -15,6 +15,9 @@
 #' 6) Once we have PS scores, we use the theoretic natual cutoff 0 to make classification calls
 #' @param newdat a input data matrix or data frame, columns for samples and rows for features
 #' @param weights a numeric vector with selected features (as names of the vector) and their weights
+#' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
+#'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
+#'  the samples that are not included in either group will be assigned as UNCLASS
 #' @param PShighGroup a string to indicate group name with high PS score
 #' @param PSlowGroup a string to indicate group name with low PS score
 #' @param breaks a integer to indicate number of bins in histogram, default is 50
@@ -46,7 +49,7 @@
 
 #' @export
 
-PSstableSLwithWeights = function(newdat, weights, PShighGroup = "PShigh", PSlowGroup = "PSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+PSstableSLwithWeights = function(newdat, weights, classProbCut = 0.9, PShighGroup = "PShigh", PSlowGroup = "PSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   require(mclust)
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
@@ -62,7 +65,14 @@ PSstableSLwithWeights = function(newdat, weights, PShighGroup = "PShigh", PSlowG
   weights = weights[tmp]
   newdat = newdat[tmp,]
   
-  rps = seq(0.05, 0.95, by = 0.05)
+  #rps = seq(0.05, 0.95, by = 0.05)
+  # ### when the sample size is small, change rps
+  # if(dim(newdat)[2] <= 30){
+  #   rps = seq(0.15, 0.85, by = 0.05)
+  # }
+  
+  ## change on 20190918
+  rps = seq(0.2, 0.8, by = 0.05)
   
   rpsres = sapply(rps, FUN = function(xx){
     tmp = PSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PShighGroup = PShighGroup, PSlowGroup = PSlowGroup)
@@ -96,7 +106,7 @@ PSstableSLwithWeights = function(newdat, weights, PShighGroup = "PShigh", PSlowG
   mean_2means = rowMeans(cbind(means1, means2))  ### this is a vector of mean of group means for each feature
   mean_2means = cbind(mean_2means, means1, means2)
   colnames(mean_2means) = c("meanOfGroupMeans","groupMean1","groupMean2")
-
+  
   PS_pars = cbind( mean_2means[,1],weights, mean_2means[,-1])
   colnames(PS_pars)[1] = colnames(mean_2means)[1]
   
@@ -176,8 +186,10 @@ PSstableSLwithWeights = function(newdat, weights, PShighGroup = "PShigh", PSlowG
   ###################### remove for now, update description later ############
   #### finally, add EM class into
   #PS_test = cbind(PS_test, PS_class_EM, PS_prob1_EM, PS_prob2_EM, stringsAsFactors =F)
-
-  PS_pars =  list(weights, meansds = c(scoreMeans, scoreSds), traitsmeans = mean_2means)
+  weights = data.frame(weights)
+  scorePars = c(testPSmean, refPSmean, testPSsd, refPSsd)
+  names(scorePars) = c("highPSmean","lowPSmean","highPSsd","lowPSsd")
+  PS_pars =  list(weights, meansds = scorePars, traitsmeans = mean_2means)
   names(PS_pars) = c("weights","meansds","traitsmeans")
   
   outs = list(PS_pars, PS_test)

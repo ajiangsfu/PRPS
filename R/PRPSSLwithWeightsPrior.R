@@ -27,7 +27,7 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
   PRPS_class0 = ifelse(PRPS_score > 0,  PRPShighGroup,  PRPSlowGroup)  
   
   # #### 20190503, call plotHistEM 
-  # emsearch = plotHistEM(PRPS_score, G = 2:4, breaks = breaks, EMmaxRuns = EMmaxRuns, scoreName = "PRPS_score")
+  #emsearch = plotHistEM(PRPS_score, G = 2:4, breaks = breaks, EMmaxRuns = EMmaxRuns, scoreName = "PRPS_score")
   # bestG = emsearch$bestG
   # emcut = emsearch$emcut
   # 
