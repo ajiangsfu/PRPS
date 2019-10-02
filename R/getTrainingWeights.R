@@ -26,6 +26,21 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
     trainDat = trainDat[selectedTraits,]
   }
   
+  ##### 20191002, in order to deal with possible all NAs due to standardization, should remove these lines here
+  ## trainDat = na.omit(trainDat) ## this is to remove any rows that have any NA (even one NA in the whole row), which is too strong 
+  
+  naflag = apply(trainDat, 1, function(xx){
+    flag = 0
+    tt = which(is.na(xx))
+    if(length(tt) == length(xx)){
+      flag = 1
+    }
+    return(flag)
+  })
+  
+  tt = which(naflag == 1)
+  trainDat = trainDat[-tt,]
+  
   ### change on Dec 3, ignore this part completely
   ### and require the order of samples of groupInfo should be the same as in input data
   ### and no require for the names for items in groupInfo
@@ -139,6 +154,7 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
       ### the test data is x, and the reference data is y
       ### what I need: t stat, p value, add FDR afterwards. I only need t values, however, somebody else might want other info as well
       return(c(tmp$estimate, tmp$p.value))  ### return t value and p value
+
     }))
     
     colnames(res) = c("Pearson_r","pValue")

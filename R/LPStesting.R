@@ -78,7 +78,7 @@ LPStesting = function(LPStrainObj, newdat, standardization=FALSE, classProbCut =
   ### since there are three groups for LPS output, the following does not work any more
   #refGroup = setdiff(unique(LPStrainObj$LPS_train$LPS_class),testGroup)
   
-  refGroup = setdiff(unique(LPStrainObj$LPS_train$LPS_class),c(testGroup, "UNCLASS"))
+  refGroup = setdiff(unique(LPStrainObj$LPS_train$true_class),testGroup)
   
   # for LPS, 0 is a NOT natural cutoff for two group classification
   # in order to get classification, need to get two groups' LPS mean and sd

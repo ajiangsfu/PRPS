@@ -102,7 +102,7 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   ### since there are three groups for PRPS output, the following does not work any more
   #refGroup = setdiff(unique(PRPStrainObj$PRPS_train$PRPS_class),testGroup)
   
-  refGroup = setdiff(unique(PRPStrainObj$PRPS_train$PRPS_class),c(testGroup, "UNCLASS"))
+  refGroup = setdiff(unique(PRPStrainObj$PRPS_train$true_class),testGroup)
   
   # for PRPS, 0 is a natural cutoff for two group classification
   # use 0 to get class0, refer the code in the training part

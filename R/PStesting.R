@@ -62,7 +62,7 @@ PStesting = function(PStrainObj, newdat, classProbCut = 0.9, imputeNA = FALSE, b
   testGroup = PStrainObj$classCompare$positive
   
   ### 20190912, change the following line since training object is changed
-  refGroup = setdiff(unique(PStrainObj$PS_train$PS_class),testGroup)
+  refGroup = setdiff(unique(PStrainObj$PS_train$true_class),testGroup)
   
   # for PS, 0 is a natural cutoff for two group classification
   PS_class0 = ifelse(PS_score >= 0, testGroup, refGroup)
