@@ -10,10 +10,15 @@ getPS1sample = function(vdat, PSpars){
     vdat = vdat[-tmp]
     PSpars = PSpars[-tmp,]
   }
-  xbg = vdat - PSpars[,1]
-  vg = xbg * PSpars[,2]
-  t1 = sum(vg)
-  t2 = sum(abs(vg))
-  ps = t1/t2
+  #### when all data are NA, return NA
+  ps = NA
+  if(length(vdat) > 0){
+    xbg = vdat - PSpars[,1]
+    vg = xbg * PSpars[,2]
+    t1 = sum(vg)
+    t2 = sum(abs(vg))
+    ps = t1/t2
+  }
+  return(ps)
 }
 

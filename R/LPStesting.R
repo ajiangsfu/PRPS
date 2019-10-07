@@ -12,7 +12,7 @@
 #' comparable. For example, the training data set must have two classification groups, however, 
 #' the proportion of one group sample might be much less than the other group in the testing data set 
 #' compared to the training data set, or even worse, the testing data set might only contain one classification 
-#' group only. This is the common problem for classification and feature-wise standardization cannot solve the problem. 
+#' group only. This is the common problem for classification, and feature-wise standardization cannot solve the problem. 
 #' In order to solve the problem, we should make data comparable as much as possbile before classification step. 
 #' For example, use the same pre-processing settings and make suitable batch effect correction. 
 #' For classification with LPS approach, we also suggest to combine traing and testing data together as "newdat" 
@@ -35,7 +35,7 @@
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-#'  often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+#'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
 #' @param imputeNA a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 #'  processed before any other steps, the default is FALSE

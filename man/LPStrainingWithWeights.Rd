@@ -2,7 +2,7 @@
 % Please edit documentation in R/LPStrainingWithWeights.R
 \name{LPStrainingWithWeights}
 \alias{LPStrainingWithWeights}
-\title{LPS calculation for training data set}
+\title{LPS calculation for training data set with given weights}
 \usage{
 LPStrainingWithWeights(trainDat, weights, groupInfo, refGroup = 0,
   classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
@@ -19,7 +19,7 @@ LPStrainingWithWeights(trainDat, weights, groupInfo, refGroup = 0,
 changed to 0 within the function}
 
 \item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 the samples that are not included in either group will be assigned as UNCLASS}
 
 \item{imputeNA}{a logic variable to indicate if NA imputation is needed, if it is TRUE, 
@@ -42,7 +42,8 @@ A list with four items is returned: LPS parameters for selected features, LPS sc
 \item{classTable}{a table to display comparison of LPS classification based on selected features and weights compared to input group classification for training data set. Since UNCLASS is excluded from confusion matrix, add this table for full comparison}
 }
 \description{
-This is to calculate LPS (Linear Prediction Score) scores based on a given training data set with weights
+This is to calculate LPS (Linear Prediction Score) scores based on a given training data set with classification
+labels and selected features' weights
 }
 \details{
 LPS calculation is based on Wright 2003. The fomula is straightforward:

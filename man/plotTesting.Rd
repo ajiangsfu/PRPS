@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotTesting.R
 \name{plotTesting}
 \alias{plotTesting}
-\title{Plot function for testing objects}
+\title{Plot function for a testing objects}
 \usage{
 plotTesting(testObj, plotName, breaks = 30)
 }
@@ -14,7 +14,7 @@ plotTesting(testObj, plotName, breaks = 30)
 \item{plotNanme}{a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)}
 }
 \description{
-This is to plot hist for a given testing object, and scatter plot if the testing object is from LPStesting or PRPStesting
+This is to plot a histogram and a scatter plot for a given testing object
 }
 \author{
 Aixiang Jiang

@@ -1,6 +1,6 @@
 
-#' Plot function for testing objects
-#' @description  This is to plot hist for a given testing object, and scatter plot if the testing object is from LPStesting or PRPStesting
+#' Plot function for a testing objects
+#' @description  This is to plot a histogram and a scatter plot for a given testing object 
 #' @param testObj a testing object from LPStesting, or PRPStesting, or PStesting
 #' @param plotNanme a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)
 #' @param breaks a integer to indicate how many cells in the histogram

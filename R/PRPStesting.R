@@ -39,7 +39,7 @@
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-#'  often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+#'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
 #' @param imputeNA a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 #'  processed before any other steps, the default is FALSE

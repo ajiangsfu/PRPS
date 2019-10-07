@@ -18,32 +18,13 @@
 #' 5) calculate PRPS scores
 #' 6) Once we have PRPS scores, we could use the theoretic natual cutoff 0 to make classification calls, which may or may not appropriate. 
 #' Alternatively, we can also apply EM to calcualate mean and sd for the
-#' two groups assuming that PRPS score is a mixture of two normal distributions, followed by Empirical Bayes' probability 
-#' calculation and final binary classification calls.
-#' PRPS calculation is based on Ennishi 2018, its formula is:
-#' \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
-#' Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
-#'  for the ith sample, 
-#' P1 and P0 are the probabilities that the ith sample belongs to two different group.
-#' However, in order to calculate P1 and P0, we need to have two group mean and sd for each selected feature. Although there are multiple way
-#' to obtain these values, in this function, we design to use EM algorithm to achieve group mean and sd assuming that each selected feature
-#' is a mixture of two normal distributions. 
-#' After we have PRPS scores, we provide classification calls based on theoretic 0 cutoff and based on probability, which may or may not appropriate
-#' for this function since it is based on self learning. To calculate a Empirical Bayes' 
-#' probability to make classification calls, we also need to apply EM to get PRPS score mean and sd for two groups. 
-#' After that, we can calcualte probability that a sample belongs to either group,
-#' and then use the following formula to get Empirical Bayes' probability:
-#' \eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
-#' Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability that a given sample
-#' belongs to the test group, p_ref(x) is the probability that a given sample belongs to the reference group.
-#' Notice that the test and reference group is just the relative grouping, in fact, for this step, we often need
-#'  to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
+#' two groups based on stable classes assuming that PRPS score is a mixture of two normal distributions, followed by Empirical Bayes' probability. 
 #' @param newdat a input data matrix or data frame, columns for samples and rows for features
 #' @param weights a numeric vector with selected features (as names of the vector) and their weights
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-#'  often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+#'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
 #' @param PRPShighGroup a string to indicate group name with high PRPS score
 #' @param PRPSlowGroup a string to indicate group name with low PRPS score

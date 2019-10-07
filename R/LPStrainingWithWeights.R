@@ -1,6 +1,7 @@
 
-#' LPS calculation for training data set
-#' @description This is to calculate LPS (Linear Prediction Score) scores based on a given training data set with weights  
+#' LPS calculation for training data set with given weights
+#' @description This is to calculate LPS (Linear Prediction Score) scores based on a given training data set with classification
+#' labels and selected features' weights  
 #' @details LPS calculation is based on Wright 2003. The fomula is straightforward:
 #' \eqn{LPS(X) = \sum a_j x_ij}
 #' Here a_j represents the jth selected feature weights, and x_ij is the corresponding feature value 
@@ -25,7 +26,7 @@
 #' @param refGroup the code for reference group, default is 0, but it can be a string or other number, which will be 
 #'  changed to 0 within the function
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
-#'  often used values are 0.8 and 0.9, default value is 0.8. Only one value is used for both groups, 
+#'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
 #' @param imputeNA a logic variable to indicate if NA imputation is needed, if it is TRUE, 
 #'  NA imputation is processed before any other steps, the default is FALSE

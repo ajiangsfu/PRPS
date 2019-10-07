@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotTraining.R
 \name{plotTraining}
 \alias{plotTraining}
-\title{Plot function for training objects}
+\title{Plot function for a training object}
 \usage{
 plotTraining(trainObj, plotName, xshift = -0.05, yshift = 0.02,
   breaks = 30)
@@ -21,12 +21,11 @@ default value is 0.02, which is used for ROC plot}
 \item{plotNanme}{a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)}
 }
 \description{
-This is to plot ROC and hist for a given training object, and scatter plot if the training object us from LPStraining or PRPStraining
+This is to plot a histogram and a scatter plot for a given training object
 }
 \author{
 Aixiang Jiang
 }
-\keyword{ROC,}
 \keyword{hist,}
 \keyword{plot}
 \keyword{scatter}

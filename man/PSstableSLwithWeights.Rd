@@ -52,12 +52,13 @@ in order to calculate PS scores.
 \details{
 This function is trying to get reasonable PS based classification without training data set, but with 
 selected features and their weights. The actual steps are as following:
-1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05), this will give us 19 ratio priors
+1) assume that we have a pool for group ratio priors such as: seq(0.2, 0.8, by = 0.05), this will give us 13 ratio priors
 2) for each prior in 1), call PSSLwithWeightsPrior to achieve PS scores
 3) apply EM on PS scores from 2) with Mclust, which includes 2 group classification
 4) use the samples that are always in the same groups to get group means for each group and mean of these two means for each feature 
 5) calculate PS scores
-6) Once we have PS scores, we use the theoretic natual cutoff 0 to make classification calls
+6) Once we have PS scores, we use the theoretic natual cutoff 0 to make classification calls, and use these calls as guild to
+    achieve Empirical Bayes based calls as well
 }
 \references{
 Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, et al. Molecular classification of cancer: 
