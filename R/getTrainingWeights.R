@@ -39,7 +39,9 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
   })
   
   tt = which(naflag == 1)
-  trainDat = trainDat[-tt,]
+  if(length(tt) > 0){
+    trainDat = trainDat[-tt,]
+  }
   
   ### change on Dec 3, ignore this part completely
   ### and require the order of samples of groupInfo should be the same as in input data
