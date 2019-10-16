@@ -1,4 +1,3 @@
-
 #' Feature selection, parameter estimation, and PRPS calculation for training data set
 #' @description This is the wrap up function to select top features, estimate parameters, and calculate PRPS (Probability
 #'  ratio based classification predication score) scores based on a given training data set.
@@ -17,9 +16,9 @@
 #' When we calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
 #'  and then use the 
 #' following formula to get Empirical Bayes' probability:
-#' \eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
-#' Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability
-#'  that a given sample belongs to the test group, p_ref(x) is the probability that a given sample belongs
+#' \eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
+#' Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
+#'  that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
 #'   to the reference group.
 #' Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 #' we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
@@ -66,25 +65,10 @@
 #' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
+
 PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
                         weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   weightMethod = weightMethod[1]
-  
-  ### STEPs
-  ### before that, need to consider impute NA or not
-  ### a) if standardization = TRUE, do the standardization
-  ###    when the training and testing data sets are from different platforms/cohorts, it is much to do this step
-  ###       given that both training and testing data sets contain two groups with similar group ratio
-  ###    if we are not sure if the testing data set contains two groups and/or with similar group proportion to the training
-  ###       this step will not help
-  ### b) getTrainingWeights
-  ### c) use apply to get PRPS for all samples with getPS1sample
-  
-  ### return a list with several items
-  ### a) wts
-  ### b) PRPS scores and classification
-  ### d) confusion matrix to compare known groupInfo and the PRPS classification
-  
   ## impute NA if imputeNA is true
   imputeValue = imputeValue[1]
   
@@ -102,8 +86,12 @@ PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL
   # calculate mean and sd for each group, and then get PRPS scores for all samples
   sigdat = trainDat[rownames(weights),]
   refind = which(groupInfo == refGroup)
+  
+  ### 20191016, add df0 and df1
+  df0 = length(refinf) -1 
   g0dat = sigdat[,refind]
   g1dat = sigdat[, -refind]
+  df1 = dim(g1dat)[2]-1
   
   g0mean = apply(g0dat,1,mean, na.rm=T)
   g1mean = apply(g1dat,1,mean, na.rm=T)
@@ -115,8 +103,10 @@ PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL
   
   colnames(traitsmeansds) = c("testmean","refmean", "testsd","refsd")
   
+  dfs = c(df1, df0)
+  
   PRPS_score = weightedLogProbClass(newdat = sigdat, topTraits=rownames(weights), weights=weights[,1],
-                                    classMeans = traitsmeansds[,1:2], classSds = traitsmeansds[,3:4])
+                                    classMeans = traitsmeansds[,1:2], classSds = traitsmeansds[,3:4], dfs = dfs)
   
   # and use get prob function to get classification
   
@@ -131,8 +121,8 @@ PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL
   testPRPSmean = mean(testPRPS, na.rm = T)
   testPRPSsd = sd(testPRPS, na.rm = T)
   
-  PRPS_prob_test = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
-  PRPS_prob_ref = getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
+  PRPS_prob_test = getProbt(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd), dfs = dfs)
+  PRPS_prob_ref = getProbt(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd), dfs = dfs)
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob_test >= classProbCut)] = testGroup
@@ -157,16 +147,14 @@ PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL
   meansds = c(testPRPSmean, refPRPSmean, testPRPSsd, refPRPSsd)
   names(meansds) = c("testPRPSmean","refPRPSmean","testPRPSsd","refPRPSsd")
   
-  PRPS_pars =  list(weights,meansds, traitsmeansds)
-  names(PRPS_pars) = c("weights","meansds","traitsmeansds")
+  PRPS_pars =  list(weights,meansds, traitsmeansds, dfs)
+  names(PRPS_pars) = c("weights","meansds","traitsmeansds","dfs")
   
   #### since UNCLASS is excluded from confusion matrix, add one more output for full comparison
   classTable = table(groupInfo, PRPS_class)
   
   outs = list(PRPS_pars, PRPS_train, classCompare, classTable)
-  names(outs) = c("PRPS_pars","PRPS_train","classCompare", "classTable")
+  names(outs) = c("PRPS_pars","PRPS_train","classCompare", "classTable")  ### dfs is in PRPS_pars
   return(outs)
   
 }
-
-

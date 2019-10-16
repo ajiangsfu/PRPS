@@ -66,8 +66,8 @@ PRPSSLwithWeightsEM, which we call it as self learning algorithm, the actual ste
 4) use the samples that are always in the same groups to get group means and sds for each feature and for each group
 5) calculate PRPS scores
 6) Once we have PRPS scores, we could use the theoretic natual cutoff 0 to make classification calls, which may or may not appropriate. 
-Alternatively, we can also apply EM to calcualate mean and sd for the
-two groups based on stable classes assuming that PRPS score is a mixture of two normal distributions, followed by Empirical Bayes' probability.
+Alternatively, with two groups based on stable classes assuming that PRPS score is a mixture of two normal distributions, 
+we can get Empirical Bayes' probability and make calls
 }
 \references{
 Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 

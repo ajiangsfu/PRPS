@@ -28,9 +28,10 @@
 #'  the test group while the other group with higher proportion is treated as reference group. 
 #'  When calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
 #'  and then use the following formula to get Empirical Bayes' probability:
-#'  \eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
-#'  Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability that a given sample 
-#'  belongs to the test group, p_ref(x) is the probability that a given sample belongs to the reference group.
+#' \eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
+#' Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
+#'  that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
+#'   to the reference group.
 #'  Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 #'  we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
 #' @param PRPSSLObj a PRPS self learning object that is the output from function
@@ -64,13 +65,15 @@
 #'  
 #' @export
 
+
 PRPSSLextension = function(PRPSSLObj, newdat, standardization=FALSE,  classProbCut = 0.9,
-                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+                           imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   
   if(is.null(PRPSSLObj)){print("Please input your PRPS self learning object")}
   PRPS_pars = PRPSSLObj$PRPS_pars
   weights = PRPS_pars$weights
+  dfs = PRPS_pars$dfs
   
   ## impute NA if imputeNA is true
   if(imputeNA){
@@ -84,10 +87,7 @@ PRPSSLextension = function(PRPSSLObj, newdat, standardization=FALSE,  classProbC
   
   # if NA is not imputed, remove it from PRPS score calculation
   PRPS_score = weightedLogProbClass(newdat, topTraits=rownames(weights), weights=weights[,1],
-                                    classMeans = Traitsmeansds[,1:2], classSds = Traitsmeansds[,3:4])
-  
-  # for PRPS, 0 is a NOT natural cutoff for two group classification
-  # in order to get classification, need to get two groups' PRPS mean and sd
+                                    classMeans = Traitsmeansds[,1:2], classSds = Traitsmeansds[,3:4], dfs = dfs)
   
   ### get group info
   testres = PRPSSLObj$PRPS_test
@@ -108,9 +108,9 @@ PRPSSLextension = function(PRPSSLObj, newdat, standardization=FALSE,  classProbC
   testPRPSsd = PRPS_pars$meansds[3]
   refPRPSsd = PRPS_pars$meansds[4]
   
-  PRPS_prob_test = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
+  PRPS_prob_test = getProbt(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd), dfs = dfs)
   
-  PRPS_prob_ref = getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
+  PRPS_prob_ref = getProbt(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd), dfs = dfs)
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob_test >= classProbCut)] = testGroup

@@ -1,8 +1,6 @@
-### change PRPSSLwithWeightsPrior.R on 20190904.  
-### 1) remove EM part; 2) for the empirical Bayesian prob part, use class0 (use 0 as cutoff) to calculate group mean and sd
 #' @export
 PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  classProbCut = 0.9, ratioPrior = 1/2, PRPShighGroup = "PRPShigh", 
-                    PRPSlowGroup = "PRPSlow", imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+                                  PRPSlowGroup = "PRPSlow", imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){
@@ -16,14 +14,18 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
   tmp = intersect(names(weights), rownames(newdat))
   weights = weights[tmp]
   newdat = newdat[tmp,]
-
+  
   #### in order to get mean and sd for each feature, use a ratio prior
   meansd = getMeanSdAllTraits(testdat = newdat, selectedTraits=names(weights), selectedTraitWeights=weights,
                               group1ratioPrior = ratioPrior)
   
+  df1 = as.integer(ratioPrior*dim(newdat)[2]) - 1
+  df0 = dim(newdat)[2] - df1 - 1
+  dfs = c(df1, df0)
+  
   PRPS_score = weightedLogProbClass(newdat=newdat, topTraits=names(weights), weights=weights,
-                                 classMeans=meansd[,1:2], classSds = meansd[,3:4])
-
+                                    classMeans=meansd[,1:2], classSds = meansd[,3:4], dfs = dfs)
+  
   PRPS_class0 = ifelse(PRPS_score > 0,  PRPShighGroup,  PRPSlowGroup)  
   
   # #### 20190503, call plotHistEM 
@@ -59,7 +61,7 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
   # refPRPSmean = mean(rtmp)
   # testPRPSsd = sd(ttmp)
   # refPRPSsd = sd(rtmp)
-
+  
   #### 20190904, use the 0 theoretical cutoff to get two groups, which are used for empirial Bayesian prob calculation
   ttmp = PRPS_score[which(PRPS_score >= 0)]
   rtmp = PRPS_score[which(PRPS_score < 0)]
@@ -68,9 +70,9 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
   testPRPSsd = sd(ttmp)
   refPRPSsd = sd(rtmp)
   
-  PRPS_prob1 = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
+  PRPS_prob1 = getProbt(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd), dfs = dfs)
   
-  PRPS_prob2= getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
+  PRPS_prob2= getProbt(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd), dfs = dfs)
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob1 >= classProbCut)] = PRPShighGroup
@@ -95,12 +97,12 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
   
   #weights = data.frame(weights)
   
-  PRPS_pars =  list(weights, meansds = c(testPRPSmean, refPRPSmean, testPRPSsd, refPRPSsd), traitsmeansds = meansd)
-  names(PRPS_pars) = c("weights","meansds","traitsmeansds")
+  PRPS_pars =  list(weights, meansds = c(testPRPSmean, refPRPSmean, testPRPSsd, refPRPSsd), traitsmeansds = meansd, dfs)
+  names(PRPS_pars) = c("weights","meansds","traitsmeansds", "dfs")
   
   outs = list(PRPS_pars, PRPS_test)
   names(outs) = c("PRPS_pars","PRPS_test")
   
   return(outs)
- 
+  
 }

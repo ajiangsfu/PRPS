@@ -73,9 +73,9 @@ When we calculate a Empirical Bayes' probability, the 1st group in the input mea
 When we calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
  and then use the 
 following formula to get Empirical Bayes' probability:
-\eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
-Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability
- that a given sample belongs to the test group, p_ref(x) is the probability that a given sample belongs
+\eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
+Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
+ that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
   to the reference group.
 Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.

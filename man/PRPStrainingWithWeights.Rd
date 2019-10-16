@@ -58,9 +58,9 @@ When we calculate a Empirical Bayes' probability, the 1st group in the input mea
  as the test group. 
 When we calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
 and then use the following formula to get Empirical Bayes' probability:
-\eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
-Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability
- that a given sample belongs to the test group, p_ref(x) is the probability that a given sample belongs
+\eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
+Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
+ that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
   to the reference group.
 c) Provides classification for the training group and confusion matrix to compare PRPS classification
  with original group info for training data set.

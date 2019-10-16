@@ -14,9 +14,9 @@
 #'  as the test group. 
 #' When we calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
 #' and then use the following formula to get Empirical Bayes' probability:
-#' \eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
-#' Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability
-#'  that a given sample belongs to the test group, p_ref(x) is the probability that a given sample belongs
+#' \eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
+#' Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
+#'  that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
 #'   to the reference group.
 #' c) Provides classification for the training group and confusion matrix to compare PRPS classification
 #'  with original group info for training data set.
@@ -53,9 +53,10 @@
 #' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
-PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  classProbCut = 0.9, 
-  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean"), standardization = FALSE){
 
+PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  classProbCut = 0.9, 
+                                   imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean"), standardization = FALSE){
+  
   ## impute NA if imputeNA is true
   imputeValue = imputeValue[1]
   
@@ -74,6 +75,9 @@ PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  
   g0dat = sigdat[,refind]
   g1dat = sigdat[, -refind]
   
+  df0 = length(refinf) -1 
+  df1 = dim(g1dat)[2]-1
+  
   g0mean = apply(g0dat,1,mean, na.rm=T)
   g1mean = apply(g1dat,1,mean, na.rm=T)
   
@@ -84,8 +88,10 @@ PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  
   
   colnames(traitsmeansds) = c("testmean","refmean", "testsd","refsd")
   
+  dfs = c(df1, df0)
+  
   PRPS_score = weightedLogProbClass(newdat = sigdat, topTraits=names(weights), weights=weights,
-                                    classMeans = traitsmeansds[,1:2], classSds = traitsmeansds[,3:4])
+                                    classMeans = traitsmeansds[,1:2], classSds = traitsmeansds[,3:4], dfs = dfs)
   
   # and use get prob function to get classification
   
@@ -101,8 +107,8 @@ PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  
   testPRPSmean = mean(testPRPS, na.rm = T)
   testPRPSsd = sd(testPRPS, na.rm = T)
   
-  PRPS_prob_test = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
-  PRPS_prob_ref = getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
+  PRPS_prob_test = getProbt(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd), dfs = dfs)
+  PRPS_prob_ref = getProbt(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd), dfs = dfs)
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob_test >= classProbCut)] = testGroup
@@ -129,8 +135,8 @@ PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  
   
   weights = data.frame(weights)
   
-  PRPS_pars =  list(weights,meansds, traitsmeansds)
-  names(PRPS_pars) = c("weights","meansds","traitsmeansds")
+  PRPS_pars =  list(weights,meansds, traitsmeansds, dfs)
+  names(PRPS_pars) = c("weights","meansds","traitsmeansds", "dfs")
   
   #### since UNCLASS is excluded from confusion matrix, add one more output for full comparison
   classTable = table(groupInfo, PRPS_class)
@@ -140,5 +146,4 @@ PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  
   return(outs)
   
 }
-
 

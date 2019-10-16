@@ -28,9 +28,10 @@
 #'  When we calculate a Empirical Bayes' probability, the 1st group in the input mean and sd vectors is treated as
 #'  the test group. When calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
 #'  and then use the following formula to get Empirical Bayes' probability:
-#'  \eqn{prob(x) = p_test(x)/(p_test(x) + p_ref(x))}
-#'  Here prob(x) is the Empirical Bayes' probability of a given sample, p_test(x) is the probability that a given sample 
-#'  belongs to the test group, p_ref(x) is the probability that a given sample belongs to the reference group.
+#' \eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
+#' Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
+#'  that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
+#'   to the reference group.
 #'  Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 #'  we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
 #' @param PRPStraingObj a PRPS training object, which is the output from function PRPStraining
@@ -69,6 +70,7 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   if(is.null(PRPStrainObj)){print("Please input your PRPS training object")}
   PRPS_pars = PRPStrainObj$PRPS_pars
   weights = PRPS_pars$weights
+  dfs = PRPS_pars$dfs
   
   ## impute NA if imputeNA is true
   if(imputeNA){
@@ -78,23 +80,11 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   # for PRPS approach, it does not require standardization, however, if standardization = TRUE, do the standardization
   if(standardization){newdat = standardize(newdat)}
   
-  ### change the following part on 20190912, the testing data have to be comparable to traning data set
-  # ### if the testing data is not comparable to training data set, get group mean and sd for selected features
-  # if(isCompToTrain != T | isCompToTrain != TRUE){
-  #   Traitsmeansds = getMeanSdNewAllTraits(testdat = newdat, selectedTraits = rownames(weights),
-  #                                       selectedTraitWeights = weights[,1], group1ratioPrior)
-  # }else{
-  #   Traitsmeansds = PRPS_pars$traitsmeansds
-  # }
-  
   Traitsmeansds = PRPS_pars$traitsmeansds
   
   # if NA is not imputed, remove it from PRPS score calculation
   PRPS_score = weightedLogProbClass(newdat, topTraits=rownames(weights), weights=weights[,1],
-                                    classMeans = Traitsmeansds[,1:2], classSds = Traitsmeansds[,3:4])
-  
-  # for PRPS, 0 is a NOT natural cutoff for two group classification
-  # in order to get classification, need to get two groups' PRPS mean and sd
+                                    classMeans = Traitsmeansds[,1:2], classSds = Traitsmeansds[,3:4], dfs = dfs)
   
   ### get group info
   testGroup = PRPStrainObj$classCompare$positive
@@ -117,12 +107,9 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   testPRPSsd = PRPS_pars$meansds[3]
   refPRPSsd = PRPS_pars$meansds[4]
   
-  # if not comparable, and if we want to use prob to get classification, what should I do?
+  PRPS_prob_test = getProbt(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd), dfs = dfs)
   
-  
-  PRPS_prob_test = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
-  
-  PRPS_prob_ref = getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
+  PRPS_prob_ref = getProbt(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd), dfs = dfs)
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob_test >= classProbCut)] = testGroup
@@ -134,4 +121,3 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   return(PRPS_test)
   
 }
-
