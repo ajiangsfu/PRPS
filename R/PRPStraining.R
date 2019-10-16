@@ -88,7 +88,7 @@ PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL
   refind = which(groupInfo == refGroup)
   
   ### 20191016, add df0 and df1
-  df0 = length(refinf) -1 
+  df0 = length(refind) -1 
   g0dat = sigdat[,refind]
   g1dat = sigdat[, -refind]
   df1 = dim(g1dat)[2]-1
