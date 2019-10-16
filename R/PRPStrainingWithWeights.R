@@ -75,7 +75,7 @@ PRPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0,  
   g0dat = sigdat[,refind]
   g1dat = sigdat[, -refind]
   
-  df0 = length(refinf) -1 
+  df0 = length(refind) -1 
   df1 = dim(g1dat)[2]-1
   
   g0mean = apply(g0dat,1,mean, na.rm=T)
