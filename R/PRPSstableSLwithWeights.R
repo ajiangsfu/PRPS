@@ -158,8 +158,8 @@ PRPSstableSLwithWeights = function(newdat, weights, standardization=FALSE, class
   scoreMeans = c(mean(grp1score), mean(grp2score))
   scoreSds = c(sd(grp1score), sd(grp2score))
   #
-  PRPS_prob1 = getProbt(PRPS_score, groupMeans = scoreMeans, groupSds = scoreSds, dfs=dfs)
-  PRPS_prob2 = getProbt(PRPS_score, groupMeans = rev(scoreMeans), groupSds = rev(scoreSds), dfs = dfs)
+  PRPS_prob1 = getProb(PRPS_score, groupMeans = scoreMeans, groupSds = scoreSds)
+  PRPS_prob2 = getProb(PRPS_score, groupMeans = rev(scoreMeans), groupSds = rev(scoreSds))
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob1 >= classProbCut)] = PRPShighGroup

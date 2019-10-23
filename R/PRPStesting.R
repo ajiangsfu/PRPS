@@ -107,9 +107,9 @@ PRPStesting = function(PRPStrainObj, newdat, standardization=FALSE,  classProbCu
   testPRPSsd = PRPS_pars$meansds[3]
   refPRPSsd = PRPS_pars$meansds[4]
   
-  PRPS_prob_test = getProbt(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd), dfs = dfs)
+  PRPS_prob_test = getProb(PRPS_score, groupMeans = c(testPRPSmean, refPRPSmean), groupSds = c(testPRPSsd, refPRPSsd))
   
-  PRPS_prob_ref = getProbt(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd), dfs = dfs)
+  PRPS_prob_ref = getProb(PRPS_score, groupMeans = c(refPRPSmean, testPRPSmean), groupSds = c(refPRPSsd, testPRPSsd))
   
   PRPS_class = rep("UNCLASS",length(PRPS_score))
   PRPS_class[which(PRPS_prob_test >= classProbCut)] = testGroup
