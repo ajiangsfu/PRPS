@@ -27,8 +27,7 @@
 #' @param trainDat training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows
 #' @param selectedTraits  a selected trait list if available
 #' @param groupInfo a known group classification, which order should be the same as in colnames of trainDat
-#' @param refGroup the code for reference group, default is 0, but it can be a string or other number, which will be 
-#'  changed to 0 within the function
+#' @param refGroup the code for reference group, default is the 1st item in groupInfo
 #' @param topN an integer to indicate how many top features to be selected
 #' @param FDRcut  a FDR cutoff to select top features, which is only valid when topN is set as defaul NULL, 
 #'  all features will be returned if both topN and FDRcut are set as default NULL
@@ -57,22 +56,13 @@
 #' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
-LPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
+LPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = NULL, topN = NULL, FDRcut = 0.1,
   weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean")){
-  ### STEPs
-  ### before that, need to consider impute NA or not
-  ### a) if standardization = TRUE, do the standardization
-  ###    when the training and testing data sets are from different platforms/cohorts, it is much to do this step
-  ###       given that both training and testing data sets contain two groups with similar group ratio
-  ###    if we are not sure if the testing data set contains two groups and/or with similar group proportion to the training
-  ###       this step will not help
-  ### b) getTrainingWeights
-  ### c) use apply to get LPS for all samples with getPS1sample
-  
-  ### return a list with several items
-  ### a) wts
-  ### b) LPS scores and classification
-  ### d) confusion matrix to compare known groupInfo and the LPS classification
+ 
+  groupInfo = as.character(groupInfo)
+  if(is.null(refGroup)){
+    refGroup = groupInfo[1]
+  }
   
   weightMethod = weightMethod[1]
   imputeValue = imputeValue[1]

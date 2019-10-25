@@ -4,7 +4,7 @@
 \alias{PRPStrainingWithWeights}
 \title{Parameter estimation, and PRPS calculation for training data set with know gene list and weights}
 \usage{
-PRPStrainingWithWeights(trainDat, weights, groupInfo, refGroup = 0,
+PRPStrainingWithWeights(trainDat, weights, groupInfo, refGroup = NULL,
   classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
   imputeValue = c("median", "mean"), standardization = FALSE)
 }
@@ -15,8 +15,7 @@ PRPStrainingWithWeights(trainDat, weights, groupInfo, refGroup = 0,
 
 \item{groupInfo}{a known group classification, which order should be the same as in colnames of trainDat}
 
-\item{refGroup}{the code for reference group, default is 0, but it can be a string or other number, which will be 
-changed to 0 within the function}
+\item{refGroup}{the code for reference group, default is the 1st item in groupInfo}
 
 \item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 

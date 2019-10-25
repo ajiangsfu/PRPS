@@ -23,8 +23,7 @@
 #' @param trainDat training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows
 #' @param weights a numeric vector with selected features (as names of the vector) and their weights
 #' @param groupInfo a known group classification, which order should be the same as in colnames of trainDat
-#' @param refGroup the code for reference group, default is 0, but it can be a string or other number, which will be 
-#'  changed to 0 within the function
+#' @param refGroup the code for reference group, default is the 1st item in groupInfo
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 #'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
@@ -48,9 +47,14 @@
 #' to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
-LPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = 0, 
+LPStrainingWithWeights = function(trainDat, weights, groupInfo, refGroup = NULL, 
           classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"), standardization = FALSE){
 
+  groupInfo = as.character(groupInfo)
+  if(is.null(refGroup)){
+    refGroup = groupInfo[1]
+  }
+  
   imputeValue = imputeValue[1]
   
   ## impute NA if imputeNA is true

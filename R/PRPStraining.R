@@ -29,8 +29,7 @@
 #' @param trainDat training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows
 #' @param selectedTraits  a selected trait list if available
 #' @param groupInfo a known group classification, which order should be the same as in colnames of trainDat
-#' @param refGroup the code for reference group, default is 0, but it can be a string or other number, which will be 
-#'  changed to 0 within the function
+#' @param refGroup the code for reference group, default is the 1st item in groupInfo
 #' @param topN an integer to indicate how many top features to be selected
 #' @param FDRcut  a FDR cutoff to select top features, which is only valid when topN is set as defaul NULL, 
 #'  all features will be returned if both topN and FDRcut are set as default NULL
@@ -66,8 +65,14 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 
-PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
+PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = NULL, topN = NULL, FDRcut = 0.1,
                         weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+  groupInfo = as.character(groupInfo)
+
+  if(is.null(refGroup)){
+    refGroup = groupInfo[1]
+  }
+  
   weightMethod = weightMethod[1]
   ## impute NA if imputeNA is true
   imputeValue = imputeValue[1]

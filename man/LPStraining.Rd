@@ -5,7 +5,7 @@
 \title{Feature selection, parameter estimation, and LPS calculation for training data set}
 \usage{
 LPStraining(trainDat, standardization = FALSE, selectedTraits = NULL,
-  groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1,
+  groupInfo, refGroup = NULL, topN = NULL, FDRcut = 0.1,
   weightMethod = c("ttest", "limma", "PearsonR", "SpearmanR",
   "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE,
   byrow = TRUE, imputeValue = c("median", "mean"))
@@ -17,8 +17,7 @@ LPStraining(trainDat, standardization = FALSE, selectedTraits = NULL,
 
 \item{groupInfo}{a known group classification, which order should be the same as in colnames of trainDat}
 
-\item{refGroup}{the code for reference group, default is 0, but it can be a string or other number, which will be 
-changed to 0 within the function}
+\item{refGroup}{the code for reference group, default is the 1st item in groupInfo}
 
 \item{topN}{an integer to indicate how many top features to be selected}
 

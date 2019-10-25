@@ -17,16 +17,9 @@
 #' If NAs are not imputed, they are ignored for feature selection, weight calculation, PS parameter estimation,
 #'  and PS calculation.
 #' @param trainDat training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows
-#' @param selectedTraits  a selected trait list if available
+#' @param weights a numeric vector with selected features (as names of the vector) and their weights
 #' @param groupInfo a known group classification, which order should be the same as in colnames of trainDat
 #' @param refGroup the code for reference group, default is the 1st item in groupInfo
-#' @param topN an integer to indicate how many top features to be selected
-#' @param FDRcut  a FDR cutoff to select top features, which is only valid when topN is set as defaul NULL, 
-#'  all features will be returned if both topN and FDRcut are set as default NULL
-#' @param weightMethod  a string to indicate weight calculation method, there are five choices: 
-#'  "limma" for for limma linear model based t value,"ttest" for t test based t value, 
-#'  "MannWhitneyU" for Mann Whitney U based rank-biserial,"PearsonR" for Pearson correlation coefficient,
-#'  "SpearmanR" for Spearman correlation coefficient, and the defualt value is "limma"
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 #'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
@@ -46,10 +39,9 @@
 #' Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, et al. Molecular classification of cancer: 
 #' class discovery and class prediction by gene expression monitoring. Science. 1999;286:531–7
 #' @export
-PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = NULL, topN = NULL, FDRcut = 0.1, 
-                      weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9,
+PStrainingWithWeights = function(trainDat, groupInfo, refGroup = NULL, weights, classProbCut = 0.9,
                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
-
+  
   groupInfo = as.character(groupInfo)
   if(is.null(refGroup)){
     refGroup = groupInfo[1]
@@ -68,19 +60,20 @@ PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = NUL
   trainDat = standardize(trainDat)
   
   # use reference group, we can select top features and calculate their weights
-  weights = getTrainingWeights(trainDat = trainDat, selectedTraits = selectedTraits, groupInfo = groupInfo,
-                               refGroup = refGroup, topN = topN, FDRcut = FDRcut, weightMethod = weightMethod)
+  tmp = intersect(names(weights), rownames(trainDat))
+  weights = weights[tmp]
+  traindat = trainDat[tmp,]
   
   #  now, get mean of groups' means for each selected top features
-  mean_2means = t(apply(trainDat[rownames(weights),], 1, getMeanOfGroupMeans, groupInfo = groupInfo, refGroup = refGroup))
+  mean_2means = t(apply(trainDat[names(weights),], 1, getMeanOfGroupMeans, groupInfo = groupInfo, refGroup = refGroup))
   colnames(mean_2means) = c("meanOfGroupMeans","refGroupMean","testGroupMean")
   
   # in fact, the above two objects can be combined into one matrix, and put the two most important items into col1 and col2
-  PS_pars = cbind( mean_2means[,1],weights[,1], mean_2means[,-1], weights[,-1])
-  colnames(PS_pars)[1:2] = c(colnames(mean_2means)[1],colnames(weights)[1])
+  PS_pars = cbind( mean_2means[,1],weights, mean_2means[,-1])
+  colnames(PS_pars)[1:2] = c(colnames(mean_2means)[1])
   
   # get PS scores for all samples
-  PS_score = apply(trainDat[rownames(weights),], 2, getPS1sample, PSpars = PS_pars[,1:2])
+  PS_score = apply(trainDat[names(weights),], 2, getPS1sample, PSpars = PS_pars[,1:2])
   
   # for PS, 0 is a natural cutoff for two group classification
   testGroup = setdiff(unique(groupInfo), refGroup)
