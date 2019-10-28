@@ -60,7 +60,7 @@ of the above two functions to achieve our new version of self learning algorithm
 This function is trying to get reasonable PRPS based classification without training data set, but with 
 selected features and their weights. It combines ideas from PRPSSLwithWeightsPrior and
 PRPSSLwithWeightsEM, which we call it as self learning algorithm, the actual steps are as following:
-1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05), this will give us 19 ratio priors
+1) assume that we have a pool for group ratio priors such as: seq(0.15, 0.85, by = 0.05)
 2) for each prior in 1), call PRPSSLwithWeightsPrior to achieve PRPS scores
 3) apply EM on PRPS scores from 2) with Mclust, which includes 2 group classification
 4) use the samples that are always in the same groups to get group means and sds for each feature and for each group

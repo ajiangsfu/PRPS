@@ -65,13 +65,7 @@ PSstableSLwithWeights = function(newdat, weights, classProbCut = 0.9, PShighGrou
   tmp = intersect(names(weights), rownames(newdat))
   weights = weights[tmp]
   newdat = newdat[tmp,]
-  
-  #rps = seq(0.05, 0.95, by = 0.05)
-  # ### when the sample size is small, change rps
-  # if(dim(newdat)[2] <= 30){
-  #   rps = seq(0.15, 0.85, by = 0.05)
-  # }
-  
+
   ## change on 20190918
   rps = seq(0.2, 0.8, by = 0.05)
   

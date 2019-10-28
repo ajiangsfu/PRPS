@@ -11,7 +11,7 @@
 #' @details This function is trying to get reasonable PRPS based classification without training data set, but with 
 #' selected features and their weights. It combines ideas from PRPSSLwithWeightsPrior and
 #' PRPSSLwithWeightsEM, which we call it as self learning algorithm, the actual steps are as following:
-#' 1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05), this will give us 19 ratio priors
+#' 1) assume that we have a pool for group ratio priors such as: seq(0.15, 0.85, by = 0.05)
 #' 2) for each prior in 1), call PRPSSLwithWeightsPrior to achieve PRPS scores
 #' 3) apply EM on PRPS scores from 2) with Mclust, which includes 2 group classification
 #' 4) use the samples that are always in the same groups to get group means and sds for each feature and for each group
@@ -77,10 +77,10 @@ PRPSstableSLwithWeights = function(newdat, weights, standardization=FALSE, class
   weights = weights[tmp]
   newdat = newdat[tmp,]
   
-  rps = seq(0.05, 0.95, by = 0.05)
+  rps = seq(0.15, 0.85, by = 0.05)
   ### when the sample size is small, change rps
   if(dim(newdat)[2] <= 30){
-    rps = seq(0.15, 0.85, by = 0.05)
+    rps = seq(0.2, 0.8, by = 0.05)
   }
   rpsres = sapply(rps, FUN = function(xx){
     tmp = PRPSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
