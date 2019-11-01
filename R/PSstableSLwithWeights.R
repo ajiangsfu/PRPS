@@ -91,6 +91,30 @@ PSstableSLwithWeights = function(newdat, weights, classProbCut = 0.9, PShighGrou
   grp1 = rownames(res1[which(rowSums(res1) == 0),])
   grp2 = rownames(res1[which(rowSums(res2) == 0),])
   
+  ########### changes on Oct 31, 2019 #######################
+  orpsres = sapply(rps, FUN = function(xx){
+    tmp = PSSLwithWeightsPrior(newdat=newdat, weights=-weights, ratioPrior = xx, PShighGroup = PSlowGroup, PSlowGroup = PShighGroup)
+    mcls = mclust::Mclust(tmp$PS_test$PS_score, G=2)
+    return(mcls$classification)
+  })
+  
+  rownames(orpsres) = colnames(newdat)
+  ### the classification is coded with 1 and 2
+  ### in order to find samples that are always 1 and always 2, what should I do?
+  ### for always 1, if I extract 1 for each cell, then row sum for the sample should be 0
+  ### for always 2, if I extract 2 for each cell, then row sum for the sample should be 0
+  
+  ores1 = orpsres - 1
+  ores2 = orpsres - 2
+  
+  ogrp1 = rownames(ores1[which(rowSums(ores1) == 0),])
+  ogrp2 = rownames(ores1[which(rowSums(ores2) == 0),])
+  
+  grp1 = intersect(grp1, ogrp2)
+  grp2 = intersect(grp2, ogrp1)
+  
+  #########################################################
+  
   ### now, I need to work on group mean and mean of two means for each feature
   datgrp1 = newdat[,grp1]
   datgrp2 = newdat[,grp2]
