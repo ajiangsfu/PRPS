@@ -77,10 +77,10 @@ PRPSstableSLwithWeights = function(newdat, weights, standardization=FALSE, class
   weights = weights[tmp]
   newdat = newdat[tmp,]
   
-  rps = seq(0.15, 0.85, by = 0.05)
+  rps = seq(0.05, 0.95, by = 0.05)
   ### when the sample size is small, change rps
   if(dim(newdat)[2] <= 30){
-    rps = seq(0.2, 0.8, by = 0.05)
+    rps = seq(0.1, 0.9, by = 0.05)
   }
   rpsres = sapply(rps, FUN = function(xx){
     tmp = PRPSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
