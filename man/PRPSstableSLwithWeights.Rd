@@ -4,15 +4,22 @@
 \alias{PRPSstableSLwithWeights}
 \title{Self learning binary classification with selected features and their weights}
 \usage{
-PRPSstableSLwithWeights(newdat, weights, standardization = FALSE,
-  classProbCut = 0.9, PRPShighGroup = "PRPShigh",
-  PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50,
-  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"))
+PRPSstableSLwithWeights(newdat, weights, ratioRange = c(0.05, 0.95),
+  standardization = FALSE, classProbCut = 0.9,
+  PRPShighGroup = "PRPShigh", PRPSlowGroup = "PRPSlow", breaks = 50,
+  EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE,
+  imputeValue = c("median", "mean"))
 }
 \arguments{
 \item{newdat}{a input data matrix or data frame, columns for samples and rows for features}
 
 \item{weights}{a numeric vector with selected features (as names of the vector) and their weights}
+
+\item{ratioRange}{a numeric vector with two numbers, which indicates ratio search ranges. The default is
+c(0.05, 0.95), which should be changed in most of situations. However, if your classification is very 
+unbalanced such as one group is much smaller than the other, and/or sample variation is quite big, 
+and/or your classification results is far away than you expect, you might want to change the default values.
+c(0.15, 0.85) is recommended as an alternative setting other than default.}
 
 \item{standardization}{a logic variable to indicate if standardization is needed before classification 
 score calculation}

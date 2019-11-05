@@ -21,6 +21,11 @@
 #' we can get Empirical Bayes' probability and make calls
 #' @param newdat a input data matrix or data frame, columns for samples and rows for features
 #' @param weights a numeric vector with selected features (as names of the vector) and their weights
+#' @param ratioRange a numeric vector with two numbers, which indicates ratio search ranges. The default is
+#'  c(0.05, 0.95), which should be changed in most of situations. However, if your classification is very 
+#'  unbalanced such as one group is much smaller than the other, and/or sample variation is quite big, 
+#'  and/or your classification results is far away than you expect, you might want to change the default values.
+#'  c(0.15, 0.85) is recommended as an alternative setting other than default. 
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
@@ -60,7 +65,8 @@
 
 #' @export
 
-PRPSstableSLwithWeights = function(newdat, weights, standardization=FALSE, classProbCut = 0.9, PRPShighGroup = "PRPShigh", 
+
+PRPSstableSLwithWeights = function(newdat, weights, ratioRange = c(0.05, 0.95), standardization=FALSE, classProbCut = 0.9, PRPShighGroup = "PRPShigh", 
                                    PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   require(mclust)
   imputeValue = imputeValue[1]
@@ -76,12 +82,9 @@ PRPSstableSLwithWeights = function(newdat, weights, standardization=FALSE, class
   tmp = intersect(names(weights), rownames(newdat))
   weights = weights[tmp]
   newdat = newdat[tmp,]
+
+  rps = seq(ratioRange[1], ratioRange[2], by = 0.05)
   
-  rps = seq(0.05, 0.95, by = 0.05)
-  ### when the sample size is small, change rps
-  if(dim(newdat)[2] <= 30){
-    rps = seq(0.1, 0.9, by = 0.05)
-  }
   rpsres = sapply(rps, FUN = function(xx){
     tmp = PRPSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
     mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
@@ -175,7 +178,7 @@ PRPSstableSLwithWeights = function(newdat, weights, standardization=FALSE, class
     name1 = PRPSlowGroup
     name2 = PRPShighGroup
   }
-
+  
   grp1score = PRPS_score[grp1]
   grp2score = PRPS_score[grp2]
   #
