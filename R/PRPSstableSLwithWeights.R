@@ -21,10 +21,10 @@
 #' we can get Empirical Bayes' probability and make calls
 #' @param newdat a input data matrix or data frame, columns for samples and rows for features
 #' @param weights a numeric vector with selected features (as names of the vector) and their weights
-#' @param ratioRange a numeric vector with two numbers, which indicates ratio search ranges. The default is
-#'  c(0.05, 0.95), which should be changed in most of situations. However, if your classification is very 
-#'  unbalanced such as one group is much smaller than the other, and/or sample variation is quite big, 
-#'  and/or your classification results is far away than you expect, you might want to change the default values.
+#' @param ratioRange a numeric vector with two numbers, which indicates ratio search range. The default is
+#'  c(0.05, 0.95), which should NOT be changed in most of situations. However, if your classification is very
+#'  unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
+#'  and/or classification results is far away from what you expect, you might want to change the default values.
 #'  c(0.15, 0.85) is recommended as an alternative setting other than default. 
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
