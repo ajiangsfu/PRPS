@@ -18,7 +18,7 @@ PRPSstableSLwithWeights(newdat, weights, ratioRange = c(0.05, 0.95),
 \item{ratioRange}{a numeric vector with two numbers, which indicates ratio search range. The default is
 c(0.05, 0.95), which should NOT be changed in most of situations. However, if your classification is very
 unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
-and/or classification results is far away from what you expect, you might want to change the default values.
+and/or classification results are far away from what you expect, you might want to change the default values.
 c(0.15, 0.85) is recommended as an alternative setting other than default.}
 
 \item{standardization}{a logic variable to indicate if standardization is needed before classification 
@@ -67,7 +67,7 @@ of the above two functions to achieve our new version of self learning algorithm
 This function is trying to get reasonable PRPS based classification without training data set, but with 
 selected features and their weights. It combines ideas from PRPSSLwithWeightsPrior and
 PRPSSLwithWeightsEM, which we call it as self learning algorithm, the actual steps are as following:
-1) assume that we have a pool for group ratio priors such as: seq(0.15, 0.85, by = 0.05)
+1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05)
 2) for each prior in 1), call PRPSSLwithWeightsPrior to achieve PRPS scores
 3) apply EM on PRPS scores from 2) with Mclust, which includes 2 group classification
 4) use the samples that are always in the same groups to get group means and sds for each feature and for each group

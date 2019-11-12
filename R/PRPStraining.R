@@ -5,7 +5,8 @@
 #' \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
 #' Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
 #'  for the ith sample, 
-#' P1 and P0 are the probabilities that the ith sample belongs to two different group.
+#' P1 and P0 are the probabilities that the ith sample belongs to two different groups.
+#' The current version of P1 and P0 are calculated under assumption of normal distribution.
 #' In this wrap up function, we use three steps to calculate PRPS scores and classification. 
 #' Before these three steps, we also give an option for NA imputation and for standardization for each feature. 
 #' The three steps are:

@@ -20,14 +20,11 @@ weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds
   gendatt = data.frame(gendatt)
   
   lograt = mapply(FUN = function(xx,yy,zz){
-    dd=0.01 
-    ### change on 20191016, struggled on if I need to add dd or not
-    ### in the end, add dd in the top and bottom to get benefit of avoiding too small sd and not change the t value too much
-    t1=(xx-yy[1]+dd)/(zz[1]+dd) ### notice that for a single value xx, n=1, so use sd directly as denominator
-    t2=(xx-yy[2]+dd)/(zz[2]+dd)
-    p1=2 * pt(abs(t1), df= dfs[1], lower.tail = FALSE) 
-    p2=2 * pt(abs(t2), df= dfs[2], lower.tail = FALSE)
-    gg=log10(p1) - log10(p2)
+    ### change on 20191112
+    p1 = pnorm(q=xx, mean = yy[1], sd = zz[1]) ### normal dist always works
+    p2 = pnorm(q=xx, mean = yy[2], sd = zz[2]) ### normal dist always works
+    
+    gg=log10(p1) - log10(p2) 
   
     },gendatt,classMeans, classSds)
   
@@ -47,3 +44,4 @@ weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds
   return(res)
   
 }
+

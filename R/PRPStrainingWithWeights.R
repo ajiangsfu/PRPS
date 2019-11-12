@@ -6,7 +6,8 @@
 #' \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
 #' Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
 #'  for the ith sample, 
-#' P1 and P0 are the probabilities that the ith sample belongs to two different group.
+#' P1 and P0 are the probabilities that the ith sample belongs to two different groups.
+#' The current version of P1 and P0 are calculated under assumption of normal distribution.
 #' The precedure is:
 #' a) Calculate mean and sd for each feature for both groups
 #' b) Use "apply" function to get PRPS classification scores and Empirical Bayes' probabilites for all samples.
