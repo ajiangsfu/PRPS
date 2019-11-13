@@ -60,7 +60,6 @@ This is the function to calculate PRPS scores and make classification and Empiri
  \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
  Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value for the ith sample, 
  P1 and P0 are the probabilities that the ith sample belongs to two different groups.
- The current version of P1 and P0 are calculated under assumption of normal distribution.
  The therotic cutoff is 0 to make classification calls based on PRPS score, alternatively, we can use Bayes approach to make calls.
  When we calculate a Empirical Bayes' probability, the 1st group in the input mean and sd vectors is treated as
  the test group. When calculate the probabilities, we first calcualte probability that a sample belongs to either group, 

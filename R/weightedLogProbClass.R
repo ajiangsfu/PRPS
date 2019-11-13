@@ -19,15 +19,30 @@ weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds
   gendatt=t(genedat)
   gendatt = data.frame(gendatt)
   
+  ### change on 20191113
+  ee = 0.0001
+  tmp = which(classSds < ee, arr.ind = T)
+  if(dim(tmp)[1] > 0) {
+    classSds = classSds[,-tmp[,2]]
+    classMeans = classMeans[,-tmp[,2]]
+    gendatt  = gendatt[,-tmp[,2]]
+    weights = weights[-tmp[,2]]
+  }
+
   lograt = mapply(FUN = function(xx,yy,zz){
-    ### change on 20191112
-    p1 = pnorm(q=xx, mean = yy[1], sd = zz[1]) ### normal dist always works
-    p2 = pnorm(q=xx, mean = yy[2], sd = zz[2]) ### normal dist always works
-    
-    gg=log10(p1) - log10(p2) 
+    dd=0.01 ### this value is kind of arbitrary, but seems working well for now, keep it to avoid any possible problem
+
+    ### change on 20191016, struggled on if I need to add dd or not
+    ### in the end, add dd in the top and bottom to get benefit of avoiding too small sd and not change the t value too much
+    t1=(xx-yy[1]+dd)/(zz[1]+dd) ### notice that for a single value xx, n=1, so use sd directly as denominator
+    t2=(xx-yy[2]+dd)/(zz[2]+dd)
   
-    },gendatt,classMeans, classSds)
+    p1=2 * pt(abs(t1), df= dfs[1], lower.tail = FALSE) 
+    p2=2 * pt(abs(t2), df= dfs[2], lower.tail = FALSE)
   
+    gg=log10(p1) - log10(p2)
+  },gendatt,classMeans, classSds)
+
   rownames(lograt) = colnames(genedat)
   
   rm(genedat)
