@@ -2,10 +2,16 @@
 % Please edit documentation in R/PSSLextension.R
 \name{PSSLextension}
 \alias{PSSLextension}
-\title{PS score calculation and binary classification for a testing new data set based on a self learning object}
+\title{PS self learning extension}
 \usage{
-PSSLextension(PSSLObj, newdat, classProbCut = 0.9, imputeNA = FALSE,
-  byrow = TRUE, imputeValue = c("median", "mean"))
+PSSLextension(
+  PSSLObj,
+  newdat,
+  classProbCut = 0.9,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean")
+)
 }
 \arguments{
 \item{PSSLObj}{a PS self learning object that is the output from function

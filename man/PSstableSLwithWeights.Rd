@@ -2,17 +2,28 @@
 % Please edit documentation in R/PSstableSLwithWeights.R
 \name{PSstableSLwithWeights}
 \alias{PSstableSLwithWeights}
-\title{Self learning binary classification with selected features and their weights}
+\title{PS stable self learning}
 \usage{
-PSstableSLwithWeights(newdat, weights, classProbCut = 0.9,
-  PShighGroup = "PShigh", PSlowGroup = "PSlow", breaks = 50,
-  EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = c("median", "mean"))
+PSstableSLwithWeights(
+  newdat,
+  weights,
+  plotName = NULL,
+  classProbCut = 0.9,
+  PShighGroup = "PShigh",
+  PSlowGroup = "PSlow",
+  breaks = 50,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean")
+)
 }
 \arguments{
 \item{newdat}{a input data matrix or data frame, columns for samples and rows for features}
 
 \item{weights}{a numeric vector with selected features (as names of the vector) and their weights}
+
+\item{plotName}{a pdf file name with full path and is ended with ".pdf", which is used to save multiple pages 
+of PS histgrams with distribution densities. Default value us NULL, no plot is saved.}
 
 \item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
@@ -24,8 +35,6 @@ the samples that are not included in either group will be assigned as UNCLASS}
 
 \item{breaks}{a integer to indicate number of bins in histogram, default is 50}
 
-\item{EMmaxRuns}{number of Iterations for EM searching; default=50}
-
 \item{imputeNA}{a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 processed before any other steps, the default is FALSE}
 
@@ -34,6 +43,14 @@ which will use the row data for imputation}
 
 \item{imputeValue}{a character variable to indicate which value to be used to replace NA, default is "median", 
 the median value of the chose direction with "byrow" data to be used}
+
+\item{ratioRange}{a numeric vector with two numbers, which indicates ratio search range. The default is
+c(0.05, 0.95), which should NOT be changed in most of situations. However, if your classification is very
+unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
+and/or classification results are far away from what you expect, you might want to change the default values.
+c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.}
+
+\item{EMmaxRuns}{number of Iterations for EM searching; default=50}
 }
 \value{
 A list with two items is returned: PS parameters for selected features, PS scores and classifications for the given samples.
@@ -44,21 +61,23 @@ A list with two items is returned: PS parameters for selected features, PS score
 }
 \description{
 This function is to calculate PS (Prediction Strength) scores and make binary classification calls 
-for a testing data set without PS training object. This function involves a self learning 
-process with weights + priors + EM + Bayes but no need to input a group ratio prior. However, we do need selected feature list
-with the feature weights, and we use self learning method to estimate parameters of the two groups for each selected feature 
-in order to calculate PS scores.
+for a testing data set without PS training object. It involves a self learning process with given features and their weights.
 }
 \details{
 This function is trying to get reasonable PS based classification without training data set, but with 
 selected features and their weights. The actual steps are as following:
-1) assume that we have a pool for group ratio priors such as: seq(0.2, 0.8, by = 0.05), this will give us 13 ratio priors
-2) for each prior in 1), call PSSLwithWeightsPrior to achieve PS scores
-3) apply EM on PS scores from 2) with Mclust, which includes 2 group classification
-4) use the samples that are always in the same groups to get group means for each group and mean of these two means for each feature 
+1) assume that we have a pool for group ratio priors such as seq(0.05, 0.95, by = 0.05) for default ratioRange = c(0.05, 0.95)
+2) With given features and their weights
+   a) for each prior in 1), call PSSLwithWeightsPrior with given features and weights to achieve PS scores
+      apply EM on PS scores with Mclust, get 2 group classification
+   b) define the samples that are always in the same classes across searching range as stable classes
+3) repeat step 2) but this time with opposite signs in the given weights, result in another set of stable classes
+4) get final stable classes that are common in 2) and 3)
+5) use final stable classes to get group means and sds for each feature and for each group
 5) calculate PS scores
-6) Once we have PS scores, we use the theoretic natual cutoff 0 to make classification calls, and use these calls as guild to
-    achieve Empirical Bayes based calls as well
+6) Once we have PS scores, we could use the theoretic natual cutoff 0 to make classification calls, which may or may not appropriate. 
+Alternatively, with two groups based on stable classes assuming that PS score is a mixture of two normal distributions, 
+we can get Empirical Bayesian probability and make calls
 }
 \references{
 Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, et al. Molecular classification of cancer: 

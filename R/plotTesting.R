@@ -1,15 +1,15 @@
 
-#' Plot function for a testing objects
+#' Plot function for a testing object
 #' @description  This is to plot a histogram and a scatter plot for a given testing object 
 #' @param testObj a testing object from LPStesting, or PRPStesting, or PStesting
-#' @param plotNanme a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)
-#' @param breaks a integer to indicate how many cells in the histogram
+#' @param plotName a string variable to indicate the file name to save, it should include path and plot file name (without .pdf part)
+#' @param breaks a integer to indicate how many breaks in the histogram
 #' @keywords  hist, scatter plot
 #' @author Aixiang Jiang
 #' @export
 plotTesting = function(testObj, plotName, breaks = 30){
 
-  ### in order to get direction, get group name and means for each group 
+  ### in order to get direction, get group name and mean for each group 
   
   grps = unique(testObj[,2])  
   ### notice that, now I might have two or 3 classes
@@ -57,8 +57,6 @@ plotTesting = function(testObj, plotName, breaks = 30){
   }
   
   dev.off()
-  
-  
   
 }
 

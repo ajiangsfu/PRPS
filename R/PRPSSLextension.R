@@ -1,39 +1,42 @@
 
-#' PRPS score calculation and binary classification for a testing new data set based on a self learning object
-#' @description This is the function to calculate PRPS (Probability ratio based classification predication score)
-#'  scores and make binary classification calls for a testing data set with PRPS_stableSLwithWeights or PRPSSLwithWeights or PRPSSLwithWeightsPrior or PRPSSLwithWeightsEM self learning object. 
-#'  The selected feature list, these features' parameters are from the given PRPS_stableSLwithWeightsor PRPSSLwithWeights or PRPSSLwithWeightsPrior or PRPSSLwithWeightsEM object.
-#' @details  This is the function to calculate PRPS scores, Empirical Bayesian probabilities and make classification 
-#' for a testing new data set. However, this new data set should be comparable to the self learning data set used for PRPS_stableSLwithWeights or PRPSSLwithWeights
-#' or PRPSSLwithWeightsPrior or PRPSSLwithWeightsEM as much as possible. Within PRPS_stableSLwithWeights/PRPSSLwithWeights/PRPSSLwithWeightsPrior/PRPSSLwithWeightsEM 
-#' and within this current PRPSSLextension functions, 
-#'  standardization step is included as an option to minimize the difference between self learning and testing data sets, 
-#'  but this step is only done to make distributions of each selected feature comparable. 
+#' PRPS self learning extension 
+#' @description This is a PRPS self learning extension function to calculate PRPS (Probability ratio based classification predication score)
+#'  scores and make binary classification calls for a testing data set with a PRPS self learning object, e.g., output of PRPSstableSLwithWeights.
+#'  The selected feature list, these features' parameters are extracted from the given PRPS self learning object.
+#' @details  This is the function to calculate PRPS scores, Empirical Bayesian probabilities and make binary classification 
+#' for a testing data set. This new testing data set should be comparable to the self learning data set as much as possible. 
+#  
+#' Within this current function, standardization step is included as an option to minimize the difference between self learning and testing data sets. 
+#' Whether or not a user decides to do standardization, this should be consistent between self learning and testing data sets, 
+#' otherwise this current testing function will not work.
+
+#'  Notice that standardization step is only done to make distributions of each selected feature comparable within each data set. 
 #'  Be aware that this feature-wise standardization cannot make the sample-wise distributions comparable. 
-#'  For example, the self learning data set must have two classification groups, however, the proportion of one group sample
-#'  might be much less than the other group in the testing data set compared to the self learning data set, or even worse, 
-#'  the testing data set might only contain one classification group only. This is the common problem for classification 
+#'  For example, the self learning data set must have two classification groups, however, the proportion of one group 
+#'  might be much smaller than the other group in the testing data set compared to the self learning data set, or even worse, 
+#'  the testing data set might contain one classification group only. This is the common problem for classification 
 #'  and feature-wise standardization cannot solve the problem. 
+#'
 #'  In order to solve the problem, we should make data comparable as much as possbile before classification step. 
 #'  For example, use the same pre-processing settings and make suitable batch effect correction. 
 #'  For classification with PRPS approach, we also suggest to combine self learning and testing data together as "newdat" 
-#'  for this PRPSSLextension function, to avoid forcing two groups' classification while there is actual only one group
+#'  for this PRPSSLextension function, to avoid forcing samples into two groups while there is actual only one group
 #'  in the testing data set.
-#'  PRPS calculation is based on Ennishi 2018. The fomula is 
-#'  \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
+#'  
+#'  PRPS calculation is based on Ennishi 2018. The fomula is: 
+#'  \eqn{PRPS(X_i) = \sum (|a_j| log10(P1(x_ij)/P0(x_ij)))}
 #'  Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value for the ith sample, 
 #'  P1 and P0 are the probabilities that the ith sample belongs to two different groups. 
-#'  The therotic cutoff is 0 to make classification calls based on PRPS score, alternatively, we can use Bayes approach to make calls.
-#'  When we calculate a Empirical Bayes' probability, usually, the group with smaller proportion is treated as
-#'  the test group while the other group with higher proportion is treated as reference group. 
-#'  When calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
-#'  and then use the following formula to get Empirical Bayes' probability:
+#'  The therotic cutoff is 0 to make classification calls based on PRPS score, alternatively, we can use empirical Bayesian approach to make calls.
+#'  
+#'  When a Empirical Bayesian probability is calculated, by default, the 1st group in the input mean and sd vectors is treated as the 
+#' test group. When we calculate the probabilities, we first calcualte probability that a sample belongs to either group,
+#' and then use the following formula to get Empirical Bayesian probability:
 #' \eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
-#' Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
-#'  that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
-#'   to the reference group.
-#'  Notice that the test and reference group is just the relative grouping, in fact, for this step, 
-#'  we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
+#' Here prob(x) is the Empirical Bayesian probability of a given sample, d_test(x) is the density value assuming that a given sample
+#' belongs to the test group, d_ref(x) is the density value assuming that a given sample belongs to the reference group.
+#' In the current function, however, we calculate Empirical Bayesian probabilities for both directions.
+#'  
 #' @param PRPSSLObj a PRPS self learning object that is the output from function
 #' PRPS_stableSLwithWeights or PRPSSLwithWeights or PRPSSLwithWeightsPrior or PRPSSLwithWeightsEM.
 #' @param newdat a new data matrix or data frame, which is comparable to self learning data set, 
@@ -49,7 +52,8 @@
 #'  which will use the row data for imputation
 #' @param imputeValue a character variable to indicate which value to be used to replace NA, default is "median", 
 #'  the median value of the chose direction with "byrow" data to be used
-#' @return  A data frame with PRPS scores, Empirical Bayesian probabilites for two groups and classification, and classification based on 0 natural cutoff on PRPS scores. 
+#' @return  A data frame with PRPS scores, Empirical Bayesian probabilites for two groups and classification, 
+#'  and classification based on 0 natural cutoff on PRPS scores. 
 #' @keywords PRPS
 #' @author Aixiang Jiang
 #' @references

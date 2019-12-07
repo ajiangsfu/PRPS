@@ -4,7 +4,7 @@ standardize = function(dataIn, byrow = TRUE){
   outs = apply(dataIn, ind, FUN = function(xx){
     mm = mean(xx, na.rm = TRUE)
     ss = sd(xx, na.rm = TRUE)
-    (xx-mm)/ss ### should I add a small number for stable standardization? not for now
+    (xx-mm)/ss 
   })
 
   if(byrow == TRUE){

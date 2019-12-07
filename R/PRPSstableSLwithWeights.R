@@ -1,31 +1,32 @@
 
-#' Self learning binary classification with selected features and their weights
+#' PRPS stable self learning 
 #' @description This function is to calculate PRPS (Probability ratio based classification predication score) scores and 
-#' make binary classificationcalls for a testing data set without PRPS training object. This function involves a self learning 
-#' process with weights + priors + EM + Bayes but no need to input a group ratio prior. However, we do need selected feature list
-#' with the feature weights, and we use self learning method to estimate mean and sd for two groups for each selected feature 
-#' in order to calculate PRPS scores. Our original idea in JCO 2018 does requrire a group ratio prior to do so,
-#' which is written as PRPSSLwithWeightsPrior function in this package. We also have another function: PRPSSLwithWeightsEM, 
-#' which uses EM to estimate group mean and sd for each selected feature. In this fucnction, however, we combine the ideas in both
-#' of the above two functions to achieve our new version of self learning algorithm.
+#' make binary classification calls for a testing data set without PRPS training object. It involves a self learning 
+#' process with given features and their weights.
+#'
 #' @details This function is trying to get reasonable PRPS based classification without training data set, but with 
-#' selected features and their weights. It combines ideas from PRPSSLwithWeightsPrior and
-#' PRPSSLwithWeightsEM, which we call it as self learning algorithm, the actual steps are as following:
-#' 1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05)
-#' 2) for each prior in 1), call PRPSSLwithWeightsPrior to achieve PRPS scores
-#' 3) apply EM on PRPS scores from 2) with Mclust, which includes 2 group classification
-#' 4) use the samples that are always in the same groups to get group means and sds for each feature and for each group
+#' selected features and their weights. The actual steps are as following:
+#' 1) assume that we have a pool for group ratio priors such as seq(0.05, 0.95, by = 0.05) for default ratioRange = c(0.05, 0.95)
+#' 2) With given features and their weights
+#'    a) for each prior in 1), call PSSLwithWeightsPrior with given features and weights to achieve PRPS scores
+#'       apply EM on PRPS scores with Mclust, get 2 group classification
+#'    b) define the samples that are always in the same classes across searching range as stable classes
+#' 3) repeat step 2) but this time with opposite signs in the given weights, result in another set of stable classes
+#' 4) get final stable classes that are common in 2) and 3)
+#' 5) use final stable classes to get group means and sds for each feature and for each group
 #' 5) calculate PRPS scores
 #' 6) Once we have PRPS scores, we could use the theoretic natual cutoff 0 to make classification calls, which may or may not appropriate. 
 #' Alternatively, with two groups based on stable classes assuming that PRPS score is a mixture of two normal distributions, 
-#' we can get Empirical Bayes' probability and make calls
+#' we can get Empirical Bayesian probability and make calls
 #' @param newdat a input data matrix or data frame, columns for samples and rows for features
 #' @param weights a numeric vector with selected features (as names of the vector) and their weights
+#' @param plotName a pdf file name with full path and is ended with ".pdf", which is used to save multiple pages 
+#'  of PRPS histgrams with distribution densities. Default value us NULL, no plot is saved.
 #' @param ratioRange a numeric vector with two numbers, which indicates ratio search range. The default is
 #'  c(0.05, 0.95), which should NOT be changed in most of situations. However, if your classification is very
 #'  unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
 #'  and/or classification results are far away from what you expect, you might want to change the default values.
-#'  c(0.15, 0.85) is recommended as an alternative setting other than default. 
+#'  c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.
 #' @param standardization a logic variable to indicate if standardization is needed before classification 
 #'  score calculation
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
@@ -34,7 +35,6 @@
 #' @param PRPShighGroup a string to indicate group name with high PRPS score
 #' @param PRPSlowGroup a string to indicate group name with low PRPS score
 #' @param breaks a integer to indicate number of bins in histogram, default is 50
-#' @param EMmaxRuns number of Iterations for EM searching; default=50
 #' @param imputeNA a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 #'  processed before any other steps, the default is FALSE
 #' @param byrow a logic variable to indicate direction for imputation, default is TRUE, 
@@ -65,9 +65,8 @@
 
 #' @export
 
-
-PRPSstableSLwithWeights = function(newdat, weights, ratioRange = c(0.05, 0.95), standardization=FALSE, classProbCut = 0.9, PRPShighGroup = "PRPShigh", 
-                                   PRPSlowGroup = "PRPSlow", breaks = 50, EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+PRPSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange = c(0.05, 0.95), standardization=FALSE, classProbCut = 0.9, PRPShighGroup = "PRPShigh", 
+                                          PRPSlowGroup = "PRPSlow", breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   require(mclust)
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
@@ -82,11 +81,21 @@ PRPSstableSLwithWeights = function(newdat, weights, ratioRange = c(0.05, 0.95), 
   tmp = intersect(names(weights), rownames(newdat))
   weights = weights[tmp]
   newdat = newdat[tmp,]
-
+  
   rps = seq(ratioRange[1], ratioRange[2], by = 0.05)
+  
+  if(!is.null(plotName)){
+    pdf(plotName)
+  }
   
   rpsres = sapply(rps, FUN = function(xx){
     tmp = PRPSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
+    
+    ######  add plot EM step back for this local function on 20191206 ######################
+    emsearch = plotHistEM(tmp$PRPS_test$PRPS_score, G = 2, breaks = breaks, 
+                          scoreName = paste("PRPS_score with rho = ", xx, sep=""))
+    #########################################################################
+    
     mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
     return(mcls$classification)
   })
@@ -106,6 +115,12 @@ PRPSstableSLwithWeights = function(newdat, weights, ratioRange = c(0.05, 0.95), 
   ########### changes on Oct 31, 2019 #######################
   orpsres = sapply(rps, FUN = function(xx){
     tmp = PRPSSLwithWeightsPrior(newdat=newdat, weights=-weights, ratioPrior = xx, PRPShighGroup = PRPSlowGroup, PRPSlowGroup = PRPShighGroup)
+    
+    ######  add plot EM step back for this local function on 20191206 ######################
+    emsearch = plotHistEM(tmp$PRPS_test$PRPS_score, G = 2, breaks = breaks, 
+                          scoreName = paste("Reverse weight PRPS_score with rho = ", xx, sep=""))
+    #########################################################################
+    
     mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
     return(mcls$classification)
   })
@@ -162,8 +177,11 @@ PRPSstableSLwithWeights = function(newdat, weights, ratioRange = c(0.05, 0.95), 
   PRPS_score = weightedLogProbClass(newdat = newdat, topTraits=names(weights), weights=weights,
                                     classMeans = allmeans, classSds = allsds, dfs = dfs)
   
-  # #### 20190503, call plotHistEM 
-  emsearch = plotHistEM(PRPS_score, G = 2:4, breaks = breaks, EMmaxRuns = EMmaxRuns, scoreName = "PRPS_score")
+  ###################################################################
+  # #### 20190503, call plotHistEM , make changes of scoreName on 20191206 for this local function
+  emsearch = plotHistEM(PRPS_score, G = 2, breaks = breaks, scoreName = "Final PRPS_score")
+  ####################################################################
+  
   bestG = emsearch$bestG
   emcut = emsearch$emcut
   #
@@ -209,9 +227,12 @@ PRPSstableSLwithWeights = function(newdat, weights, ratioRange = c(0.05, 0.95), 
   PRPS_pars =  list(weights, meansds = scoreMeanSds, traitsmeansds = cbind(allmeans, allsds), dfs)
   names(PRPS_pars) = c("weights","meansds","traitsmeansds", "dfs")
   
+  if(!is.null(plotName)){
+    dev.off()
+  }
+  
   outs = list(PRPS_pars, PRPS_test)
   names(outs) = c("PRPS_pars","PRPS_test")
   return(outs)
   
 }
-

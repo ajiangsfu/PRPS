@@ -1,6 +1,4 @@
-
-
-#' Feature selection, parameter estimation, and PS calculation for training data set
+#' PS training with weights
 #' @description  This is the wrap up function to select top features, estimate parameters, 
 #'  and calculate PS (Prediction Strength) scores based on a given training data set. 
 #' @details PS calculation is based on Golub 1999. In this wrap up function, we use four steps to calculate 

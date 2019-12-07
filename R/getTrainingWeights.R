@@ -43,7 +43,7 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
     trainDat = trainDat[-tt,]
   }
   
-  ### change on Dec 3, ignore this part completely
+  ### change on Dec 3, 2018, ignore this part completely
   ### and require the order of samples of groupInfo should be the same as in input data
   ### and no require for the names for items in groupInfo
   #if(!orderMatches){
@@ -117,7 +117,7 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
         groupInfo = groupInfo[-tmp]
       }
       
-      tmp = wilcox.test(xx ~ groupInfo)
+      tmp = wilcox.test(xx ~ groupInfo)  ### this is different from lm(y ~ x) setting
       ### what I need: t stat, p value, add FDR afterwards. I only need t values, however, somebody else might want other info as well
       ### return W? and p value, W does not have directions, all of them are pos, then how I determine direcitons? and what to use for weight?
       #### seems not a good idea to use Wilcox for weight at all?

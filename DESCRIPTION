@@ -7,7 +7,7 @@ Maintainer: Aixiang Jiang <aijiang@bccrc.ca>
 Depends: R (>= 3.3.1)
 Suggests: knitr 
 VignetteBuilder: knitr
-Imports: lattice, caret, limma, e1071, pROC, mclust, AdaptGauss
+Imports: lattice, caret, limma, e1071, pROC, mclust
 Description: This package calculates classification prediction score with three method choices: 
    a) LPS (defult, Linear Prediction Score); 
    b) PRPS (Probability ratio based classification predication score);
@@ -21,4 +21,4 @@ Description: This package calculates classification prediction score with three 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

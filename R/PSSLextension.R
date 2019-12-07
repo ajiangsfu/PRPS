@@ -1,5 +1,5 @@
 
-#' PS score calculation and binary classification for a testing new data set based on a self learning object
+#' PS self learning extension
 #' @description This is the function to calculate PS (Prediction Strength) scores and make binary classification calls 
 #' for a testing data set with PS_stableSLwithWeights or PSSLwithWeightsPrior self learning object. 
 #'  The selected feature list, these features' parameters are from the given PS_stableSLwithWeights or PSSLwithWeightsPrior object.

@@ -2,13 +2,22 @@
 % Please edit documentation in R/PRPStraining.R
 \name{PRPStraining}
 \alias{PRPStraining}
-\title{Feature selection, parameter estimation, and PRPS calculation for training data set}
+\title{PRPS training}
 \usage{
-PRPStraining(trainDat, standardization = FALSE, selectedTraits = NULL,
-  groupInfo, refGroup = NULL, topN = NULL, FDRcut = 0.1,
-  weightMethod = c("ttest", "limma", "PearsonR", "SpearmanR",
-  "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE,
-  byrow = TRUE, imputeValue = c("median", "mean"))
+PRPStraining(
+  trainDat,
+  standardization = FALSE,
+  selectedTraits = NULL,
+  groupInfo,
+  refGroup = NULL,
+  topN = NULL,
+  FDRcut = 0.1,
+  weightMethod = c("ttest", "limma", "PearsonR", "SpearmanR", "MannWhitneyU"),
+  classProbCut = 0.9,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean")
+)
 }
 \arguments{
 \item{trainDat}{training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows}
@@ -58,7 +67,7 @@ This is the wrap up function to select top features, estimate parameters, and ca
 }
 \details{
 PRPS calculation is based on Ennishi 2018, its formula is:
-\eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
+\eqn{PRPS(X_i) = \sum (|a_j| log10(P1(x_ij)/P0(x_ij)))}
 Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
  for the ith sample, 
 P1 and P0 are the probabilities that the ith sample belongs to two different groups.

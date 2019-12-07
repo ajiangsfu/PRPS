@@ -1,8 +1,8 @@
-#' Feature selection, parameter estimation, and PRPS calculation for training data set
+#' PRPS training
 #' @description This is the wrap up function to select top features, estimate parameters, and calculate PRPS (Probability
 #'  ratio based classification predication score) scores based on a given training data set.
 #' @details PRPS calculation is based on Ennishi 2018, its formula is:
-#' \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
+#' \eqn{PRPS(X_i) = \sum (|a_j| log10(P1(x_ij)/P0(x_ij)))}
 #' Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value
 #'  for the ith sample, 
 #' P1 and P0 are the probabilities that the ith sample belongs to two different groups.

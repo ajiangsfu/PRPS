@@ -1,8 +1,8 @@
 
-#' PRPS score calculation for a testing new data set
+#' PRPS testing
 #' @description This is the function to calculate PRPS (Probability ratio based classification predication score)
-#'  scores for a testing data set with PRPS training object. The selected feature list, 
-#'  these features' parameters are from the given PRPS training object.
+#'  scores for a testing data set with a given PRPS training object.The selected features with their weights, 
+#'  and two classes' PRPS score distribution parametes are extracted from the given PRPS training object.
 #' @details  This is the function to calculate PRPS scores and make classification and Empirical Bayesian 
 #'  probabilities for a testing new data set. However, this new data set should be comparable to 
 #'  the training data set as much as possible. Within PRPStraining and within this current PRPStesting functions, 
@@ -21,7 +21,7 @@
 #'  However, if we know that the testing and training data sets are not comparable, we should set isCompToTrain as
 #'  FALSE and choose an approoriate group1ratioPrior as a prior for PRPS score calculation. 
 #'  PRPS calculation is based on Ennishi 2018. The fomula is 
-#'  \eqn{PRPS(X_i) = \sum (|a_j| log(P1(x_ij)/P0(x_ij)))}
+#'  \eqn{PRPS(X_i) = \sum (|a_j| log10(P1(x_ij)/P0(x_ij)))}
 #'  Here, a_j represents the jth selected feature weights, and x_ij is the corresponding feature value for the ith sample, 
 #'  P1 and P0 are the probabilities that the ith sample belongs to two different groups.
 #'  The therotic cutoff is 0 to make classification calls based on PRPS score, alternatively, we can use Bayes approach to make calls.

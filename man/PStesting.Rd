@@ -2,10 +2,16 @@
 % Please edit documentation in R/PStesting.R
 \name{PStesting}
 \alias{PStesting}
-\title{PS score calculation for a testing new data set}
+\title{PS testing}
 \usage{
-PStesting(PStrainObj, newdat, classProbCut = 0.9, imputeNA = FALSE,
-  byrow = TRUE, imputeValue = c("median", "mean"))
+PStesting(
+  PStrainObj,
+  newdat,
+  classProbCut = 0.9,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean")
+)
 }
 \arguments{
 \item{newdat}{a new data matrix or data frame, which is comparable to training data set, 
@@ -31,25 +37,29 @@ A data frame with PS score and classification
 }
 \description{
 This is the function to calculate PS (Prediction Strength) scores for a testing data set
- with PS training object. The selected feature list, these features' parameters are 
- from the given PS training object.
+ with a given PS training object. The selected features with their weights, and two classes' PS score distribution parametes
+ are extracted from the given PS training object.
 }
 \details{
-This is the function to calculate PS scores and make classification for a testing new data set. 
- However, this new data set should be comparable to the training data set as much as possible. 
- Within PStraining and within this current PStesting functions, standardization step is included
- to minimize the difference between training and testing data sets, but this step is only done to
- make distributions of each selected features comparable. Be aware that this feature-wise 
- standardization cannot make the sample-wise distributions comparable. 
- For example, the training data set must have two classification groups, however, the proportion of 
+This is the function to calculate PS scores and make classification for a new testing data set, which should be comparable 
+ to the training data set as much as possible. 
+ Based on PS algorithm (Golub et al., 1999), standardization is a required step, therefore, 
+ standardization is included in this function and no option for it.
+ However, this standardization is only done to make distributions of each selected features comparable. 
+ Be aware that this feature-wise standardization cannot make the sample-wise distributions comparable. 
+ For example, the training data set must have two classification groups, but the proportion of 
  one group sample might be much less than the other group in the testing data set compared to the 
  training data set, or even worse, the testing data set might only contain one classification group only. 
  This is the common problem for classification and feature-wise standardization cannot solve the problem. 
  In order to solve the problem, we should make data comparable as much as possbile before classification step.
  For example, use the same pre-processing settings and make suitable batch effect correction. 
  For classification with PS approach, we also suggest to combine traing and testing data together as "newdat"
-  for this PStesting function, to avoid forcing two groups' classification while there is actual only one group
-  in the testing group.
+ for this PStesting function, to avoid forcing two groups' classification while there is actual only one group
+ in the testing group.
+ 
+ PS score calculation formula is:
+ \eqn{PS = (V_win − V_lose)/(V_win + V_lose)}
+ Here, where V_win and V_lose are the vote totals for the winning and losing features/traits for a given sample
 }
 \references{
 Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, et al. Molecular classification of cancer: 

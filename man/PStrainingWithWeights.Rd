@@ -2,11 +2,18 @@
 % Please edit documentation in R/PStrainingWithWeights.R
 \name{PStrainingWithWeights}
 \alias{PStrainingWithWeights}
-\title{Feature selection, parameter estimation, and PS calculation for training data set}
+\title{PS training with weights}
 \usage{
-PStrainingWithWeights(trainDat, groupInfo, refGroup = NULL, weights,
-  classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = c("median", "mean"))
+PStrainingWithWeights(
+  trainDat,
+  groupInfo,
+  refGroup = NULL,
+  weights,
+  classProbCut = 0.9,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean")
+)
 }
 \arguments{
 \item{trainDat}{training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows}

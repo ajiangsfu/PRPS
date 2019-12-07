@@ -2,12 +2,21 @@
 % Please edit documentation in R/PStraining.R
 \name{PStraining}
 \alias{PStraining}
-\title{Feature selection, parameter estimation, and PS calculation for training data set}
+\title{PS training}
 \usage{
-PStraining(trainDat, selectedTraits = NULL, groupInfo, refGroup = NULL,
-  topN = NULL, FDRcut = 0.1, weightMethod = c("ttest", "limma",
-  "PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9,
-  imputeNA = FALSE, byrow = TRUE, imputeValue = c("median", "mean"))
+PStraining(
+  trainDat,
+  selectedTraits = NULL,
+  groupInfo,
+  refGroup = NULL,
+  topN = NULL,
+  FDRcut = 0.1,
+  weightMethod = c("ttest", "limma", "PearsonR", "SpearmanR", "MannWhitneyU"),
+  classProbCut = 0.9,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean")
+)
 }
 \arguments{
 \item{trainDat}{training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows}
@@ -54,14 +63,28 @@ This is the wrap up function to select top features, estimate parameters,
 }
 \details{
 PS calculation is based on Golub 1999. In this wrap up function, we use four steps to calculate 
- PS scores and classification. The range of PS scores is [-1,1]. Before these four steps, we also give an option
- for NA imputation. The four steps are:
+ PS scores and classification. The range of PS scores is [-1,1]. Before these four steps, there is an option
+ for NA imputation, but standardization is required. The four steps are:
 a) apply "standardize" to standardize input data matrix for each feature;
 b) apply "getTrainingWeights" to select features and return weights for these features;
 c) apply "getMeanOfGroupMeans" to get mean of group means for each selected feature;
 d) use "apply" function to get PS scores for all samples with "getPS1sample", the formula is:
   \eqn{PS = (V_win − V_lose)/(V_win + V_lose)}
 Here, where V_win and V_lose are the vote totals for the winning and losing features/traits for a given sample
+
+The theoretical cutoff for PS is 0, in addition, we also classification based on Empirical Bayesian.
+When we calculate a Empirical Bayes' probability, the 1st group in the input mean and sd vectors is treated
+ as the test group. 
+When we calculate the probabilities, we first calcualte probability that a sample belongs to either group, 
+ and then use the 
+following formula to get Empirical Bayes' probability:
+\eqn{prob(x) = d_test(x)/(d_test(x) + d_ref(x))}
+Here prob(x) is the Empirical Bayes' probability of a given sample, d_test(x) is the density value
+ that a given sample belongs to the test group, d_ref(x) is the density value that a given sample belongs
+  to the reference group.
+Notice that the test and reference group is just the relative grouping, in fact, for this step, 
+we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
+
 This function also give classification for the training group and confusion matrix to compare PS classification
  with original group info for training data set.
 If NAs are not imputed, they are ignored for feature selection, weight calculation, PS parameter estimation,

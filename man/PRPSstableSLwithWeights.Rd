@@ -2,24 +2,36 @@
 % Please edit documentation in R/PRPSstableSLwithWeights.R
 \name{PRPSstableSLwithWeights}
 \alias{PRPSstableSLwithWeights}
-\title{Self learning binary classification with selected features and their weights}
+\title{PRPS stable self learning}
 \usage{
-PRPSstableSLwithWeights(newdat, weights, ratioRange = c(0.05, 0.95),
-  standardization = FALSE, classProbCut = 0.9,
-  PRPShighGroup = "PRPShigh", PRPSlowGroup = "PRPSlow", breaks = 50,
-  EMmaxRuns = 50, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = c("median", "mean"))
+PRPSstableSLwithWeights(
+  newdat,
+  weights,
+  plotName = NULL,
+  ratioRange = c(0.05, 0.95),
+  standardization = FALSE,
+  classProbCut = 0.9,
+  PRPShighGroup = "PRPShigh",
+  PRPSlowGroup = "PRPSlow",
+  breaks = 50,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean")
+)
 }
 \arguments{
 \item{newdat}{a input data matrix or data frame, columns for samples and rows for features}
 
 \item{weights}{a numeric vector with selected features (as names of the vector) and their weights}
 
+\item{plotName}{a pdf file name with full path and is ended with ".pdf", which is used to save multiple pages 
+of PRPS histgrams with distribution densities. Default value us NULL, no plot is saved.}
+
 \item{ratioRange}{a numeric vector with two numbers, which indicates ratio search range. The default is
 c(0.05, 0.95), which should NOT be changed in most of situations. However, if your classification is very
 unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
 and/or classification results are far away from what you expect, you might want to change the default values.
-c(0.15, 0.85) is recommended as an alternative setting other than default.}
+c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.}
 
 \item{standardization}{a logic variable to indicate if standardization is needed before classification 
 score calculation}
@@ -33,8 +45,6 @@ the samples that are not included in either group will be assigned as UNCLASS}
 \item{PRPSlowGroup}{a string to indicate group name with low PRPS score}
 
 \item{breaks}{a integer to indicate number of bins in histogram, default is 50}
-
-\item{EMmaxRuns}{number of Iterations for EM searching; default=50}
 
 \item{imputeNA}{a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 processed before any other steps, the default is FALSE}
@@ -55,26 +65,24 @@ and classification with natural 0 cutoff}
 }
 \description{
 This function is to calculate PRPS (Probability ratio based classification predication score) scores and 
-make binary classificationcalls for a testing data set without PRPS training object. This function involves a self learning 
-process with weights + priors + EM + Bayes but no need to input a group ratio prior. However, we do need selected feature list
-with the feature weights, and we use self learning method to estimate mean and sd for two groups for each selected feature 
-in order to calculate PRPS scores. Our original idea in JCO 2018 does requrire a group ratio prior to do so,
-which is written as PRPSSLwithWeightsPrior function in this package. We also have another function: PRPSSLwithWeightsEM, 
-which uses EM to estimate group mean and sd for each selected feature. In this fucnction, however, we combine the ideas in both
-of the above two functions to achieve our new version of self learning algorithm.
+make binary classification calls for a testing data set without PRPS training object. It involves a self learning 
+process with given features and their weights.
 }
 \details{
 This function is trying to get reasonable PRPS based classification without training data set, but with 
-selected features and their weights. It combines ideas from PRPSSLwithWeightsPrior and
-PRPSSLwithWeightsEM, which we call it as self learning algorithm, the actual steps are as following:
-1) assume that we have a pool for group ratio priors such as: seq(0.05, 0.95, by = 0.05)
-2) for each prior in 1), call PRPSSLwithWeightsPrior to achieve PRPS scores
-3) apply EM on PRPS scores from 2) with Mclust, which includes 2 group classification
-4) use the samples that are always in the same groups to get group means and sds for each feature and for each group
+selected features and their weights. The actual steps are as following:
+1) assume that we have a pool for group ratio priors such as seq(0.05, 0.95, by = 0.05) for default ratioRange = c(0.05, 0.95)
+2) With given features and their weights
+   a) for each prior in 1), call PSSLwithWeightsPrior with given features and weights to achieve PRPS scores
+      apply EM on PRPS scores with Mclust, get 2 group classification
+   b) define the samples that are always in the same classes across searching range as stable classes
+3) repeat step 2) but this time with opposite signs in the given weights, result in another set of stable classes
+4) get final stable classes that are common in 2) and 3)
+5) use final stable classes to get group means and sds for each feature and for each group
 5) calculate PRPS scores
 6) Once we have PRPS scores, we could use the theoretic natual cutoff 0 to make classification calls, which may or may not appropriate. 
 Alternatively, with two groups based on stable classes assuming that PRPS score is a mixture of two normal distributions, 
-we can get Empirical Bayes' probability and make calls
+we can get Empirical Bayesian probability and make calls
 }
 \references{
 Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, 

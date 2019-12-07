@@ -2,16 +2,16 @@
 % Please edit documentation in R/plotTesting.R
 \name{plotTesting}
 \alias{plotTesting}
-\title{Plot function for a testing objects}
+\title{Plot function for a testing object}
 \usage{
 plotTesting(testObj, plotName, breaks = 30)
 }
 \arguments{
 \item{testObj}{a testing object from LPStesting, or PRPStesting, or PStesting}
 
-\item{breaks}{a integer to indicate how many cells in the histogram}
+\item{plotName}{a string variable to indicate the file name to save, it should include path and plot file name (without .pdf part)}
 
-\item{plotNanme}{a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)}
+\item{breaks}{a integer to indicate how many breaks in the histogram}
 }
 \description{
 This is to plot a histogram and a scatter plot for a given testing object

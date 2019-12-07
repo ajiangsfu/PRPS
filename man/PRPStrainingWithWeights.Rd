@@ -2,11 +2,19 @@
 % Please edit documentation in R/PRPStrainingWithWeights.R
 \name{PRPStrainingWithWeights}
 \alias{PRPStrainingWithWeights}
-\title{Parameter estimation, and PRPS calculation for training data set with know gene list and weights}
+\title{PRPS training with given weights}
 \usage{
-PRPStrainingWithWeights(trainDat, weights, groupInfo, refGroup = NULL,
-  classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE,
-  imputeValue = c("median", "mean"), standardization = FALSE)
+PRPStrainingWithWeights(
+  trainDat,
+  weights,
+  groupInfo,
+  refGroup = NULL,
+  classProbCut = 0.9,
+  imputeNA = FALSE,
+  byrow = TRUE,
+  imputeValue = c("median", "mean"),
+  standardization = FALSE
+)
 }
 \arguments{
 \item{trainDat}{training data set, a data matrix or a data frame, samples are in columns, and features/traits are in rows}

@@ -1,14 +1,14 @@
 
 #' Plot function for a training object
-#' @description  This is to plot a histogram and a scatter plot for a given training object 
-#' @param trainObj a training object from LPStraining, or PRPStraining, or PStraining
-#' @param plotNanme a string variable to indicate the file name to save, it should includes path and plot file name (without .pdf part)
+#' @description  This is to plot a histogram, a scatter plot, and a ROC (Receiver Operating Characteristic curve) curve for a given training object 
+#' @param trainObj a training object from LPStraining/LPStrainingWithWeights, or PRPStraining/PRPStrainingWithWeights, or PStraining/PStrainingWithWeights
+#' @param plotName a string variable to indicate the file name to save, it should include path and plot file name (without .pdf part)
 #' @param xshift a numeric variable to indicate how much value shift along x-axis to move the label position for the natural 0 cutoff point,
-#'  default value is -0.05, which is used for ROC plot
+#'  default value is -0.05, which is used for ROC plot but not meaningful for LPS training objects
 #' @param yshift a numeric variable to indicate how much value shift along y-axis to move the label position for the natural 0 cutoff point,
-#'  default value is 0.02, which is used for ROC plot
-#' @param breaks a integer to indicate how many cells in the histogram
-#' @keywords hist, scatter plot
+#'  default value is 0.02, which is used for ROC plot but not meaningful for LPS training objects
+#' @param breaks a integer to indicate how many breaks in the histogram
+#' @keywords hist, scatter plot, ROC
 #' @author Aixiang Jiang
 #' @export
 plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, breaks = 30){
@@ -33,8 +33,7 @@ plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, break
   
   pdf(paste(plotName, ".pdf", sep=""))
   
-  ### ROC, the following row is not correct
-  ### plotROC(contdat = datin[,1], contname = colnames(datin)[1], catdat = datin$class01, catname = colnames(datin)[2], xshift = xshift, yshift = yshift)
+  plotROC(contdat = datin[,1], contname = colnames(datin)[1], catdat = datin$class01, catname = colnames(datin)[2], xshift = xshift, yshift = yshift)
   
   ################################ ROC plot with discussion, ignore for now ##################################################
   #plotROC(contdat = datin[,1], contname = colnames(datin)[1], catdat = datin[,2], catname = colnames(datin)[2], xshift = xshift, yshift = yshift)
@@ -53,6 +52,8 @@ plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, break
   ### Area under the curve: 100%
   ### 95% CI: 100%-100% (DeLong)
   ############ this example gave me 100% AUC, which looks strange, but this is correct
+  ##### 100% AUC means: an optimal cutoff exists to separately samples into two groups based on scores without any mistake
+  #####                 although this optimal cutoff is not necessary consistent to our final classification
   
   ### hist
   hist(datin[,1], breaks = breaks, xlab = colnames(datin)[1], main = paste("Histogram of ",colnames(datin)[1], sep=""))

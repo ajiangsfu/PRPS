@@ -1,5 +1,5 @@
 
-#' Parameter estimation, and PRPS calculation for training data set with know gene list and weights
+#' PRPS training with given weights
 #' @description This is the wrap up function to estimate parameters, and calculate PRPS (Probability
 #'  ratio based classification predication score) scores based on a given training data set with group info, features and their weights.
 #' @details PRPS calculation is based on Ennishi 2018, its formula is:
