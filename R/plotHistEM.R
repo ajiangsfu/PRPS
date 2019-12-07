@@ -1,4 +1,3 @@
-#' change on 20191206, remove EMmaxRuns and remove EMGauss
 #' @export
 plotHistEM = function(scoreIn, G = 1:9, breaks = 50, scoreName = "Input score"){
   #require(mclust)
