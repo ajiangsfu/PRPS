@@ -45,8 +45,6 @@ PStrainingWithWeights = function(trainDat, groupInfo, refGroup = NULL, weights, 
     refGroup = groupInfo[1]
   }
   
-  weightMethod = weightMethod[1]
-  
   imputeValue = imputeValue[1]
   
   ## impute NA if imputeNA is true
@@ -110,6 +108,8 @@ PStrainingWithWeights = function(trainDat, groupInfo, refGroup = NULL, weights, 
   
   meansds = c(testPSmean, refPSmean, testPSsd, refPSsd)
   names(meansds) = c("testPSmean","refPSmean","testPSsd","refPSsd")
+  
+  weights = data.frame(weights)
   
   PS_pars =  list(weights,meansds, mean_2means)  ### notice that this is different from the PS_pars above
   names(PS_pars) = c("weights","meansds","traits")
