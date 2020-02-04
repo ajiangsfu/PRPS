@@ -96,7 +96,7 @@ PRPSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange 
                           scoreName = paste("PRPS_score with rho = ", xx, sep=""))
     #########################################################################
     
-    mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
+    mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2, warn = TRUE)
     return(mcls$classification)
   })
   
@@ -121,7 +121,7 @@ PRPSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange 
                           scoreName = paste("Reverse weight PRPS_score with rho = ", xx, sep=""))
     #########################################################################
     
-    mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
+    mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2, warn = TRUE)
     return(mcls$classification)
   })
   
@@ -156,7 +156,7 @@ PRPSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange 
   #### maybe I can use the middle prior to make the decision
   xx=median(rps)
   tmp = PRPSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
-  mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2)
+  mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2, warn = TRUE)
   
   mmean = mcls$parameters$mean
   if(mmean[2] > mmean[1]){

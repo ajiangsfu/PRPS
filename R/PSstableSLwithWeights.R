@@ -112,7 +112,7 @@ PSstableSLwithWeights = function(newdat, weights, plotName = NULL, classProbCut 
   ########### changes on Oct 31, 2019 #######################
   orpsres = sapply(rps, FUN = function(xx){
     tmp = PSSLwithWeightsPrior(newdat=newdat, weights=-weights, ratioPrior = xx, PShighGroup = PSlowGroup, PSlowGroup = PShighGroup)
-    mcls = mclust::Mclust(tmp$PS_test$PS_score, G=2)
+    mcls = mclust::Mclust(tmp$PS_test$PS_score, G=2, warn = TRUE)
     ######  add plot EM step back for this local function on 20191206 ######################
     emsearch = plotHistEM(tmp$PS_test$PS_score, G = 2, breaks = breaks, 
                           scoreName = paste("Reverse weight PS_score with rho = ", xx, sep=""))
