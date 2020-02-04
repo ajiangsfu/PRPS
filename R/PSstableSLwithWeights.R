@@ -89,7 +89,7 @@ PSstableSLwithWeights = function(newdat, weights, plotName = NULL, classProbCut 
     ###                     only the prior based scores are used in the following step
     ###                     question: should I not call PSSLwithWeightsPrior at all? should I just copy the prior PS score part?
     ###                               or should I use the EM results from output of PSSLwithWeightsPrior?
-    mcls = mclust::Mclust(tmp$PS_test$PS_score, G=2)
+    mcls = mclust::Mclust(tmp$PS_test$PS_score, G=2, warn = TRUE)
     ######  add plot EM step back for this local function on 20191206 ######################
     emsearch = plotHistEM(tmp$PS_test$PS_score, G = 2, breaks = breaks, 
                           scoreName = paste("PS_score with rho = ", xx, sep=""))

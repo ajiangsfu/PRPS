@@ -3,7 +3,7 @@ plotHistEM = function(scoreIn, G = 1:9, breaks = 50, scoreName = "Input score"){
   #require(mclust)
   #require(AdaptGauss)
   # I might always use G=2 for PRPS package, however, it is a good idea to keep G as a range seaching
-  clustG = mclust::Mclust(scoreIn, G=G)
+  clustG = mclust::Mclust(scoreIn, G=G, warn = TRUE)
   bestG = clustG$G
   # emcut = AdaptGauss::EMGauss(scoreIn, K = bestG, fast=TRUE, MaxNumberofIterations = EMmaxRuns)
   ### add a plot, hist with distribution lines, do not need to save, just plot it
