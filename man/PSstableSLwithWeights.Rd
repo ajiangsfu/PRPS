@@ -8,6 +8,7 @@ PSstableSLwithWeights(
   newdat,
   weights,
   plotName = NULL,
+  ratioRange = c(0.1, 0.9),
   classProbCut = 0.9,
   PShighGroup = "PShigh",
   PSlowGroup = "PSlow",
@@ -24,6 +25,12 @@ PSstableSLwithWeights(
 
 \item{plotName}{a pdf file name with full path and is ended with ".pdf", which is used to save multiple pages 
 of PS histgrams with distribution densities. Default value us NULL, no plot is saved.}
+
+\item{ratioRange}{a numeric vector with two numbers, which indicates ratio search range. The default is
+c(0.1, 0.9)for the current function. If your classification is very
+unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
+and/or classification results are far away from what you expect, you might want to change the default values.
+c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.}
 
 \item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
@@ -43,14 +50,6 @@ which will use the row data for imputation}
 
 \item{imputeValue}{a character variable to indicate which value to be used to replace NA, default is "median", 
 the median value of the chose direction with "byrow" data to be used}
-
-\item{ratioRange}{a numeric vector with two numbers, which indicates ratio search range. The default is
-c(0.05, 0.95), which should NOT be changed in most of situations. However, if your classification is very
-unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
-and/or classification results are far away from what you expect, you might want to change the default values.
-c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.}
-
-\item{EMmaxRuns}{number of Iterations for EM searching; default=50}
 }
 \value{
 A list with two items is returned: PS parameters for selected features, PS scores and classifications for the given samples.

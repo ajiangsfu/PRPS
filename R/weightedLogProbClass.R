@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds, dfs) {
 
   genedat = newdat[topTraits,]

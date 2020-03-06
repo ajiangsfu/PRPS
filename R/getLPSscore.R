@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 getLPSscore = function(vdat, coefs){
   tmp = which(is.na(vdat))
   if(length(tmp) > 0){

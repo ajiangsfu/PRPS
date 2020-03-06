@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 getClassScores = function(testdat, classMethod = c("LPS","PRPS","PS"), weights, classMeans, classSds){
   ### testdat: gene is in row, sample is in column
   ### weights should have names with its items

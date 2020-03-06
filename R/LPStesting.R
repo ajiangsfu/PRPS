@@ -35,7 +35,7 @@
 #' belongs to the test group, d_ref(x) is the density value assuming that a given sample belongs to the reference group.
 #' In the current function, however, we calculate Empirical Bayesian probabilities for both directions.
 #' 
-#' @param LPStraingObj a LPS training object, which is the output from LPStraining function 
+#' @param LPStrainObj a LPS training object, which is the output from LPStraining function 
 #' @param newdat a new data matrix or data frame, which is comparable to the training data set, 
 #'  its columns are for samples and rows are for features
 #' @param standardization a logic variable to indicate if standardization is needed before classification 

@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 getMeanSdPerTrait = function(atrait, aweight, fulldat, ratioPrior = 0.5) {
   traitdat = unlist(fulldat[atrait,])
   ### remove NA

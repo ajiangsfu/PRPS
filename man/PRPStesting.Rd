@@ -15,6 +15,8 @@ PRPStesting(
 )
 }
 \arguments{
+\item{PRPStrainObj}{a PRPS training object, which is the output from function PRPStraining}
+
 \item{newdat}{a new data matrix or data frame, which is comparable to training data set, 
 with columns for samples and rows for features}
 
@@ -33,8 +35,6 @@ which will use the row data for imputation}
 
 \item{imputeValue}{a character variable to indicate which value to be used to replace NA, default is "median", 
 the median value of the chose direction with "byrow" data to be used}
-
-\item{PRPStraingObj}{a PRPS training object, which is the output from function PRPStraining}
 }
 \value{
 A data frame with PRPS scores, Empirical Bayesian probabilites for two groups and classification, and classification based on 0 natural cutoff on PRPS scores.

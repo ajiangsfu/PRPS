@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGroup = 0, topN = NULL, FDRcut = 0.1, weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU")) {
   
   ### trainDat: training data set, matrix or data.frame, it should contain all samples in the groupInfo, while it can contain more samples
@@ -66,7 +68,6 @@ getTrainingWeights = function(trainDat,selectedTraits = NULL, groupInfo, refGrou
   g0 = which(groupInfo == 0)
   
   if(weightMethod == "limma"){
-    ##require(limma)
     design = cbind(rep(1,length(groupInfo)),groupInfo)
     
     fit = limma::lmFit(trainDat, design)

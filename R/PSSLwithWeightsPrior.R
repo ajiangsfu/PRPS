@@ -1,9 +1,6 @@
-### note on 20190904
-### 1) all data should be standardized, therefore there is no parameter for standardization in this function
-### 2) for PS, should I use empirical call in the end? struggled for a while, decide to add this in
-### 3) while I try to keep similar output as for PRPSSLwithWeightsPrior, the 3rd item of this function item is different
-###     this is because I use different parameter for PS score calculation if extension is needed
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 PSSLwithWeightsPrior = function(newdat, weights, classProbCut = 0.9, ratioPrior = 1/2,  PShighGroup = "PShigh", 
                     PSlowGroup = "PSlow", imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]

@@ -22,6 +22,9 @@ LPStraining(
 \arguments{
 \item{trainDat}{a training data set that is in data matrix or a data frame, samples are in columns, and features/traits are in rows}
 
+\item{standardization}{a logic variable to indicate if standardization is needed before classification 
+score calculation}
+
 \item{selectedTraits}{a selected feature/trait list if available}
 
 \item{groupInfo}{a known group classification, which order should be in the same as in columns of trainDat}
@@ -104,7 +107,7 @@ Statistical Applications in Genetics and Molecular Biology, 3, No. 1, Article 3.
 Smyth, G. K., Michaud, J., and Scott, H. (2005). The use of within-array replicate spots for assessing differential expression in 
 microarray experiments. Bioinformatics 21(9), 2067-2075.
 
-Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method
+Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A gene expression-based method
 to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S
 A. 2003 Aug 19;100(17):9991-6.
 }

@@ -15,6 +15,8 @@ LPStesting(
 )
 }
 \arguments{
+\item{LPStrainObj}{a LPS training object, which is the output from LPStraining function}
+
 \item{newdat}{a new data matrix or data frame, which is comparable to the training data set, 
 its columns are for samples and rows are for features}
 
@@ -33,8 +35,6 @@ which will use the row data for imputation}
 
 \item{imputeValue}{a character variable to indicate which value to be used to replace NA, default is "median", 
 the median value of the chosen direction with "byrow" data to be used}
-
-\item{LPStraingObj}{a LPS training object, which is the output from LPStraining function}
 }
 \value{
 A data frame with LPS score, Empirical Bayesian probabilites for two groups and classification

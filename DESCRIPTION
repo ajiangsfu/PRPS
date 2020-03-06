@@ -1,10 +1,10 @@
 Package: PRPS
 Type: Package
 Title: Calculate classification scores and classify samples into 2 groups
-Version: 0.1.0
+Version: 0.1.1
 Author: Aixiang Jiang
 Maintainer: Aixiang Jiang <aijiang@bccrc.ca>
-Depends: R (>= 3.3.1)
+Depends: R (>= 3.3)
 Suggests: knitr 
 VignetteBuilder: knitr
 Imports: lattice, caret, limma, e1071, pROC, mclust

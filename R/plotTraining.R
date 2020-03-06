@@ -56,7 +56,10 @@ plotTraining = function(trainObj, plotName, xshift = -0.05, yshift = 0.02, break
   #####                 although this optimal cutoff is not necessary consistent to our final classification
   
   ### hist
-  hist(datin[,1], breaks = breaks, xlab = colnames(datin)[1], main = paste("Histogram of ",colnames(datin)[1], sep=""))
+  ### hist(datin[,1], breaks = breaks, xlab = colnames(datin)[1], main = paste("Histogram of ",colnames(datin)[1], sep=""))
+  
+  ## change the hist part on 20200306
+  plotHistEM(datin[,1], G = 1:2, breaks = breaks, scoreName = colnames(datin)[1])
   
   ### scatter plot if prob is available
   tmp = grep("prob", colnames(datin))

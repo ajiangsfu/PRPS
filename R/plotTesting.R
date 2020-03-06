@@ -20,7 +20,11 @@ plotTesting = function(testObj, plotName, breaks = 30){
   pdf(paste(plotName, ".pdf", sep=""))
  
   ### hist
-  hist(testObj[,1], breaks = breaks, xlab = colnames(testObj)[1], main = paste("Histogram of ",colnames(testObj)[1], sep=""))
+  #hist(testObj[,1], breaks = breaks, xlab = colnames(testObj)[1], main = paste("Histogram of ",colnames(testObj)[1], sep=""))
+  
+  ## change the hist part on 20200306
+  plotHistEM(testObj[,1], G = 1:2, breaks = breaks, scoreName = colnames(testObj)[1])
+  
   
   ### scatter plot if prob is available
   tmp = grep("prob", colnames(testObj))

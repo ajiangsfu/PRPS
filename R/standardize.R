@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 standardize = function(dataIn, byrow = TRUE){
   ind = ifelse(byrow == TRUE, 1,2)
   outs = apply(dataIn, ind, FUN = function(xx){

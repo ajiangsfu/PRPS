@@ -67,7 +67,6 @@
 
 PRPSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange = c(0.05, 0.95), standardization=FALSE, classProbCut = 0.9, PRPShighGroup = "PRPShigh", 
                                           PRPSlowGroup = "PRPSlow", breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
-  require(mclust)
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){
@@ -90,6 +89,8 @@ PRPSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange 
   
   rpsres = sapply(rps, FUN = function(xx){
     tmp = PRPSSLwithWeightsPrior(newdat=newdat, weights=weights, ratioPrior = xx, PRPShighGroup = PRPShighGroup, PRPSlowGroup = PRPSlowGroup)
+    ### note on 20200306, since I only keep the PRPS score from PRPSSLwithWeightsPrior and ignore its classification, I am fine
+    ###       otherwise I might have to consider if theoretical score cut at 0 is good or not
     
     ######  add plot EM step back for this local function on 20191206 ######################
     emsearch = plotHistEM(tmp$PRPS_test$PRPS_score, G = 2, breaks = breaks, 
@@ -97,6 +98,13 @@ PRPSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange 
     #########################################################################
     
     mcls = mclust::Mclust(tmp$PRPS_test$PRPS_score, G=2, warn = TRUE)
+    ### note on 20200306, since G = 2 is set in plotHistEM, the above line is the same as shown in plot
+    ###  this means that I actually did the same Mclust for two times, which I do not need to bather to export the Mclust project
+    ###   -> which is reasonable, since plot is usually the end-function without any return
+    ### alternatively, I can run Mclust first, and then inout Mclust into plot function
+    ###   -> but the problem with this is: sometimes I do not have Mclust before I call the plot function
+    ### putting together, the current approach is acceptable, so no change is needed
+    
     return(mcls$classification)
   })
   

@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 plotROC = function(contdat, contname, catdat, catname, xshift = -0.05, yshift = 0.02){
   ##require(pROC)
   roc1 = pROC::roc(as.factor(catdat), contdat, direction="<", auc=TRUE, ci=TRUE)

@@ -22,6 +22,8 @@
 #' If NAs are not imputed, they are ignored for feature selection, weight calculation, LPS parameter estimation, 
 #' and LPS calculation.
 #' @param trainDat a training data set that is in data matrix or a data frame, samples are in columns, and features/traits are in rows
+#' @param standardization a logic variable to indicate if standardization is needed before classification 
+#'  score calculation
 #' @param selectedTraits  a selected feature/trait list if available
 #' @param groupInfo a known group classification, which order should be in the same as in columns of trainDat
 #' @param refGroup the code for reference group, default is the 1st item in groupInfo

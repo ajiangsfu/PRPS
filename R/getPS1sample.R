@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 getPS1sample = function(vdat, PSpars){
   #### vdat is a vector of feature data
   #### PSpars is a  matrix, the rows are genes that are in the same order as in vdat

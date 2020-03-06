@@ -34,7 +34,7 @@
 #'   to the reference group.
 #'  Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 #'  we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
-#' @param PRPStraingObj a PRPS training object, which is the output from function PRPStraining
+#' @param PRPStrainObj a PRPS training object, which is the output from function PRPStraining
 #' @param newdat a new data matrix or data frame, which is comparable to training data set, 
 #'  with columns for samples and rows for features
 #' @param standardization a logic variable to indicate if standardization is needed before classification 

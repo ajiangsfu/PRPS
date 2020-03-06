@@ -1,4 +1,6 @@
-#' @export
+#' A function rather aimed at developers
+#' @noRd
+
 PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  classProbCut = 0.9, ratioPrior = 1/2, PRPShighGroup = "PRPShigh", 
                                   PRPSlowGroup = "PRPSlow", imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
@@ -20,7 +22,12 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
                               group1ratioPrior = ratioPrior)
   
   df1 = as.integer(ratioPrior*dim(newdat)[2]) - 1
-  df0 = dim(newdat)[2] - df1 - 1
+  ## df0 = dim(newdat)[2] - df1 - 1 ### this seems not correct
+  ## change on 20200306
+  ## df0 = as.integer((1-ratioPrior)*dim(newdat)[2]) - 1
+  ## or:
+  df0 = dim(newdat)[2] - df1 - 2
+  
   dfs = c(df1, df0)
   
   PRPS_score = weightedLogProbClass(newdat=newdat, topTraits=names(weights), weights=weights,
@@ -62,6 +69,10 @@ PRPSSLwithWeightsPrior = function(newdat, weights, standardization=FALSE,  class
   # testPRPSsd = sd(ttmp)
   # refPRPSsd = sd(rtmp)
   
+  #### note on 20200306, I am wondering why I do not the ratioPrior to get score parameters?
+  ####  -> reason, the ratioPrior is the searching tool for gene level parameter estimation
+  ####     once we have score, we should ignore our ratio assumption since it is most likely not corret
+  ####  -> the following is exactly what I did for JCO 2018 paper, except here I use prob as final classification instead of PRPS 0 cutoff
   #### 20190904, use the 0 theoretical cutoff to get two groups, which are used for empirial Bayesian prob calculation
   ttmp = PRPS_score[which(PRPS_score >= 0)]
   rtmp = PRPS_score[which(PRPS_score < 0)]

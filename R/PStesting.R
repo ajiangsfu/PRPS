@@ -23,7 +23,7 @@
 #'  \eqn{PS = (V_win − V_lose)/(V_win + V_lose)}
 #'  Here, where V_win and V_lose are the vote totals for the winning and losing features/traits for a given sample
 #'  
-#' @param PStraingObj a PS training object, which is the output from function PStraining
+#' @param PStrainObj a PS training object, which is the output from function PStraining
 #' @param newdat a new data matrix or data frame, which is comparable to training data set, 
 #'  with columns for samples and rows for features
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 

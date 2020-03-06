@@ -21,7 +21,7 @@
 #' @param plotName a pdf file name with full path and is ended with ".pdf", which is used to save multiple pages 
 #'  of PS histgrams with distribution densities. Default value us NULL, no plot is saved.
 #' @param ratioRange a numeric vector with two numbers, which indicates ratio search range. The default is
-#'  c(0.05, 0.95), which should NOT be changed in most of situations. However, if your classification is very
+#'  c(0.1, 0.9)for the current function. If your classification is very
 #'  unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
 #'  and/or classification results are far away from what you expect, you might want to change the default values.
 #'  c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.
@@ -31,7 +31,6 @@
 #' @param PShighGroup a string to indicate group name with high PS score
 #' @param PSlowGroup a string to indicate group name with low PS score
 #' @param breaks a integer to indicate number of bins in histogram, default is 50
-#' @param EMmaxRuns number of Iterations for EM searching; default=50
 #' @param imputeNA a logic variable to indicate if NA imputation is needed, if it is TRUE, NA imputation is 
 #'  processed before any other steps, the default is FALSE
 #' @param byrow a logic variable to indicate direction for imputation, default is TRUE, 
@@ -59,9 +58,8 @@
 
 #' @export
 
-PSstableSLwithWeights = function(newdat, weights, plotName = NULL, classProbCut = 0.9, PShighGroup = "PShigh", PSlowGroup = "PSlow",
+PSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange = c(0.1, 0.9), classProbCut = 0.9, PShighGroup = "PShigh", PSlowGroup = "PSlow",
                                  breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
-  require(mclust)
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){
@@ -77,7 +75,7 @@ PSstableSLwithWeights = function(newdat, weights, plotName = NULL, classProbCut 
   newdat = newdat[tmp,]
 
   ## change on 20190918
-  rps = seq(0.2, 0.8, by = 0.05)
+  rps = seq(ratioRange[1], ratioRange[2], by = 0.05)
   
   if(!is.null(plotName)){
     pdf(plotName)
