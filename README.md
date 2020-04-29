@@ -1,26 +1,11 @@
-
-Type: Package
-
-Title: Binary classification with PRPS and several other choices
-
-Version: 0.1.1
-
-Author: Aixiang Jiang
-
-Maintainer: Aixiang Jiang <aijiang@bccrc.ca> <aixiang.jiang@pathology.ubc.ca>
-
-Depends: R (&gt;= 3.5), lattice, caret, limma, e1071, pROC, mclust
-
-Suggests: knitr
-
-VignetteBuilder: knitr
+PRPS: Binary classification with PRPS, PRPS-ST and several other choices
 
    
 
 I. Introduction
 ===============
 
-    PRPS R package is designed to be used for binary classification with three different classification calculation formulas: LPS, PRPS and PS. In addition to training + testing approach, this package also includes self-learning algorithm implemented with PRPS and PS.
+    PRPS R package is designed to be used for binary classification with three different classification calculation formulas: LPS, PRPS and PS. In addition to training + testing approach, this package also includes self-training algorithm implemented with PRPS and PS as PRPS-ST and PS-ST.
 
 1. LPS (Linear Predictor Score);
 --------------------------------
@@ -51,14 +36,14 @@ TR Golub, DK Slonim, P Tamayo, C Huard, M Gaasenbeek, JP Mesirov, H Coller, ML L
 
    
 
-4. Self-learning
+4. self-training
 ----------------
 
-    self-learning algorithm (Jiang et al., 2020) is to identify cases in an unlabeled high dimensional data set that can be confidently classified and to use those cases as pseudo training data thereby allowing classification of all cases in the cohort.    Classification scores are calculated with PRPS (Ennishi et al., 2019) or PS formula (Golub et al., 1999), and probability calculation is based on empirical Bayes method with score distribution parameters from the pseudo training data. We make binary classification calls based on cutoff on probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
+    self-training algorithm (Jiang et al., 2020) is to identify cases in an unlabeled high dimensional data set that can be confidently classified and to use those cases as pseudo training data thereby allowing classification of all cases in the cohort.    Classification scores are calculated with PRPS (Ennishi et al., 2019) or PS formula (Golub et al., 1999), and probability calculation is based on empirical Bayes method with score distribution parameters from the pseudo training data. We make binary classification calls based on cutoff on probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
 
 #### References:
 
-Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, Self-learning binary classification and its application to cancer gene expression data (in preparation)
+Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, Robust gene expression-based classification of cancers without normalization (Submitted)
 
 Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. Journal of Clinical Oncology 37, no. 3 (January 20, 2019) 190-201. DOI: 10.1200/JCO.18.01583
 
@@ -171,7 +156,7 @@ Rosenwald A, Wright G, Chan WC, et al. The use of molecular profiling to predict
 
 ### 3). WrightCOO
 
-This data frame contains 158 COO (cell of origin) related genes with both Ensembl annotation ID (row names) and gene symbols (column "Gene"). "The current standard approach for routinely classifying samples using Affymetrix U133 arrays employs 186 probesets (George Wright, personal communication). The 165 Ensembl genes that correspond to these probesets were used for classification by RNA-seq." (Morin et al., 2011)". In our recent research, we matched 158 genes in Ennishi cohort (Ennishi et al., 2019), which are used in self-learning research (Jiang et al., 2020) and are included in PRPS package.
+This data frame contains 158 COO (cell of origin) related genes with both Ensembl annotation ID (row names) and gene symbols (column "Gene"). "The current standard approach for routinely classifying samples using Affymetrix U133 arrays employs 186 probesets (George Wright, personal communication). The 165 Ensembl genes that correspond to these probesets were used for classification by RNA-seq." (Morin et al., 2011)". In our recent research, we matched 158 genes in Ennishi cohort (Ennishi et al., 2019), which are used in self-training research (Jiang et al., 2020) and are included in PRPS package.
 
 In order to see detail of WrightCOO, load WrightCOO embedded within PRPS package.
 
@@ -198,7 +183,7 @@ Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression
 
 Morin, R. D., Mendez-Lago, M., Mungall, A. J., Goya, R., Mungall, K. L., Corbett, R. D., ... Marra, M. A. (2011). Frequent mutation of histone-modifying genes in non-Hodgkin lymphoma. Nature, 476(7360), 298-303. <https://doi.org/10.1038/nature10351>
 
-Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, Self-learning binary classification and its application to cancer gene expression data (in preparation)
+Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, self-training binary classification and its application to cancer gene expression data (in preparation)
 
 ### 4). DHITsig and DHITsigENSG
 
@@ -716,3 +701,17 @@ head(lpswts)
 #>     17708     27631     24796     26697     27562     17496 
 #>  7.938396  7.431466  7.144285  6.859320  6.793850 -6.606511
 ```
+
+PRPS
+
+Version: 0.1.1
+
+Author: Aixiang Jiang
+
+Maintainer: Aixiang Jiang <aijiang@bccrc.ca> <aixiang.jiang@pathology.ubc.ca>
+
+Depends: R (&gt;= 3.5), lattice, caret, limma, e1071, pROC, mclust
+
+Suggests: knitr
+
+VignetteBuilder: knitr
