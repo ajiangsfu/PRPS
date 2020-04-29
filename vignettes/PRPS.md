@@ -1,4 +1,3 @@
-
 Type: Package
 
 Title: Binary classification with PRPS and several other choices
