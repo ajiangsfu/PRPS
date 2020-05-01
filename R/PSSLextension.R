@@ -1,10 +1,10 @@
 
-#' PS self learning extension
+#' PS self-training extension
 #' @description This is the function to calculate PS (Prediction Strength) scores and make binary classification calls 
-#' for a testing data set with PS_stableSLwithWeights or PSSLwithWeightsPrior self learning object. 
+#' for a testing data set with PS_stableSLwithWeights or PSSLwithWeightsPrior self-training object. 
 #'  The selected feature list, these features' parameters are from the given PS_stableSLwithWeights or PSSLwithWeightsPrior object.
 #' @details  This is the function to calculate PS scores, Empirical Bayesian probabilities and make classification 
-#' for a testing new data set. However, this new data set should be comparable to the self learning data set used for PS_stableSLwithWeights or 
+#' for a testing new data set. However, this new data set should be comparable to the self-training data set used for PS_stableSLwithWeights or 
 #' PSSLwithWeightsPrior as much as possible. 
 #'  PS calculation is based on Golub 1999. The formula is:
 #'   \eqn{PS = (V_win − V_lose)/(V_win + V_lose)}
@@ -20,9 +20,9 @@
 #'  belongs to the test group, p_ref(x) is the probability that a given sample belongs to the reference group.
 #'  Notice that the test and reference group is just the relative grouping, in fact, for this step, 
 #'  we often need to calculate Empirical Bayes' probabilities for a given sample from two different standing points.
-#' @param PSSLObj a PS self learning object that is the output from function
+#' @param PSSLObj a PS self-training object that is the output from function
 #' PS_stableSLwithWeights or PSSLwithWeightsPrior.
-#' @param newdat a new data matrix or data frame, which is comparable to self learning data set, 
+#' @param newdat a new data matrix or data frame, which is comparable to self-training data set, 
 #'  with columns for samples and rows for features
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 #'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
@@ -50,7 +50,7 @@ PSSLextension = function(PSSLObj, newdat,classProbCut = 0.9,
                          imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   
-  if(is.null(PSSLObj)){print("Please input your PS self learning object")}
+  if(is.null(PSSLObj)){print("Please input your PS self-training object")}
   PS_pars = PSSLObj$PS_pars
   weights = PS_pars$weights
   

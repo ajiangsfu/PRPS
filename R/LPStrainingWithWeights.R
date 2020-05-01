@@ -1,8 +1,8 @@
 
 #' LPS training with given weights
-#' @description This is to calculate LPS (Linear Prediction Score) scores based on a given training data set with classification
+#' @description This is to calculate LPS (Linear Predictor Score) scores based on a given training data set with classification
 #' labels and selected features' weights  
-#' @details This is to calculate LPS (Linear Prediction Score) scores based on a given training data set with classification
+#' @details This is to calculate LPS (Linear Predictor Score) scores based on a given training data set with classification
 #' labels and selected features' weights. Notice that there is no feature selection and weight calculation step in this function 
 #' since we already have selected features and their weights from elsewhere, which is different from LPStraining. 
 #' 

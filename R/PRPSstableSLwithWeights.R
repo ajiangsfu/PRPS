@@ -1,7 +1,7 @@
 
-#' PRPS stable self learning 
+#' PRPS stable self-training 
 #' @description This function is to calculate PRPS (Probability ratio based classification predication score) scores and 
-#' make binary classification calls for a testing data set without PRPS training object. It involves a self learning 
+#' make binary classification calls for a testing data set without PRPS training object. It involves a self-training 
 #' process with given features and their weights.
 #'
 #' @details This function is trying to get reasonable PRPS based classification without training data set, but with 

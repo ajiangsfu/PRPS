@@ -1,6 +1,6 @@
 
 #' LPS training
-#' @description This is the wrap up function to select top features, estimate parameters, and calculate LPS (Linear Prediction Score) scores 
+#' @description This is the wrap up function to select top features, estimate parameters, and calculate LPS (Linear Predictor Score) scores 
 #'  based on a given training data set.  
 #' @details LPS calculation is based on Wright 2003. The formula is straightforward:
 #' \eqn{LPS(X) = \sum a_j x_ij}

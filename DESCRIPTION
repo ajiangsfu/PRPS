@@ -1,23 +1,19 @@
 Package: PRPS
 Type: Package
-Title: Calculate classification scores and classify samples into 2 groups
-Version: 0.1.1
+Title: Binary classification with PRPS, PRPS-ST and more
+Version: 1.0.0
 Author: Aixiang Jiang
 Maintainer: Aixiang Jiang <aijiang@bccrc.ca> <aixiang.jiang@pathology.ubc.ca> 
 Depends: R (>= 3.5)
 Suggests: knitr 
 VignetteBuilder: knitr
 Imports: lattice, caret, limma, e1071, pROC, mclust
-Description: This package calculates classification prediction score with three method choices: 
-   a) LPS (defult, Linear Prediction Score); 
-   b) PRPS (Probability ratio based classification predication score);
-   c) PS (Prediction Strength).
-   In the classification step, if LPS is chosen, Empirical Bayes' probabilities are calcualted 
-   and classification is based on cutoff on probabilities; if PRPS is chosen, two types of outputs
-   are given: one is based on cutoff on Empirical Bayes' probabilities, the other one is based on 
-   natural cutoff 0 on PRPS scores; when PS is selected, by default, classification is based on 
-   natural cutoff 0 on PS scores, however, a separate function can alos issues classification based
-   on cutoff on Empirical Bayes' probabilities when necessary.
+Description: This package calculates classification prediction score with five method choices: 
+   a) PRPS (Probability ratio based classification predication score);
+   b) PRPS-ST (Self-training with Probability ratio based classification predication score);
+   c) LPS (Linear Predictor Score); 
+   d) PS (Prediction Strength);
+   e) PS-ST (Self-training with Prediction Strength).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

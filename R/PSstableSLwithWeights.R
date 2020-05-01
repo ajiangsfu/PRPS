@@ -1,7 +1,7 @@
 
-#' PS stable self learning
+#' PS stable self-training
 #' @description This function is to calculate PS (Prediction Strength) scores and make binary classification calls 
-#' for a testing data set without PS training object. It involves a self learning process with given features and their weights.
+#' for a testing data set without PS training object. It involves a self-training process with given features and their weights.
 #' @details This function is trying to get reasonable PS based classification without training data set, but with 
 #' selected features and their weights. The actual steps are as following:
 #' 1) assume that we have a pool for group ratio priors such as seq(0.05, 0.95, by = 0.05) for default ratioRange = c(0.05, 0.95)

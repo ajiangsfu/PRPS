@@ -1,6 +1,6 @@
 
 #' LPS testing
-#' @description This is the function to calculate LPS (Linear Prediction Score) scores for a testing data set 
+#' @description This is the function to calculate LPS (Linear Predictor Score) scores for a testing data set 
 #' with a given LPS training object. The selected features with their weights, and two classes' LPS score distribution parametes
 #' are extracted from the given LPS training object.
 #' @details  This is the function to calculate LPS scores and make classification based on Empirical Bayesian probabilities 
