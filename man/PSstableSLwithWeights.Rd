@@ -2,7 +2,7 @@
 % Please edit documentation in R/PSstableSLwithWeights.R
 \name{PSstableSLwithWeights}
 \alias{PSstableSLwithWeights}
-\title{PS stable self learning}
+\title{PS stable self-training}
 \usage{
 PSstableSLwithWeights(
   newdat,
@@ -60,7 +60,7 @@ A list with two items is returned: PS parameters for selected features, PS score
 }
 \description{
 This function is to calculate PS (Prediction Strength) scores and make binary classification calls 
-for a testing data set without PS training object. It involves a self learning process with given features and their weights.
+for a testing data set without PS training object. It involves a self-training process with given features and their weights.
 }
 \details{
 This function is trying to get reasonable PS based classification without training data set, but with 

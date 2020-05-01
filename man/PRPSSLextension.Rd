@@ -2,7 +2,7 @@
 % Please edit documentation in R/PRPSSLextension.R
 \name{PRPSSLextension}
 \alias{PRPSSLextension}
-\title{PRPS self learning extension}
+\title{PRPS self-training (used to be called self-learning) extension}
 \usage{
 PRPSSLextension(
   PRPSSLObj,
@@ -15,10 +15,10 @@ PRPSSLextension(
 )
 }
 \arguments{
-\item{PRPSSLObj}{a PRPS self learning object that is the output from function
+\item{PRPSSLObj}{a PRPS self-training object that is the output from function
 PRPS_stableSLwithWeights or PRPSSLwithWeights or PRPSSLwithWeightsPrior or PRPSSLwithWeightsEM.}
 
-\item{newdat}{a new data matrix or data frame, which is comparable to self learning data set, 
+\item{newdat}{a new data matrix or data frame, which is comparable to self-training data set, 
 with columns for samples and rows for features}
 
 \item{standardization}{a logic variable to indicate if standardization is needed before classification 
@@ -42,26 +42,26 @@ A data frame with PRPS scores, Empirical Bayesian probabilites for two groups an
  and classification based on 0 natural cutoff on PRPS scores.
 }
 \description{
-This is a PRPS self learning extension function to calculate PRPS (Probability ratio based classification predication score)
- scores and make binary classification calls for a testing data set with a PRPS self learning object, e.g., output of PRPSstableSLwithWeights.
- The selected feature list, these features' parameters are extracted from the given PRPS self learning object.
+This is a PRPS self-training extension function to calculate PRPS (Probability ratio based classification predication score)
+ scores and make binary classification calls for a testing data set with a PRPS self-training object, e.g., output of PRPSstableSLwithWeights.
+ The selected feature list, these features' parameters are extracted from the given PRPS self-training object.
 }
 \details{
 This is the function to calculate PRPS scores, Empirical Bayesian probabilities and make binary classification 
-for a testing data set. This new testing data set should be comparable to the self learning data set as much as possible. 
-Within this current function, standardization step is included as an option to minimize the difference between self learning and testing data sets. 
-Whether or not a user decides to do standardization, this should be consistent between self learning and testing data sets, 
+for a testing data set. This new testing data set should be comparable to the self-training data set as much as possible. 
+Within this current function, standardization step is included as an option to minimize the difference between self-training and testing data sets. 
+Whether or not a user decides to do standardization, this should be consistent between self-training and testing data sets, 
 otherwise this current testing function will not work.
  Notice that standardization step is only done to make distributions of each selected feature comparable within each data set. 
  Be aware that this feature-wise standardization cannot make the sample-wise distributions comparable. 
- For example, the self learning data set must have two classification groups, however, the proportion of one group 
- might be much smaller than the other group in the testing data set compared to the self learning data set, or even worse, 
+ For example, the self-training data set must have two classification groups, however, the proportion of one group 
+ might be much smaller than the other group in the testing data set compared to the self-training data set, or even worse, 
  the testing data set might contain one classification group only. This is the common problem for classification 
  and feature-wise standardization cannot solve the problem. 
 
  In order to solve the problem, we should make data comparable as much as possbile before classification step. 
  For example, use the same pre-processing settings and make suitable batch effect correction. 
- For classification with PRPS approach, we also suggest to combine self learning and testing data together as "newdat" 
+ For classification with PRPS approach, we also suggest to combine self-training and testing data together as "newdat" 
  for this PRPSSLextension function, to avoid forcing samples into two groups while there is actual only one group
  in the testing data set.
  

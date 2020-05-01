@@ -2,7 +2,7 @@
 % Please edit documentation in R/PSSLextension.R
 \name{PSSLextension}
 \alias{PSSLextension}
-\title{PS self learning extension}
+\title{PS self-training extension}
 \usage{
 PSSLextension(
   PSSLObj,
@@ -14,10 +14,10 @@ PSSLextension(
 )
 }
 \arguments{
-\item{PSSLObj}{a PS self learning object that is the output from function
+\item{PSSLObj}{a PS self-training object that is the output from function
 PS_stableSLwithWeights or PSSLwithWeightsPrior.}
 
-\item{newdat}{a new data matrix or data frame, which is comparable to self learning data set, 
+\item{newdat}{a new data matrix or data frame, which is comparable to self-training data set, 
 with columns for samples and rows for features}
 
 \item{classProbCut}{a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
@@ -38,12 +38,12 @@ A data frame with PS scores, Empirical Bayesian probabilites for two groups and 
 }
 \description{
 This is the function to calculate PS (Prediction Strength) scores and make binary classification calls 
-for a testing data set with PS_stableSLwithWeights or PSSLwithWeightsPrior self learning object. 
+for a testing data set with PS_stableSLwithWeights or PSSLwithWeightsPrior self-training object. 
  The selected feature list, these features' parameters are from the given PS_stableSLwithWeights or PSSLwithWeightsPrior object.
 }
 \details{
 This is the function to calculate PS scores, Empirical Bayesian probabilities and make classification 
-for a testing new data set. However, this new data set should be comparable to the self learning data set used for PS_stableSLwithWeights or 
+for a testing new data set. However, this new data set should be comparable to the self-training data set used for PS_stableSLwithWeights or 
 PSSLwithWeightsPrior as much as possible. 
  PS calculation is based on Golub 1999. The formula is:
   \eqn{PS = (V_win − V_lose)/(V_win + V_lose)}

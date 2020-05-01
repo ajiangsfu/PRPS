@@ -40,7 +40,7 @@ the median value of the chosen direction with "byrow" data to be used}
 A data frame with LPS score, Empirical Bayesian probabilites for two groups and classification
 }
 \description{
-This is the function to calculate LPS (Linear Prediction Score) scores for a testing data set 
+This is the function to calculate LPS (Linear Predictor Score) scores for a testing data set 
 with a given LPS training object. The selected features with their weights, and two classes' LPS score distribution parametes
 are extracted from the given LPS training object.
 }

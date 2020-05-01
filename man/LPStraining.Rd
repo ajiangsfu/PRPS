@@ -69,7 +69,7 @@ are excluded since confusion matrix can not compare 3 groups to 2 groups}
 and input group classification for the given training data set. Since UNCLASS is excluded from confusion matrix, we add this table for full comparison}
 }
 \description{
-This is the wrap up function to select top features, estimate parameters, and calculate LPS (Linear Prediction Score) scores 
+This is the wrap up function to select top features, estimate parameters, and calculate LPS (Linear Predictor Score) scores 
  based on a given training data set.
 }
 \details{

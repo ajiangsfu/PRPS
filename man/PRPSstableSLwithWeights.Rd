@@ -2,7 +2,7 @@
 % Please edit documentation in R/PRPSstableSLwithWeights.R
 \name{PRPSstableSLwithWeights}
 \alias{PRPSstableSLwithWeights}
-\title{PRPS stable self learning}
+\title{PRPS stable self-training}
 \usage{
 PRPSstableSLwithWeights(
   newdat,
@@ -65,7 +65,7 @@ and classification with natural 0 cutoff}
 }
 \description{
 This function is to calculate PRPS (Probability ratio based classification predication score) scores and 
-make binary classification calls for a testing data set without PRPS training object. It involves a self learning 
+make binary classification calls for a testing data set without PRPS training object. It involves a self-training 
 process with given features and their weights.
 }
 \details{
