@@ -768,7 +768,10 @@ table(testset$group, PSext$PS_class)
 
 This gives some idea how we are doing with extension of PS self-training.
 
-#### PRPS R package general information
+   
+
+PRPS R package general information
+==================================
 
 Version: 1.0.0
 
