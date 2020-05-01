@@ -77,7 +77,7 @@ install.packages("remotes") \#\#\# Run this line only if "remotes"" is not insta
 
 ### 3. Install PRPS with archive files
 
-There are two archive files for PRPS package available under <https://github.com/ajiangsfu/PRPS>. One file is in source package format for the most updated version (current version: PRPS\_0.1.1.tar.gz), and the other file is in binary package format for the most updated version (current version: PRPS\_0.1.1\_R\_x86\_64-pc-linux-gnu.tar.gz). The source package file can be used in any system, but the binary package file built under Linus cannot be installed in Window system.
+There are two archive files for PRPS package available under <https://github.com/ajiangsfu/PRPS>. One file is in source package format for the most updated version (current version: PRPS\_1.0.0.tar.gz), and the other file is in binary package format for the most updated version (current version: PRPS\_1.0.0\_R\_x86\_64-pc-linux-gnu.tar.gz). The source package file can be used in any system, but the binary package file built under Linus cannot be installed in Window system.
 
 After you download the PRPS package file(s), you can install PRPS with the following choices:
 
