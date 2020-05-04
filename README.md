@@ -6,11 +6,11 @@ PRPS: Binary classification with PRPS, PRPS-ST and more
 I. Binary classfication methods
 -------------------------------
 
-PRPS R package is designed to be used for binary classification with five method choices, they are PRPS (Probability ratio based classification predication score), PRPS-ST (Self-training with Probability ratio based classification predication score), LPS (Linear Predictor Score), PS (Prediction Strength), and PS-ST (Self-training with Prediction Strength).
+PRPS R package is designed to be used for binary classification with five method choices. Probability calculations are based on empirical Bayes method assuming we know classification score distribution parameters for two groups or if we could estimate them from a training data set.
 
 ### 1. PRPS (Probability ratio based classification predication score)
 
-Classification scores are calculated with PRPS formula (Ennishi et al., 2019), and probability calculation is based on empirical Bayes method assuming that we know PRPS score distribution parameters for the two groups, or if we can estimate these parameters from a training data set. We make binary classification calls based on cutoff on probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
+Classification scores are calculated with PRPS formula (Ennishi et al., 2019). We make binary classification calls based on cutoff of probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
 
 #### References:
 
@@ -18,7 +18,7 @@ Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tan
 
 ### 2. PRPS-ST (Self-training with Probability ratio based classification predication score)
 
-Self-training algorithm (Jiang et al., 2020) is to identify cases in an unlabeled high dimensional data set that can be confidently classified and to use those cases as pseudo training data thereby allowing classification of all cases in the cohort. For PRPS-ST, classification scores are calculated with PRPS (Ennishi et al., 2019), and probability calculation is based on empirical Bayes method with score distribution parameters from the pseudo training data. We make binary classification calls based on cutoff on probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
+Self-training algorithm (Jiang et al., 2020) is to identify cases in an unlabeled high dimensional data set that can be confidently classified and to use those cases as pseudo training data thereby allowing classification of all cases in the cohort. For PRPS-ST, classification scores are calculated with PRPS (Ennishi et al., 2019), and score distribution parameters are estimated from the pseudo-training data set. We make binary classification calls based on cutoff of probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
 
 #### References:
 
@@ -26,11 +26,9 @@ Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, Robust ge
 
 Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. Journal of Clinical Oncology 37, no. 3 (January 20, 2019) 190-201. DOI: 10.1200/JCO.18.01583
 
-TR Golub, DK Slonim, P Tamayo, C Huard, M Gaasenbeek, JP Mesirov, H Coller, ML Loh, JR Downing, MA Caligiuri, et al. Molecular classification of cancer: class discovery and class prediction by gene expression monitoring Science, 286 (1999), pp. 531-537
-
 ### 3. LPS (Linear Predictor Score)
 
-Classification scores are calculated with LPS formula (Wright et al., 2003), and probability calculation is based on empirical Bayes method assuming that we know LPS score distribution parameters for the two groups, or if we can estimate these parameters from a training data set. We make binary classification calls based on cutoff on probabilities with default 0.9.
+Classification scores are calculated with LPS formula (Wright et al., 2003). We make binary classification calls based on cutoff of probabilities with default 0.9.
 
 #### References:
 
@@ -38,7 +36,7 @@ Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression
 
 ### 4. PS (Prediction Strength).
 
-Classification scores are calculated with PS formula (Golub et al., 1999), and probability calculation is based on empirical Bayes method assuming that we know PS score distribution parameters for the two groups, or if we can estimate these parameters from a training data set. We make binary classification calls based on cutoff on probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
+Classification scores are calculated with PS formula (Golub et al., 1999). We make binary classification calls based on cutoff of probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
 
 #### References:
 
@@ -46,7 +44,7 @@ TR Golub, DK Slonim, P Tamayo, C Huard, M Gaasenbeek, JP Mesirov, H Coller, ML L
 
 ### 5. PS-ST (Prediction Strength).
 
-Self-training algorithm (Jiang et al., 2020) is to identify cases in an unlabeled high dimensional data set that can be confidently classified and to use those cases as pseudo training data thereby allowing classification of all cases in the cohort. For PS-ST, classification scores are calculated with PS (Golub et al., 1999), and probability calculation is based on empirical Bayes method with score distribution parameters from the pseudo training data. We make binary classification calls based on cutoff on probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
+Self-training algorithm (Jiang et al., 2020) is to identify cases in an unlabeled high dimensional data set that can be confidently classified and to use those cases as pseudo training data thereby allowing classification of all cases in the cohort. For PS-ST, classification scores are calculated with PS (Golub et al., 1999), score distribution parameters are from the pseudo-training data set. We make binary classification calls based on cutoff of probabilities with default 0.9. In addition, classification based on theoretical cutoff 0 is also provided.
 
 #### References:
 
@@ -161,71 +159,6 @@ str(rosenwald.expr)
 Rosenwald A, Wright G, Chan WC, et al. The use of molecular profiling to predict survival after chemotherapy for diffuse large-B-cell lymphoma. N Engl J Med 2002;346(25):1937-1947
 
 <https://github.com/maressyl/R.LPS/tree/master/LPS>
-
-#### 3). WrightCOO
-
-This data frame contains 158 COO (cell of origin) related genes with both Ensembl annotation ID (row names) and gene symbols (column "Gene"). "The current standard approach for routinely classifying samples using Affymetrix U133 arrays employs 186 probesets (George Wright, personal communication). The 165 Ensembl genes that correspond to these probesets were used for classification by RNA-seq." (Morin et al., 2011)". In our recent research, we matched 158 genes in Ennishi cohort (Ennishi et al., 2019), which are used in self-training research (Jiang et al., 2020) and are included in PRPS package.
-
-In order to see detail of WrightCOO, load WrightCOO embedded within PRPS package.
-
-``` r
-load(system.file("extdata", "WrightCOO.rda", package = "PRPS"))
-str(WrightCOO)
-#> 'data.frame':    158 obs. of  1 variable:
-#>  $ Gene: chr  "NR3C1" "PMM2" "STS" "BCL2" ...
-head(WrightCOO)
-#>                  Gene
-#> ENSG00000113580 NR3C1
-#> ENSG00000140650  PMM2
-#> ENSG00000101846   STS
-#> ENSG00000171791  BCL2
-#> ENSG00000168811 IL12A
-#> ENSG00000196549   MME
-```
-
-Here, we provide both ENSG IDs and gene symbols for this Wright COO list.
-
-#### References:
-
-Wright G, Tan B, Rosenwald A, Hurt EH, Wiestner A, Staudt LM. A trait expression-based method to diagnose clinically distinct subgroups of diffuse large B cell lymphoma. Proc Natl Acad Sci U S A. 2003 Aug 19;100(17):9991-6.
-
-Morin, R. D., Mendez-Lago, M., Mungall, A. J., Goya, R., Mungall, K. L., Corbett, R. D., ... Marra, M. A. (2011). Frequent mutation of histone-modifying genes in non-Hodgkin lymphoma. Nature, 476(7360), 298-303. <https://doi.org/10.1038/nature10351>
-
-Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, Robust gene expression-based classification of cancers without normalization (<https://www.biorxiv.org/content/10.1101/2020.04.28.051953v1>)
-
-#### 4). DHITsig and DHITsigENSG
-
-DHITsig is a vector containing 104 DHITsig genes and their importance scores (Ennishi et al., 2019). In order to see detail of DHITsig, load DHITsig embedded within PRPS package.
-
-``` r
-load(system.file("extdata", "DHITsig.rda", package = "PRPS"))
-str(DHITsig)
-#>  Named num [1:104] 0.674 0.666 0.618 0.597 0.582 ...
-#>  - attr(*, "names")= chr [1:104] "OR13A1" "FAM216A" "MYC" "SLC25A27" ...
-head(DHITsig)
-#>    OR13A1   FAM216A       MYC  SLC25A27     ALOX5     UQCRH 
-#> 0.6742184 0.6662736 0.6180968 0.5973289 0.5822841 0.5545504
-```
-
-We can see that each item's name is in gene symbol format. If your data are in ENSG ID format, you need to load DHITsigENSG instead:
-
-``` r
-load(system.file("extdata", "DHITsigENSG.rda", package = "PRPS"))
-str(DHITsigENSG)
-#>  Named num [1:104] 0.674 0.666 0.618 0.597 0.582 ...
-#>  - attr(*, "names")= chr [1:104] "ENSG00000256574" "ENSG00000204856" "ENSG00000136997" "ENSG00000153291" ...
-head(DHITsigENSG)
-#> ENSG00000256574 ENSG00000204856 ENSG00000136997 ENSG00000153291 ENSG00000012779 
-#>       0.6742184       0.6662736       0.6180968       0.5973289       0.5822841 
-#> ENSG00000173660 
-#>       0.5545504
-```
-
-DHITsigENSG contains exactly the same genes as in DHITsig and their importance scores, the only difference is that its item names are in ENSG IDs.
-
-#### References:
-
-Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. J Clin Oncol. 2018 Dec 3:JCO1801583. doi: 10.1200/JCO.18.01583.
 
 ### 3. Code Examples
 
@@ -612,8 +545,8 @@ PS performs exactly the same as LPS for the above training and testing data sets
 
    
 
-IIII. Special path: classification with self-training
------------------------------------------------------
+IV. Special path: classification with self-training
+---------------------------------------------------
 
 In many situations, we might not have comparable training and testing data sets, in this case, we can apply self-training methods for classification.
 
@@ -654,7 +587,7 @@ require(mclust)  ### for some reason, this function is needed to be called here 
 prpsst = PRPSstableSLwithWeights(newdat = dat[,rownames(trainset)],  weights = wts, PRPShighGroup = "ABC", PRPSlowGroup = "GCB")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-28-1.png)![](README_files/figure-markdown_github/unnamed-chunk-28-2.png)![](README_files/figure-markdown_github/unnamed-chunk-28-3.png)![](README_files/figure-markdown_github/unnamed-chunk-28-4.png)![](README_files/figure-markdown_github/unnamed-chunk-28-5.png)![](README_files/figure-markdown_github/unnamed-chunk-28-6.png)![](README_files/figure-markdown_github/unnamed-chunk-28-7.png)![](README_files/figure-markdown_github/unnamed-chunk-28-8.png)![](README_files/figure-markdown_github/unnamed-chunk-28-9.png)![](README_files/figure-markdown_github/unnamed-chunk-28-10.png)![](README_files/figure-markdown_github/unnamed-chunk-28-11.png)![](README_files/figure-markdown_github/unnamed-chunk-28-12.png)![](README_files/figure-markdown_github/unnamed-chunk-28-13.png)![](README_files/figure-markdown_github/unnamed-chunk-28-14.png)![](README_files/figure-markdown_github/unnamed-chunk-28-15.png)![](README_files/figure-markdown_github/unnamed-chunk-28-16.png)![](README_files/figure-markdown_github/unnamed-chunk-28-17.png)![](README_files/figure-markdown_github/unnamed-chunk-28-18.png)![](README_files/figure-markdown_github/unnamed-chunk-28-19.png)![](README_files/figure-markdown_github/unnamed-chunk-28-20.png)![](README_files/figure-markdown_github/unnamed-chunk-28-21.png)![](README_files/figure-markdown_github/unnamed-chunk-28-22.png)![](README_files/figure-markdown_github/unnamed-chunk-28-23.png)![](README_files/figure-markdown_github/unnamed-chunk-28-24.png)![](README_files/figure-markdown_github/unnamed-chunk-28-25.png)![](README_files/figure-markdown_github/unnamed-chunk-28-26.png)![](README_files/figure-markdown_github/unnamed-chunk-28-27.png)![](README_files/figure-markdown_github/unnamed-chunk-28-28.png)![](README_files/figure-markdown_github/unnamed-chunk-28-29.png)![](README_files/figure-markdown_github/unnamed-chunk-28-30.png)![](README_files/figure-markdown_github/unnamed-chunk-28-31.png)![](README_files/figure-markdown_github/unnamed-chunk-28-32.png)![](README_files/figure-markdown_github/unnamed-chunk-28-33.png)![](README_files/figure-markdown_github/unnamed-chunk-28-34.png)![](README_files/figure-markdown_github/unnamed-chunk-28-35.png)![](README_files/figure-markdown_github/unnamed-chunk-28-36.png)![](README_files/figure-markdown_github/unnamed-chunk-28-37.png)![](README_files/figure-markdown_github/unnamed-chunk-28-38.png)![](README_files/figure-markdown_github/unnamed-chunk-28-39.png)
+![](README_files/figure-markdown_github/unnamed-chunk-25-1.png)![](README_files/figure-markdown_github/unnamed-chunk-25-2.png)![](README_files/figure-markdown_github/unnamed-chunk-25-3.png)![](README_files/figure-markdown_github/unnamed-chunk-25-4.png)![](README_files/figure-markdown_github/unnamed-chunk-25-5.png)![](README_files/figure-markdown_github/unnamed-chunk-25-6.png)![](README_files/figure-markdown_github/unnamed-chunk-25-7.png)![](README_files/figure-markdown_github/unnamed-chunk-25-8.png)![](README_files/figure-markdown_github/unnamed-chunk-25-9.png)![](README_files/figure-markdown_github/unnamed-chunk-25-10.png)![](README_files/figure-markdown_github/unnamed-chunk-25-11.png)![](README_files/figure-markdown_github/unnamed-chunk-25-12.png)![](README_files/figure-markdown_github/unnamed-chunk-25-13.png)![](README_files/figure-markdown_github/unnamed-chunk-25-14.png)![](README_files/figure-markdown_github/unnamed-chunk-25-15.png)![](README_files/figure-markdown_github/unnamed-chunk-25-16.png)![](README_files/figure-markdown_github/unnamed-chunk-25-17.png)![](README_files/figure-markdown_github/unnamed-chunk-25-18.png)![](README_files/figure-markdown_github/unnamed-chunk-25-19.png)![](README_files/figure-markdown_github/unnamed-chunk-25-20.png)![](README_files/figure-markdown_github/unnamed-chunk-25-21.png)![](README_files/figure-markdown_github/unnamed-chunk-25-22.png)![](README_files/figure-markdown_github/unnamed-chunk-25-23.png)![](README_files/figure-markdown_github/unnamed-chunk-25-24.png)![](README_files/figure-markdown_github/unnamed-chunk-25-25.png)![](README_files/figure-markdown_github/unnamed-chunk-25-26.png)![](README_files/figure-markdown_github/unnamed-chunk-25-27.png)![](README_files/figure-markdown_github/unnamed-chunk-25-28.png)![](README_files/figure-markdown_github/unnamed-chunk-25-29.png)![](README_files/figure-markdown_github/unnamed-chunk-25-30.png)![](README_files/figure-markdown_github/unnamed-chunk-25-31.png)![](README_files/figure-markdown_github/unnamed-chunk-25-32.png)![](README_files/figure-markdown_github/unnamed-chunk-25-33.png)![](README_files/figure-markdown_github/unnamed-chunk-25-34.png)![](README_files/figure-markdown_github/unnamed-chunk-25-35.png)![](README_files/figure-markdown_github/unnamed-chunk-25-36.png)![](README_files/figure-markdown_github/unnamed-chunk-25-37.png)![](README_files/figure-markdown_github/unnamed-chunk-25-38.png)![](README_files/figure-markdown_github/unnamed-chunk-25-39.png)
 
 ``` r
 str(prpsst)
@@ -716,7 +649,7 @@ If PS-ST method is selected, with the above top 100 genes, we can process self-l
 PSst = PSstableSLwithWeights(newdat = dat[,rownames(trainset)],  weights = wts, PShighGroup = "ABC", PSlowGroup = "GCB")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-30-1.png)![](README_files/figure-markdown_github/unnamed-chunk-30-2.png)![](README_files/figure-markdown_github/unnamed-chunk-30-3.png)![](README_files/figure-markdown_github/unnamed-chunk-30-4.png)![](README_files/figure-markdown_github/unnamed-chunk-30-5.png)![](README_files/figure-markdown_github/unnamed-chunk-30-6.png)![](README_files/figure-markdown_github/unnamed-chunk-30-7.png)![](README_files/figure-markdown_github/unnamed-chunk-30-8.png)![](README_files/figure-markdown_github/unnamed-chunk-30-9.png)![](README_files/figure-markdown_github/unnamed-chunk-30-10.png)![](README_files/figure-markdown_github/unnamed-chunk-30-11.png)![](README_files/figure-markdown_github/unnamed-chunk-30-12.png)![](README_files/figure-markdown_github/unnamed-chunk-30-13.png)![](README_files/figure-markdown_github/unnamed-chunk-30-14.png)![](README_files/figure-markdown_github/unnamed-chunk-30-15.png)![](README_files/figure-markdown_github/unnamed-chunk-30-16.png)![](README_files/figure-markdown_github/unnamed-chunk-30-17.png)![](README_files/figure-markdown_github/unnamed-chunk-30-18.png)![](README_files/figure-markdown_github/unnamed-chunk-30-19.png)![](README_files/figure-markdown_github/unnamed-chunk-30-20.png)![](README_files/figure-markdown_github/unnamed-chunk-30-21.png)![](README_files/figure-markdown_github/unnamed-chunk-30-22.png)![](README_files/figure-markdown_github/unnamed-chunk-30-23.png)![](README_files/figure-markdown_github/unnamed-chunk-30-24.png)![](README_files/figure-markdown_github/unnamed-chunk-30-25.png)![](README_files/figure-markdown_github/unnamed-chunk-30-26.png)![](README_files/figure-markdown_github/unnamed-chunk-30-27.png)![](README_files/figure-markdown_github/unnamed-chunk-30-28.png)![](README_files/figure-markdown_github/unnamed-chunk-30-29.png)![](README_files/figure-markdown_github/unnamed-chunk-30-30.png)![](README_files/figure-markdown_github/unnamed-chunk-30-31.png)![](README_files/figure-markdown_github/unnamed-chunk-30-32.png)![](README_files/figure-markdown_github/unnamed-chunk-30-33.png)![](README_files/figure-markdown_github/unnamed-chunk-30-34.png)![](README_files/figure-markdown_github/unnamed-chunk-30-35.png)
+![](README_files/figure-markdown_github/unnamed-chunk-27-1.png)![](README_files/figure-markdown_github/unnamed-chunk-27-2.png)![](README_files/figure-markdown_github/unnamed-chunk-27-3.png)![](README_files/figure-markdown_github/unnamed-chunk-27-4.png)![](README_files/figure-markdown_github/unnamed-chunk-27-5.png)![](README_files/figure-markdown_github/unnamed-chunk-27-6.png)![](README_files/figure-markdown_github/unnamed-chunk-27-7.png)![](README_files/figure-markdown_github/unnamed-chunk-27-8.png)![](README_files/figure-markdown_github/unnamed-chunk-27-9.png)![](README_files/figure-markdown_github/unnamed-chunk-27-10.png)![](README_files/figure-markdown_github/unnamed-chunk-27-11.png)![](README_files/figure-markdown_github/unnamed-chunk-27-12.png)![](README_files/figure-markdown_github/unnamed-chunk-27-13.png)![](README_files/figure-markdown_github/unnamed-chunk-27-14.png)![](README_files/figure-markdown_github/unnamed-chunk-27-15.png)![](README_files/figure-markdown_github/unnamed-chunk-27-16.png)![](README_files/figure-markdown_github/unnamed-chunk-27-17.png)![](README_files/figure-markdown_github/unnamed-chunk-27-18.png)![](README_files/figure-markdown_github/unnamed-chunk-27-19.png)![](README_files/figure-markdown_github/unnamed-chunk-27-20.png)![](README_files/figure-markdown_github/unnamed-chunk-27-21.png)![](README_files/figure-markdown_github/unnamed-chunk-27-22.png)![](README_files/figure-markdown_github/unnamed-chunk-27-23.png)![](README_files/figure-markdown_github/unnamed-chunk-27-24.png)![](README_files/figure-markdown_github/unnamed-chunk-27-25.png)![](README_files/figure-markdown_github/unnamed-chunk-27-26.png)![](README_files/figure-markdown_github/unnamed-chunk-27-27.png)![](README_files/figure-markdown_github/unnamed-chunk-27-28.png)![](README_files/figure-markdown_github/unnamed-chunk-27-29.png)![](README_files/figure-markdown_github/unnamed-chunk-27-30.png)![](README_files/figure-markdown_github/unnamed-chunk-27-31.png)![](README_files/figure-markdown_github/unnamed-chunk-27-32.png)![](README_files/figure-markdown_github/unnamed-chunk-27-33.png)![](README_files/figure-markdown_github/unnamed-chunk-27-34.png)![](README_files/figure-markdown_github/unnamed-chunk-27-35.png)
 
 ``` r
 str(PSst)
