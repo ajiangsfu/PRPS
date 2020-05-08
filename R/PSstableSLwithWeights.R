@@ -55,7 +55,7 @@
 #' Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and 
 #' density estimation using Gaussian finite mixture models, The R Journal, 8/1, pp. 205-233.
 #' 
-
+#' @import mclust
 #' @export
 
 PSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange = c(0.1, 0.9), classProbCut = 0.9, PShighGroup = "PShigh", PSlowGroup = "PSlow",

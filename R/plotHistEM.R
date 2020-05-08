@@ -1,4 +1,5 @@
 #' A function rather aimed at developers
+#' @import mclust
 #' @noRd
 
 plotHistEM = function(scoreIn, G = 1:9, breaks = 50, scoreName = "Input score"){
