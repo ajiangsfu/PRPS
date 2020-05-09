@@ -63,15 +63,90 @@ PRPS depends on several existing packages, users should have "limma" installed w
 
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager") BiocManager::install("limma")
 
+The above three lines are runnable but it needs input from users for "Update all/some/none? \[a/s/n\]:", so I do not include them as R code chunk.
+
 There are at least three ways to install PRPS R package from GitHub.
 
 ### 1. Install PRPS with R package "devtools""
 
-install.packages("devtools") \#\#\# Run this line only if "devtools"" is not installed, otherwise please ignore this line devtools :: install\_github(repo = "ajiangsfu/PRPS")
+``` r
+install.packages("devtools")  ### Run this line only if "devtools"" is not installed, otherwise please ignore this line
+#> Installing package into '/mnt/thanos_lv/ajiang/R/x86_64-pc-linux-gnu-library/3.5'
+#> (as 'lib' is unspecified)
+devtools :: install_github(repo = "ajiangsfu/PRPS",force = TRUE)
+#> Downloading GitHub repo ajiangsfu/PRPS@master
+#> rlang    (0.4.5  -> 0.4.6 ) [CRAN]
+#> pillar   (1.4.3  -> 1.4.4 ) [CRAN]
+#> pkgbuild (1.0.7  -> 1.0.8 ) [CRAN]
+#> ps       (1.3.2  -> 1.3.3 ) [CRAN]
+#> tidyr    (1.0.2  -> 1.0.3 ) [CRAN]
+#> recipes  (0.1.10 -> 0.1.12) [CRAN]
+#> Skipping 1 packages not available: limma
+#> Installing 6 packages: rlang, pillar, pkgbuild, ps, tidyr, recipes
+#> Installing packages into '/mnt/thanos_lv/ajiang/R/x86_64-pc-linux-gnu-library/3.5'
+#> (as 'lib' is unspecified)
+#>   
+   checking for file ‘/tmp/Rtmp05UJjL/remotesb40e38f91672/ajiangsfu-PRPS-cdb26ed/DESCRIPTION’ ...
+  
+✓  checking for file ‘/tmp/Rtmp05UJjL/remotesb40e38f91672/ajiangsfu-PRPS-cdb26ed/DESCRIPTION’
+#> 
+  
+─  preparing ‘PRPS’:
+#>    checking DESCRIPTION meta-information ...
+  
+✓  checking DESCRIPTION meta-information
+#> 
+  
+─  checking for LF line-endings in source and make files and shell scripts
+#> 
+  
+─  checking for empty or unneeded directories
+#> ─  building ‘PRPS_1.0.0.tar.gz’
+#> 
+  
+   
+#> 
+#> Installing package into '/mnt/thanos_lv/ajiang/R/x86_64-pc-linux-gnu-library/3.5'
+#> (as 'lib' is unspecified)
+```
+
+Since I have PRPS installed already, I set "force = TRUE", which a user can ignore it if you have not installed PRPS.
 
 ### 2. Install PRPS with R package "remotes"
 
-install.packages("remotes") \#\#\# Run this line only if "remotes"" is not installed, otherwise please ignore this line remotes :: install\_github(repo = "ajiangsfu/PRPS")
+``` r
+install.packages("remotes")  ### Run this line only if "remotes"" is not installed, otherwise please ignore this line
+#> Installing package into '/mnt/thanos_lv/ajiang/R/x86_64-pc-linux-gnu-library/3.5'
+#> (as 'lib' is unspecified)
+remotes :: install_github(repo = "ajiangsfu/PRPS", force = TRUE)
+#> Downloading GitHub repo ajiangsfu/PRPS@master
+#> Skipping 1 packages not available: limma
+#>   
+   checking for file ‘/tmp/Rtmp05UJjL/remotesb40e39a0d54e/ajiangsfu-PRPS-cdb26ed/DESCRIPTION’ ...
+  
+✓  checking for file ‘/tmp/Rtmp05UJjL/remotesb40e39a0d54e/ajiangsfu-PRPS-cdb26ed/DESCRIPTION’
+#> 
+  
+─  preparing ‘PRPS’:
+#>    checking DESCRIPTION meta-information ...
+  
+✓  checking DESCRIPTION meta-information
+#> 
+  
+─  checking for LF line-endings in source and make files and shell scripts
+#> 
+  
+─  checking for empty or unneeded directories
+#> ─  building ‘PRPS_1.0.0.tar.gz’
+#> 
+  
+   
+#> 
+#> Installing package into '/mnt/thanos_lv/ajiang/R/x86_64-pc-linux-gnu-library/3.5'
+#> (as 'lib' is unspecified)
+```
+
+Since I have PRPS installed already, I set "force = TRUE", which a user can ignore it if you have not installed PRPS.
 
 ### 3. Install PRPS with archive files
 
@@ -580,14 +655,10 @@ If PRPS-ST method is selected, with the above top 100 genes, we can process self
 ##### Self-training with PRPSstableSLwithWeights
 
 ``` r
-require(mclust)  ### for some reason, this function is needed to be called here although I usually do not need to do so
-#> Loading required package: mclust
-#> Package 'mclust' version 5.4.6
-#> Type 'citation("mclust")' for citing this R package in publications.
 prpsst = PRPSstableSLwithWeights(newdat = dat[,rownames(trainset)],  weights = wts, PRPShighGroup = "ABC", PRPSlowGroup = "GCB")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-25-1.png)![](README_files/figure-markdown_github/unnamed-chunk-25-2.png)![](README_files/figure-markdown_github/unnamed-chunk-25-3.png)![](README_files/figure-markdown_github/unnamed-chunk-25-4.png)![](README_files/figure-markdown_github/unnamed-chunk-25-5.png)![](README_files/figure-markdown_github/unnamed-chunk-25-6.png)![](README_files/figure-markdown_github/unnamed-chunk-25-7.png)![](README_files/figure-markdown_github/unnamed-chunk-25-8.png)![](README_files/figure-markdown_github/unnamed-chunk-25-9.png)![](README_files/figure-markdown_github/unnamed-chunk-25-10.png)![](README_files/figure-markdown_github/unnamed-chunk-25-11.png)![](README_files/figure-markdown_github/unnamed-chunk-25-12.png)![](README_files/figure-markdown_github/unnamed-chunk-25-13.png)![](README_files/figure-markdown_github/unnamed-chunk-25-14.png)![](README_files/figure-markdown_github/unnamed-chunk-25-15.png)![](README_files/figure-markdown_github/unnamed-chunk-25-16.png)![](README_files/figure-markdown_github/unnamed-chunk-25-17.png)![](README_files/figure-markdown_github/unnamed-chunk-25-18.png)![](README_files/figure-markdown_github/unnamed-chunk-25-19.png)![](README_files/figure-markdown_github/unnamed-chunk-25-20.png)![](README_files/figure-markdown_github/unnamed-chunk-25-21.png)![](README_files/figure-markdown_github/unnamed-chunk-25-22.png)![](README_files/figure-markdown_github/unnamed-chunk-25-23.png)![](README_files/figure-markdown_github/unnamed-chunk-25-24.png)![](README_files/figure-markdown_github/unnamed-chunk-25-25.png)![](README_files/figure-markdown_github/unnamed-chunk-25-26.png)![](README_files/figure-markdown_github/unnamed-chunk-25-27.png)![](README_files/figure-markdown_github/unnamed-chunk-25-28.png)![](README_files/figure-markdown_github/unnamed-chunk-25-29.png)![](README_files/figure-markdown_github/unnamed-chunk-25-30.png)![](README_files/figure-markdown_github/unnamed-chunk-25-31.png)![](README_files/figure-markdown_github/unnamed-chunk-25-32.png)![](README_files/figure-markdown_github/unnamed-chunk-25-33.png)![](README_files/figure-markdown_github/unnamed-chunk-25-34.png)![](README_files/figure-markdown_github/unnamed-chunk-25-35.png)![](README_files/figure-markdown_github/unnamed-chunk-25-36.png)![](README_files/figure-markdown_github/unnamed-chunk-25-37.png)![](README_files/figure-markdown_github/unnamed-chunk-25-38.png)![](README_files/figure-markdown_github/unnamed-chunk-25-39.png)
+![](README_files/figure-markdown_github/unnamed-chunk-27-1.png)![](README_files/figure-markdown_github/unnamed-chunk-27-2.png)![](README_files/figure-markdown_github/unnamed-chunk-27-3.png)![](README_files/figure-markdown_github/unnamed-chunk-27-4.png)![](README_files/figure-markdown_github/unnamed-chunk-27-5.png)![](README_files/figure-markdown_github/unnamed-chunk-27-6.png)![](README_files/figure-markdown_github/unnamed-chunk-27-7.png)![](README_files/figure-markdown_github/unnamed-chunk-27-8.png)![](README_files/figure-markdown_github/unnamed-chunk-27-9.png)![](README_files/figure-markdown_github/unnamed-chunk-27-10.png)![](README_files/figure-markdown_github/unnamed-chunk-27-11.png)![](README_files/figure-markdown_github/unnamed-chunk-27-12.png)![](README_files/figure-markdown_github/unnamed-chunk-27-13.png)![](README_files/figure-markdown_github/unnamed-chunk-27-14.png)![](README_files/figure-markdown_github/unnamed-chunk-27-15.png)![](README_files/figure-markdown_github/unnamed-chunk-27-16.png)![](README_files/figure-markdown_github/unnamed-chunk-27-17.png)![](README_files/figure-markdown_github/unnamed-chunk-27-18.png)![](README_files/figure-markdown_github/unnamed-chunk-27-19.png)![](README_files/figure-markdown_github/unnamed-chunk-27-20.png)![](README_files/figure-markdown_github/unnamed-chunk-27-21.png)![](README_files/figure-markdown_github/unnamed-chunk-27-22.png)![](README_files/figure-markdown_github/unnamed-chunk-27-23.png)![](README_files/figure-markdown_github/unnamed-chunk-27-24.png)![](README_files/figure-markdown_github/unnamed-chunk-27-25.png)![](README_files/figure-markdown_github/unnamed-chunk-27-26.png)![](README_files/figure-markdown_github/unnamed-chunk-27-27.png)![](README_files/figure-markdown_github/unnamed-chunk-27-28.png)![](README_files/figure-markdown_github/unnamed-chunk-27-29.png)![](README_files/figure-markdown_github/unnamed-chunk-27-30.png)![](README_files/figure-markdown_github/unnamed-chunk-27-31.png)![](README_files/figure-markdown_github/unnamed-chunk-27-32.png)![](README_files/figure-markdown_github/unnamed-chunk-27-33.png)![](README_files/figure-markdown_github/unnamed-chunk-27-34.png)![](README_files/figure-markdown_github/unnamed-chunk-27-35.png)![](README_files/figure-markdown_github/unnamed-chunk-27-36.png)![](README_files/figure-markdown_github/unnamed-chunk-27-37.png)![](README_files/figure-markdown_github/unnamed-chunk-27-38.png)![](README_files/figure-markdown_github/unnamed-chunk-27-39.png)
 
 ``` r
 str(prpsst)
@@ -649,7 +720,7 @@ If PS-ST method is selected, with the above top 100 genes, we can process self-l
 PSst = PSstableSLwithWeights(newdat = dat[,rownames(trainset)],  weights = wts, PShighGroup = "ABC", PSlowGroup = "GCB")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-27-1.png)![](README_files/figure-markdown_github/unnamed-chunk-27-2.png)![](README_files/figure-markdown_github/unnamed-chunk-27-3.png)![](README_files/figure-markdown_github/unnamed-chunk-27-4.png)![](README_files/figure-markdown_github/unnamed-chunk-27-5.png)![](README_files/figure-markdown_github/unnamed-chunk-27-6.png)![](README_files/figure-markdown_github/unnamed-chunk-27-7.png)![](README_files/figure-markdown_github/unnamed-chunk-27-8.png)![](README_files/figure-markdown_github/unnamed-chunk-27-9.png)![](README_files/figure-markdown_github/unnamed-chunk-27-10.png)![](README_files/figure-markdown_github/unnamed-chunk-27-11.png)![](README_files/figure-markdown_github/unnamed-chunk-27-12.png)![](README_files/figure-markdown_github/unnamed-chunk-27-13.png)![](README_files/figure-markdown_github/unnamed-chunk-27-14.png)![](README_files/figure-markdown_github/unnamed-chunk-27-15.png)![](README_files/figure-markdown_github/unnamed-chunk-27-16.png)![](README_files/figure-markdown_github/unnamed-chunk-27-17.png)![](README_files/figure-markdown_github/unnamed-chunk-27-18.png)![](README_files/figure-markdown_github/unnamed-chunk-27-19.png)![](README_files/figure-markdown_github/unnamed-chunk-27-20.png)![](README_files/figure-markdown_github/unnamed-chunk-27-21.png)![](README_files/figure-markdown_github/unnamed-chunk-27-22.png)![](README_files/figure-markdown_github/unnamed-chunk-27-23.png)![](README_files/figure-markdown_github/unnamed-chunk-27-24.png)![](README_files/figure-markdown_github/unnamed-chunk-27-25.png)![](README_files/figure-markdown_github/unnamed-chunk-27-26.png)![](README_files/figure-markdown_github/unnamed-chunk-27-27.png)![](README_files/figure-markdown_github/unnamed-chunk-27-28.png)![](README_files/figure-markdown_github/unnamed-chunk-27-29.png)![](README_files/figure-markdown_github/unnamed-chunk-27-30.png)![](README_files/figure-markdown_github/unnamed-chunk-27-31.png)![](README_files/figure-markdown_github/unnamed-chunk-27-32.png)![](README_files/figure-markdown_github/unnamed-chunk-27-33.png)![](README_files/figure-markdown_github/unnamed-chunk-27-34.png)![](README_files/figure-markdown_github/unnamed-chunk-27-35.png)
+![](README_files/figure-markdown_github/unnamed-chunk-29-1.png)![](README_files/figure-markdown_github/unnamed-chunk-29-2.png)![](README_files/figure-markdown_github/unnamed-chunk-29-3.png)![](README_files/figure-markdown_github/unnamed-chunk-29-4.png)![](README_files/figure-markdown_github/unnamed-chunk-29-5.png)![](README_files/figure-markdown_github/unnamed-chunk-29-6.png)![](README_files/figure-markdown_github/unnamed-chunk-29-7.png)![](README_files/figure-markdown_github/unnamed-chunk-29-8.png)![](README_files/figure-markdown_github/unnamed-chunk-29-9.png)![](README_files/figure-markdown_github/unnamed-chunk-29-10.png)![](README_files/figure-markdown_github/unnamed-chunk-29-11.png)![](README_files/figure-markdown_github/unnamed-chunk-29-12.png)![](README_files/figure-markdown_github/unnamed-chunk-29-13.png)![](README_files/figure-markdown_github/unnamed-chunk-29-14.png)![](README_files/figure-markdown_github/unnamed-chunk-29-15.png)![](README_files/figure-markdown_github/unnamed-chunk-29-16.png)![](README_files/figure-markdown_github/unnamed-chunk-29-17.png)![](README_files/figure-markdown_github/unnamed-chunk-29-18.png)![](README_files/figure-markdown_github/unnamed-chunk-29-19.png)![](README_files/figure-markdown_github/unnamed-chunk-29-20.png)![](README_files/figure-markdown_github/unnamed-chunk-29-21.png)![](README_files/figure-markdown_github/unnamed-chunk-29-22.png)![](README_files/figure-markdown_github/unnamed-chunk-29-23.png)![](README_files/figure-markdown_github/unnamed-chunk-29-24.png)![](README_files/figure-markdown_github/unnamed-chunk-29-25.png)![](README_files/figure-markdown_github/unnamed-chunk-29-26.png)![](README_files/figure-markdown_github/unnamed-chunk-29-27.png)![](README_files/figure-markdown_github/unnamed-chunk-29-28.png)![](README_files/figure-markdown_github/unnamed-chunk-29-29.png)![](README_files/figure-markdown_github/unnamed-chunk-29-30.png)![](README_files/figure-markdown_github/unnamed-chunk-29-31.png)![](README_files/figure-markdown_github/unnamed-chunk-29-32.png)![](README_files/figure-markdown_github/unnamed-chunk-29-33.png)![](README_files/figure-markdown_github/unnamed-chunk-29-34.png)![](README_files/figure-markdown_github/unnamed-chunk-29-35.png)
 
 ``` r
 str(PSst)
