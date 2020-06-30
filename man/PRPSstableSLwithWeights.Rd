@@ -9,6 +9,7 @@ PRPSstableSLwithWeights(
   weights,
   plotName = NULL,
   ratioRange = c(0.05, 0.95),
+  stepby = 0.05,
   standardization = FALSE,
   classProbCut = 0.9,
   PRPShighGroup = "PRPShigh",
@@ -32,6 +33,9 @@ c(0.05, 0.95), which should NOT be changed in most of situations. However, if yo
 unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
 and/or classification results are far away from what you expect, you might want to change the default values.
 c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.}
+
+\item{stepby}{a numeric parameter for distance between percentage searching step, it should be within (0,1), default value is 0.05, 
+but a user can change it to other values such as 0.01}
 
 \item{standardization}{a logic variable to indicate if standardization is needed before classification 
 score calculation}

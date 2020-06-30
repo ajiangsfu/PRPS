@@ -25,6 +25,8 @@
 #'  unbalanced such as one group is much smaller than the other, and/or sample variation is quite big,
 #'  and/or classification results are far away from what you expect, you might want to change the default values.
 #'  c(0.15, 0.85) is recommended as an alternative setting other than default. In an extreme rare situation, c(0.4, 0,6) could a good try.
+#' @param stepby a numeric parameter for distance between percentage searching step, it should be within (0,1), default value is 0.05, 
+#'  but a user can change it to other values such as 0.01
 #' @param classProbCut a numeric variable within (0,1), which is a cutoff of Empirical Bayesian probability, 
 #'  often used values are 0.8 and 0.9, default value is 0.9. Only one value is used for both groups, 
 #'  the samples that are not included in either group will be assigned as UNCLASS
@@ -58,8 +60,8 @@
 #' @import mclust
 #' @export
 
-PSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange = c(0.1, 0.9), classProbCut = 0.9, PShighGroup = "PShigh", PSlowGroup = "PSlow",
-                                 breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
+PSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange = c(0.1, 0.9), stepby = 0.05, classProbCut = 0.9, PShighGroup = "PShigh", 
+                                 PSlowGroup = "PSlow",breaks = 50, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   imputeValue = imputeValue[1]
   ## imputee NA if imputeNA is true
   if(imputeNA){
@@ -75,7 +77,7 @@ PSstableSLwithWeights = function(newdat, weights, plotName = NULL, ratioRange = 
   newdat = newdat[tmp,]
 
   ## change on 20190918
-  rps = seq(ratioRange[1], ratioRange[2], by = 0.05)
+  rps = seq(ratioRange[1], ratioRange[2], by = stepby)
   
   if(!is.null(plotName)){
     pdf(plotName)
