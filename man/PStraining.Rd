@@ -10,7 +10,7 @@ PStraining(
   groupInfo,
   refGroup = NULL,
   topN = NULL,
-  FDRcut = 0.1,
+  FDRcut = NULL,
   weightMethod = c("ttest", "limma", "PearsonR", "SpearmanR", "MannWhitneyU"),
   classProbCut = 0.9,
   imputeNA = FALSE,
