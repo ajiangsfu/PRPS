@@ -65,7 +65,7 @@
 #' A. 2003 Aug 19;100(17):9991-6.
 #' @export
 
-PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = NULL, topN = NULL, FDRcut = 0.1,
+PRPStraining = function(trainDat, standardization = FALSE, selectedTraits = NULL, groupInfo, refGroup = NULL, topN = NULL, FDRcut = NULL,
                         weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9, imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
   groupInfo = as.character(groupInfo)
 

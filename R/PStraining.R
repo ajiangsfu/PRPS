@@ -59,7 +59,7 @@
 #' Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, et al. Molecular classification of cancer: 
 #' class discovery and class prediction by gene expression monitoring. Science. 1999;286:531–7
 #' @export
-PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = NULL, topN = NULL, FDRcut = 0.1, 
+PStraining = function(trainDat, selectedTraits = NULL, groupInfo, refGroup = NULL, topN = NULL, FDRcut = NULL, 
                       weightMethod = c("ttest","limma","PearsonR", "SpearmanR", "MannWhitneyU"), classProbCut = 0.9,
                       imputeNA = FALSE, byrow = TRUE, imputeValue = c("median","mean")){
 
