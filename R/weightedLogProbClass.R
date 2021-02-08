@@ -42,7 +42,9 @@ weightedLogProbClass = function(newdat, topTraits, weights, classMeans, classSds
     p1=2 * pt(abs(t1), df= dfs[1], lower.tail = FALSE) 
     p2=2 * pt(abs(t2), df= dfs[2], lower.tail = FALSE)
   
-    gg=log10(p1) - log10(p2)
+    #### Feb 8, 2021
+    #### to avoid inf value of log, change the code to the following format
+    gg=log10(p1+0.00000001) - log10(p2+0.00000001)
   },gendatt,classMeans, classSds)
 
   rownames(lograt) = colnames(genedat)

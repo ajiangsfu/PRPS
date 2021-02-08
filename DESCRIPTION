@@ -1,7 +1,7 @@
 Package: PRPS
 Type: Package
 Title: Binary classification with PRPS, PRPS-ST and more
-Version: 1.0.0
+Version: 1.1.0
 Author: Aixiang Jiang
 Maintainer: Aixiang Jiang <aijiang@bccrc.ca> <aixiang.jiang@pathology.ubc.ca> 
 Depends: R (>= 3.5)

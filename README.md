@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 PRPS: Binary classification with PRPS, PRPS-ST and more
 =======================================================
 
