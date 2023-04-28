@@ -27,7 +27,7 @@ Self-training algorithm (Jiang et al., 2020) is to identify cases in an unlabele
 
 #### References:
 
-Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, Robust gene expression-based classification of cancers without normalization (<https://www.biorxiv.org/content/10.1101/2020.04.28.051953v1>)
+Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, PRPS-ST: A Protocol-Agnostic Self-training Method for Gene Expression–Based Classification of Blood Cancers, Blood Cancer Discov (2020) 1 (3): 244–257.
 
 Ennishi D, Jiang A, Boyle M, Collinge B, Grande BM, Ben-Neriah S, Rushton C, Tang J, Thomas N, Slack GW, Farinha P, Takata K, Miyata-Takata T, Craig J, Mottok A, Meissner B, Saberi S, Bashashati A, Villa D, Savage KJ, Sehn LH, Kridel R, Mungall AJ, Marra MA, Shah SP, Steidl C, Connors JM, Gascoyne RD, Morin RD, Scott DW. Double-Hit Trait Expression Signature Defines a Distinct Subgroup of Germinal Center B-Cell-Like Diffuse Large B-Cell Lymphoma. Journal of Clinical Oncology 37, no. 3 (January 20, 2019) 190-201. DOI: 10.1200/JCO.18.01583
 
@@ -53,7 +53,7 @@ Self-training algorithm (Jiang et al., 2020) is to identify cases in an unlabele
 
 #### References:
 
-Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, Robust gene expression-based classification of cancers without normalization (<https://www.biorxiv.org/content/10.1101/2020.04.28.051953v1>)
+Jiang A, Hilton LK, Tang J, Rushton CK, Grande BM, Scott DW, Morin RD, PRPS-ST: A Protocol-Agnostic Self-training Method for Gene Expression–Based Classification of Blood Cancers, Blood Cancer Discov (2020) 1 (3): 244–257.
 
 TR Golub, DK Slonim, P Tamayo, C Huard, M Gaasenbeek, JP Mesirov, H Coller, ML Loh, JR Downing, MA Caligiuri, et al. Molecular classification of cancer: class discovery and class prediction by gene expression monitoring Science, 286 (1999), pp. 531-537
 
